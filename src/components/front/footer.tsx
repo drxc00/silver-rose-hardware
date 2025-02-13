@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <div className="bottom-0 fixed w-full">
+    <div className="w-full">
       <div className="bg-muted flex justify-between p-10 items-center">
         <div>
           <Image src="/logo.png" alt="Logo" width={200} height={200} />
