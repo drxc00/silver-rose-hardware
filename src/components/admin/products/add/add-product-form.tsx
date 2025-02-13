@@ -1,11 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  productFormSchema,
-  attributeSchema,
-  variantSchema,
-} from "@/lib/form-schema";
+import { productFormSchema, variantSchema } from "@/lib/form-schema";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, CirclePlus, Dot, LoaderIcon } from "lucide-react";
+import { ArrowLeft, CirclePlus, LoaderIcon } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -36,7 +32,7 @@ import { VariantDataTable } from "../variant-dt";
 import { getVariantDTColumns } from "../variant-dt-columns";
 import React from "react";
 import { VariantDialog } from "../variant-dialog";
-import { Prisma, Attribute, AttributeValue } from "@prisma/client";
+import { Attribute } from "@prisma/client";
 import { addProduct } from "@/app/(server)/actions/product-mutations";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -67,6 +63,9 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
   });
 
   const removeVariant = (index: number) => {
+    // This is based on the index of the state.
+    // NOTE: This may have some issues when the state becomes too large-
+    // -or some random side effect. Make sure to investigate this further.
     setVariants(variants.filter((_, i) => i !== index));
   };
 
@@ -79,12 +78,17 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
   };
 
   const addVariant = (attributes: any, price: any) => {
+    // Simply pushes a new variant to the state
     setVariants((prevVariants) => [...prevVariants, { attributes, price }]);
   };
 
   const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
     startTransition(async () => {
       try {
+        // Validate some fields: image, category
+        if (!data.image || !data.category) {
+          throw new Error("Invalid product details. Please try again.");
+        }
         const productPayload = {
           ...data,
           hasVariant,
@@ -115,7 +119,9 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
               <span>Back to products</span>
             </Button>
             <Button type="submit">
-              {isPending ? <LoaderIcon className="animate-spin" /> : (
+              {isPending ? (
+                <LoaderIcon className="animate-spin" />
+              ) : (
                 <span>Add Product</span>
               )}
             </Button>

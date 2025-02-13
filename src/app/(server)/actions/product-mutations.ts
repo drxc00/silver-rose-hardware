@@ -21,6 +21,7 @@ export async function addProduct(
   const parsedPayload = productFormSchema.safeParse(payload);
   // Throw an error if the payload is not valid
   if (!parsedPayload.success) throw new Error("Invalid payload");
+
   //----------------------------------
   // We perform an hierarchical mutation
   // First we check if the parent category exits
