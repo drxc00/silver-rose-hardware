@@ -87,6 +87,7 @@ model Product {
   name        String
   slug        String?   @unique
   status      String    @default("visible")
+  isFeatured  Boolean?
   hasVariant  Boolean
   description String?
   createdAt   DateTime  @default(now())
