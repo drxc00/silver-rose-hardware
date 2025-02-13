@@ -70,6 +70,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   },
   {
     accessorKey: "category",
+    filterFn: "categoryFilter" as any,
     header: ({ column }) => {
       return (
         <Button

@@ -31,7 +31,7 @@ import { Input } from "@/components/ui/input";
 import { CardContent, Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CategoryTree } from "@/app/types";
 
 interface DataTableProps<TData, TValue> {
@@ -47,18 +47,38 @@ export function ProductDataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  // Custom filter function for categories
+  const categoryFilter: FilterFn<any> = (row, columnId, filterValue) => {
+    if (filterValue === "all") return true;
+
+    const rowCategory = row.original.id;
+
+    console.log(rowCategory);
+
+    if (rowCategory === filterValue) return true;
+
+    return false;
+  };
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     filterFns: {
-      includeSubcategories: () => true,
+      categoryFilter: (row, columnId, filterValue) => {
+        if (filterValue === "all") return true;
+        const rowCategory = row.original.category.id;
+        if (rowCategory === filterValue) return true;
+        return false;
+      },
       productFilter: (row: any, columnId: string, filterValue: string) => {
         const productName = row.original.name.toLowerCase();
         return productName.includes(filterValue.toLowerCase());
       },
-    } as Record<string, FilterFn<any>>, // Add type assertion,
+    } as Record<string, FilterFn<any>>,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
@@ -68,6 +88,15 @@ export function ProductDataTable<TData, TValue>({
       columnFilters,
     },
   });
+
+  // Update category filter when selection changes
+  useEffect(() => {
+    if (selectedCategory === "all") {
+      table.getColumn("category")?.setFilterValue(undefined);
+    } else {
+      table.getColumn("category")?.setFilterValue(selectedCategory);
+    }
+  }, [selectedCategory, table]);
 
   return (
     <Card>
@@ -83,7 +112,7 @@ export function ProductDataTable<TData, TValue>({
             }
             className="max-w-sm"
           />
-          <Select>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Filter by category" />
             </SelectTrigger>
