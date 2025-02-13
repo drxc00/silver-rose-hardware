@@ -36,6 +36,7 @@ import { Attribute } from "@prisma/client";
 import { addProduct } from "@/app/(server)/actions/product-mutations";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface ProductFormProps {
   categories: CategoryTree[];
@@ -114,10 +115,12 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" type="button">
-              <ArrowLeft />
-              <span>Back to products</span>
-            </Button>
+            <Link href="/admin/products">
+              <Button variant="ghost" type="button">
+                <ArrowLeft />
+                <span>Back to products</span>
+              </Button>
+            </Link>
             <Button type="submit">
               {isPending ? (
                 <LoaderIcon className="animate-spin" />
