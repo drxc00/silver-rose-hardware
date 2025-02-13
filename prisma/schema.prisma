@@ -1,0 +1,178 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  username      String    @unique
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  role          String
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  Quotation        Quotation[]
+  QuotationRequest QuotationRequest[]
+}
+
+model Account {
+  userId            String  @default(cuid())
+  type              String
+  provider          String
+  providerAccountId String
+  password          String?
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Category {
+  id             String   @id @default(cuid())
+  image          String?
+  parentCategory String?
+  name           String
+  slug           String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentCategory], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  Product  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String    @id @default(cuid())
+  categoryId  String
+  image       String?
+  name        String
+  slug        String?   @unique
+  status      String    @default("visible")
+  hasVariant  Boolean
+  description String?
+  createdAt   DateTime  @default(now())
+  variants    Variant[]
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@map("products")
+}
+
+model Attribute {
+  id             String           @id @default(cuid())
+  name           String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  AttributeValue AttributeValue[]
+
+  @@map("attributes")
+}
+
+model AttributeValue {
+  id          String   @id @default(cuid())
+  value       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  attributeId String
+  variantId   String?
+
+  attribute Attribute @relation(fields: [attributeId], references: [id])
+  Variant   Variant?  @relation(fields: [variantId], references: [id])
+
+  @@map("attribute_values")
+}
+
+model Variant {
+  id         String           @id @default(cuid())
+  attributes AttributeValue[]
+  price      Decimal
+  createdAt  DateTime         @default(now())
+  productId  String
+
+  product       Product         @relation(fields: [productId], references: [id])
+  QuotationItem QuotationItem[]
+
+  @@map("variants")
+}
+
+model Quotation {
+  id        String   @id @default(cuid())
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  QuotationRequest QuotationRequest[]
+  QuotationItem    QuotationItem[]
+
+  @@map("quotations")
+}
+
+model QuotationRequest {
+  id           String   @id @default(cuid())
+  userId       String
+  quotationId  String
+  customerNote String
+  remarks      String
+  status       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("quotation_requests")
+}
+
+model QuotationItem {
+  id          String   @id @default(cuid())
+  quotationId String
+  variantId   String
+  quantity    Decimal
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  variant   Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@map("quotation_items")
+}
