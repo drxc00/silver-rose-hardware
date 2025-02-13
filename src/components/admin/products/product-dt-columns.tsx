@@ -3,10 +3,28 @@
 import { ProductWithRelatedData } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Ellipsis } from "lucide-react";
+import {
+  ArrowUpDown,
+  Check,
+  CheckCircle,
+  CircleX,
+  Ellipsis,
+  MoreHorizontal,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { updateIsFeatured } from "@/app/(server)/actions/product-mutations";
 
 export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   {
@@ -113,8 +131,66 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
     },
   },
   {
+    accessorKey: "featured",
+    header: "Featured",
+    cell: ({ row }) => {
+      const status = row.original.isFeatured;
+      const variant = status ? "text-green-500" : "text-muted-foreground";
+      return (
+        <>
+          <Button variant="ghost">
+            <span className={cn(variant, "place-content-center")}>
+              {status ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <CircleX className="h-4 w-4" />
+              )}
+            </span>
+          </Button>
+        </>
+      );
+    },
+  },
+  {
     accessorKey: "actions",
     header: "Actions",
-    cell: ({ row }) => <Ellipsis className="h-4 w-4" />,
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const isFeatured = row.original.isFeatured;
+      return (
+        <div>
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center justify-between"
+                onClick={async () => {
+                  await updateIsFeatured(id, !isFeatured);
+                }}
+              >
+                <span>Featured</span>
+                <span>
+                  {isFeatured ? (
+                    <CheckCircle className="text-green-500" />
+                  ) : (
+                    <CircleX className="text-muted-foreground" />
+                  )}
+                </span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
   },
 ];

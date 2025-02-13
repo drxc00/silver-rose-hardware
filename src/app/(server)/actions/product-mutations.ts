@@ -14,6 +14,17 @@ export async function addAttribute(
   return attribute;
 }
 
+export async function updateIsFeatured(
+  id: string,
+  isFeatured: boolean
+): Promise<void> {
+  await prisma.product.update({
+    where: { id },
+    data: { isFeatured: isFeatured },
+  });
+  revalidatePath("/admin/products");
+}
+
 export async function addProduct(
   payload: z.infer<typeof productFormSchema>
 ): Promise<void> {
