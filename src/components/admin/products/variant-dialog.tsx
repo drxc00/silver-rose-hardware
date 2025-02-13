@@ -1,6 +1,6 @@
 "use client";
 
-import React, { JSX } from "react";
+import React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTrigger,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -28,12 +27,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Attribute, AttributeValue } from "@prisma/client";
+import { Attribute } from "@prisma/client";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { addAttribute } from "@/app/(server)/actions/product-mutations";
 import { z } from "zod";
 import { attributeSchema } from "@/lib/form-schema";
+import { useToast } from "@/hooks/use-toast";
 
 export type FormAttributeValues = {
   attributeId?: string;
@@ -42,28 +42,39 @@ export type FormAttributeValues = {
 };
 
 export function VariantDialog({
+  isOpen,
+  setIsOpen,
   attributes,
+  attributeValues,
   addVariant,
-  children,
+  updateVariant,
+  dialogType = "add",
+  index,
+  variantPrice,
 }: {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
   attributes: Attribute[];
-  addVariant: Function;
-  children: React.ReactNode;
+  attributeValues?: z.infer<typeof attributeSchema>[];
+  addVariant?: Function;
+  dialogType: "add" | "update";
+  updateVariant?: Function;
+  index?: number;
+  variantPrice?: number;
 }) {
   const [attrLoading, setAttrLoading] = useState(false);
 
   const [variantAttributes, setVariantAttributes] = useState<
     z.infer<typeof attributeSchema>[]
-  >([]);
-  const [price, setPrice] = useState<number>();
-  const [open, setOpen] = useState(false); //For the dialog states
+  >(attributeValues || []);
+  const [price, setPrice] = useState<number>(variantPrice || 0);
   const [attributeValue, setAttributeValue] = useState("");
   const [selectedAttribute, setSelectedAttribute] = useState<string | null>(
     null
   );
-  // const [price, setPrice] = useState(variantPrice || 0);
   const [createNewAttribute, setCreateNewAttribute] = useState(false);
   const [newAttribute, setNewAttribute] = useState("");
+  const { toast } = useToast();
 
   const resetInputs = () => {
     setNewAttribute("");
@@ -74,6 +85,16 @@ export function VariantDialog({
     // Check if the the state is in the new attribute state..
     if (newAttribute) {
       try {
+        // Validate the inputs first
+        if (!newAttribute || !attributeValue) {
+          toast({
+            title: "Error",
+            description: "Please fill in all the required fields.",
+            variant: "destructive",
+          });
+          return;
+        }
+
         // Invoke the server action to add the attribute
         setAttrLoading(true);
         const newlyAddedAttribute = await addAttribute(newAttribute);
@@ -87,9 +108,25 @@ export function VariantDialog({
           },
         ]);
       } catch (err) {
-        console.error("Failed to add attribute:", err);
+        // Validate the inputs first
+        toast({
+          title: "Error",
+          description:
+            "There was an error adding the attribute. Please try again",
+          variant: "destructive",
+        });
       }
     } else {
+      // Validate the inputs first
+      if (!selectedAttribute || !attributeValue) {
+        toast({
+          title: "Error",
+          description: "Please fill in all the required fields.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const selectedAttr = attributes.find(
         (attr) => attr.name === selectedAttribute
       );
@@ -114,8 +151,7 @@ export function VariantDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Variant</DialogTitle>
@@ -229,22 +265,38 @@ export function VariantDialog({
                 onChange={(e) => setAttributeValue(e.target.value)}
               />
               <Button variant="outline" size="sm" onClick={addVariantAttribute}>
-                {attrLoading ? <LoaderIcon className="animate-spin" /> : <CirclePlus />}
+                {attrLoading ? (
+                  <LoaderIcon className="animate-spin" />
+                ) : (
+                  <CirclePlus />
+                )}
               </Button>
             </div>
           </div>
         </div>
         <DialogFooter>
+          <Button variant="secondary" onClick={() => setIsOpen(false)}>
+            Cancel
+          </Button>
           <Button
             onClick={() => {
-              addVariant(variantAttributes, price);
-              resetInputs();
+              if (dialogType === "add" && addVariant) {
+                addVariant(variantAttributes, price);
+              } else if (dialogType === "update" && updateVariant) {
+                updateVariant(index, variantAttributes, price);
+              }
+
+              setVariantAttributes(attributeValues || []);
+              setPrice(variantPrice || 0);
+              setAttributeValue("");
+              setSelectedAttribute(null);
               setCreateNewAttribute(false);
-              setVariantAttributes([]);
-              setOpen(false);
+              setNewAttribute("");
+
+              setIsOpen(false);
             }}
           >
-            Add Variant
+            {dialogType === "add" ? "Add Variant" : "Update Variant"}
           </Button>
         </DialogFooter>
       </DialogContent>

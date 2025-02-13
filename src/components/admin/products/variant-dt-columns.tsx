@@ -1,6 +1,6 @@
 "use client";
 
-import { FormProductAttribute, FormProductVariant } from "@/app/types";
+import { FormProductVariant } from "@/app/types";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -8,31 +8,34 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { VariantDialog } from "./variant-dialog";
+import { Attribute } from "@prisma/client";
+import { attributeSchema } from "@/lib/form-schema";
+import { z } from "zod";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
-// This file defines the columns for the Variant DataTable component
-// It exports a function getVariantDTColumns that returns an array of ColumnDef objects
-// Each ColumnDef defines how a column should be rendered and behaves in the table
-
-// The columns include:
-// 1. Attributes column - displays product variant attributes in a formatted string
-// 2. Price column - displays the variant price
-// 3. Actions column - provides dropdown menu with edit/delete actions
-
-// The getVariantDTColumns function takes a removeVariant callback prop
-// which is used to handle variant deletion from the table
 interface VariantDTColumnsProps {
   removeVariant: (index: number) => void;
   addVariant: (attributes: any, price: number) => void;
+  updateVariant: (index: number, attributes: any, price: number) => void;
+  attributes: Attribute[];
+  attributeValues?: z.infer<typeof attributeSchema>[];
 }
 
-export const getVariantDTColumns = ({ removeVariant, addVariant }: VariantDTColumnsProps): ColumnDef<FormProductVariant>[] => [
+export const getVariantDTColumns = ({
+  removeVariant,
+  addVariant,
+  updateVariant,
+  attributes,
+  attributeValues,
+}: VariantDTColumnsProps): ColumnDef<FormProductVariant>[] => [
   {
     accessorKey: "attributes",
     header: "Attributes",
     cell: ({ row }) => {
-      // Basically conver the attributes to simple string representations
+      // Basically convert the attributes to simple string representations
       const attributeNameValue = row.original.attributes.reduce(
         (attrString, attr) => {
           const nameValueString = attr.name + ":" + attr.value + ";" + "\n";
@@ -51,25 +54,45 @@ export const getVariantDTColumns = ({ removeVariant, addVariant }: VariantDTColu
   {
     accessorKey: "price",
     header: "Price",
+    cell: ({ row }) => <span>₱ {Number(row.original.price).toFixed(2)}</span>,
   },
   {
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
+
       return (
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Ellipsis className="h-4 w-4" />
+        <>
+          <VariantDialog
+            updateVariant={updateVariant}
+            dialogType="update"
+            index={row.index}
+            attributes={attributes}
+            attributeValues={row.original.attributes}
+            variantPrice={row.original.price}
+            isOpen={isVariantDialogOpen}
+            setIsOpen={setIsVariantDialogOpen}
+          />
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <DropdownMenuItem onClick={() => setIsVariantDialogOpen(true)}>
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => removeVariant(row.index)}>Delete</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => removeVariant(row.index)}
+                className="text-destructive"
+              >
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </>
       );
     },
   },

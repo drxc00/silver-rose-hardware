@@ -16,23 +16,36 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getVariantDTColumns } from "./variant-dt-columns";
+import { Attribute } from "@prisma/client";
+import { z } from "zod";
+import { attributeSchema } from "@/lib/form-schema";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   removeVariant: (index: number) => void;
   addVariant: (attributes: any, price: number) => void;
+  updateVariant: (index: number, attributes: any, price: number) => void;
+  attributes: Attribute[];
+  attributeValues?: z.infer<typeof attributeSchema>[];
 }
 
 export function VariantDataTable<TData, TValue>({
   columns,
   data,
   removeVariant,
-  addVariant
+  addVariant,
+  updateVariant,
+  attributes,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
-    columns: getVariantDTColumns({ removeVariant, addVariant }) as any,
+    columns: getVariantDTColumns({
+      removeVariant,
+      addVariant,
+      updateVariant,
+      attributes,
+    }) as any,
     getCoreRowModel: getCoreRowModel(),
     filterFns: {
       // NOTE: for some reason the global types is not being read, causing type errors.
@@ -41,7 +54,6 @@ export function VariantDataTable<TData, TValue>({
         return true;
       },
     },
-
   });
 
   return (
@@ -56,9 +68,9 @@ export function VariantDataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 );
               })}

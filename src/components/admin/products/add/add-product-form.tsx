@@ -47,6 +47,7 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
   const [isPending, startTransition] = useTransition();
   const [hasVariant, setHasVariant] = useState(false);
   const [variants, setVariants] = useState<z.infer<typeof variantSchema>[]>([]);
+  const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   // For products without variants, we create a controlled input
@@ -72,7 +73,9 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
 
   const updateVariant = (index: number, attributes: any, price: number) => {
     setVariants((prevVariants) => {
+      // Get the previous state values
       const updatedVariants = [...prevVariants];
+      // Override the values of the indexed element
       updatedVariants[index] = { ...updatedVariants[index], attributes, price };
       return updatedVariants;
     });
@@ -271,19 +274,28 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
                 <VariantDialog
                   attributes={attributes} // Replace this with actual attributes data
                   addVariant={addVariant}
-                >
-                  <Button variant="outline">
-                    <CirclePlus className="mr-2" />
-                    Add Variant
-                  </Button>
-                </VariantDialog>
+                  dialogType="add"
+                  isOpen={isVariantDialogOpen}
+                  setIsOpen={setIsVariantDialogOpen}
+                />
+                <Button variant="outline" type="button" onClick={() => setIsVariantDialogOpen(true)}>
+                  <CirclePlus className="mr-2" />
+                  Add Variant
+                </Button>
               </CardHeader>
               <CardContent>
                 <VariantDataTable
-                  columns={getVariantDTColumns({ removeVariant, addVariant })}
+                  columns={getVariantDTColumns({
+                    removeVariant,
+                    addVariant,
+                    updateVariant,
+                    attributes: attributes,
+                  })}
                   data={variants as unknown as FormProductVariant[]}
                   removeVariant={removeVariant}
                   addVariant={addVariant}
+                  updateVariant={updateVariant}
+                  attributes={attributes}
                 />
               </CardContent>
             </Card>
