@@ -17,7 +17,7 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ currentPage, crumbItems }: AdminHeaderProps) {
     return (
-        <header className="sticky top-0 w-full flex bg-sidebar items-center border-b p-3">
+        <header className="sticky top-0 w-full flex bg-sidebar items-center border-b p-3 z-50">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mx-2" />
             <div>
