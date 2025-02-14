@@ -53,5 +53,3 @@ npm run dev
 ### Creating first user
 Now we'll create our first admin user. Navigate to `http://localhost:3000/admin/create-first-user`
 - **NOTE:** After creating the first admin user, this page will not be accessible anymore, unless you clear the database. Please be careful and do not forget your admin credentials.
-
-For any issues, feel free to check the documentation or open an issue.  
