@@ -20,7 +20,6 @@ export default async function CreateFirstUserPage() {
     const handleCreateUser = async (data: z.infer<typeof registrationFormSchema>) => {
         "use server";
         await createFirstAdminUser(data);
-        redirect('/admin/login') 
     };
 
     return (
@@ -36,7 +35,7 @@ export default async function CreateFirstUserPage() {
                                 <h1 className="text-xl font-bold"> Create First User  </h1>
                             </div>
                         </div>
-                        <RegistrationForm submissionHandler={handleCreateUser} />
+                        <RegistrationForm submissionHandler={handleCreateUser} registrationType={UserRole.ADMIN} />
                     </div>
                 </div>
             </div>
