@@ -14,6 +14,8 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { fetchCategories } from "@/lib/data-fetch";
 import { CategoryCard } from "@/components/front/category-card";
+import { UnderPricesCard } from "@/components/front/under-prices-card";
+import { Sparkles } from "lucide-react";
 
 export default async function Home() {
   const [featuredProducts, allCategories] = await Promise.all([
@@ -127,6 +129,35 @@ export default async function Home() {
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
+        </div>
+        <div className="flex gap-4 pt-28">
+          <UnderPricesCard
+            headerText="Price under ₱ 500"
+            image={"/under_500.jpg"}
+          />
+          <UnderPricesCard
+            headerText="Price under ₱ 1000"
+            image={"/under_1000.jpg"}
+          />
+          <UnderPricesCard
+            headerText="Price under ₱ 1500"
+            image={"/under_1500.jpg"}
+          />
+        </div>
+      </section>
+      <section className="flex justify-center h-52 pb-8">
+        <div className="flex flex-col justify-center max-w-lg gap-4">
+          <h1 className="text-3xl font-bold text-center">
+            Not sure what you are looking for?
+          </h1>
+          <p className="text-muted-foreground text-center text-sm">
+            Describe what you are looking for and our AI will recommend the best
+            product
+          </p>
+          <Button>
+            <Sparkles />
+            <span>Ask AI</span>
+          </Button>
         </div>
       </section>
     </main>
