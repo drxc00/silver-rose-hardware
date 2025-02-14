@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function CategoryCard({ category }: { category: CategoryTree }) {
   return (
-    <Link href={`/categories/${category.id}`}>
+    <Link href={`/categories/${category.slug}`}>
       <div className="relative aspect-square overflow-hidden rounded-2xl group">
         <Image
           src={category.image || "/placeholder-category.jpg"}
