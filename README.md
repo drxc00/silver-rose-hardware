@@ -37,6 +37,15 @@ UPLOADTHING_TOKEN=
 ---
 
 ### Next Steps  
+After configuring the .env file, generate the Prisma client and apply migrations to set up the database schema:  
+```sh
+npx prisma generate
+npx prisma db push
+```  
+This ensures Prisma is properly set up before you start the server. Let me know if you need any refinements!
+
+
+
 After setting up your environment, you can start the development server:  
 ```sh
 npm run dev
