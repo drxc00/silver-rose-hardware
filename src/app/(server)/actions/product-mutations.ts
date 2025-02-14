@@ -32,7 +32,6 @@ export async function addProduct(
   const parsedPayload = productFormSchema.safeParse(payload);
   // Throw an error if the payload is not valid
   if (!parsedPayload.success) throw new Error("Invalid payload");
-
   //----------------------------------
   // We perform an hierarchical mutation
   // First we check if the parent category exits
@@ -42,6 +41,15 @@ export async function addProduct(
   // Throw an error if the category passed is incorrect
   if (!parentCategory) throw new Error("Invalid category");
 
+  // Create a slug from product name
+  const slug = payload.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "") // remove all non-word, non-whitespace, non-hyphen characters
+    .replace(/[\s_-]+/g, "-") // replace all spaces, underscores, and hyphens with a single hyphen
+    .replace(/^-+/, "") // remove leading hyphens
+    .replace(/-+$/, ""); // remove trailing hyphens
+
   // If the category exists, we create the product
   await prisma.product.create({
     data: {
@@ -49,6 +57,7 @@ export async function addProduct(
       description: payload.description,
       image: payload.image,
       status: payload.status,
+      slug: slug,
       category: {
         connect: {
           id: payload.category,
