@@ -6,7 +6,14 @@ export function Footer() {
     <div className="w-full">
       <div className="bg-muted flex justify-between p-10 items-center">
         <div>
-          <Image src="/logo.png" alt="Logo" width={200} height={200} />
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            priority
+            width={200}
+            style={{ objectFit: "contain" }}
+            height={200}
+          />
         </div>
         <div className="flex flex-row gap-6">
           <div>

@@ -25,7 +25,7 @@ export function NavBar({ session }: NavBarProps) {
       <div className="flex justify-between p-3 items-center border-b px-32">
         <div>
           <Link href="/">
-            <Image src="/logo.png" alt="Logo" width={150} height={150} />
+            <Image src="/logo.png" alt="Logo" width={150} height={150} priority style={{ objectFit: "contain" }} />
           </Link>
         </div>
         <div className="flex gap-4 items-center">
@@ -37,7 +37,7 @@ export function NavBar({ session }: NavBarProps) {
             <Quote className="h-5 w-5 text-muted-foreground" />
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild className="cursor-pointer">
               <div className="p-2 border bg-sidebar rounded-full">
                 <User className="h-5 w-5 text-muted-foreground" />
               </div>
