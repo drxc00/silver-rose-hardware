@@ -11,7 +11,7 @@ export default async function Layout({
   const session = await authCache();
 
   return (
-    <main className="flex flex-col h-screen justify-between">
+    <main className="flex flex-col min-h-screen justify-between">
       <NavBar session={session as Session} />
       {children}
       <Footer />
