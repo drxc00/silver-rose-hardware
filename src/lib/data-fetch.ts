@@ -23,7 +23,11 @@ export async function fetchProduct(
 }
 
 export async function fetchCategories(): Promise<CategoryTree[]> {
-  const categories = await prisma.category.findMany({});
+  const categories = await prisma.category.findMany({
+    include: {
+      Product: true,
+    },
+  });
   // Re-organize the categories to create a tree structure
   // Since the categories are fetched in a flat structure,
   // we need to create a tree structure for the categories and subcategories
@@ -34,12 +38,20 @@ export async function fetchCategories(): Promise<CategoryTree[]> {
       // Find the parent of the category from the accumulator array
       const parent = acc.find((c) => c.id === parentId);
       if (parent) {
-        parent.subcategories.push(category);
+        parent.subcategories.push({
+          ...category,
+          productCount: category.Product.length,
+        } as any);
+        parent.productCount += category.Product.length; // Increment the product count of the parent
       }
     } else {
       // Simply push the category itself with a subcategories array
       // This is used for finding the subcategories
-      acc.push({ ...category, subcategories: [] });
+      acc.push({
+        ...category,
+        subcategories: [],
+        productCount: category.Product.length,
+      });
     }
     return acc;
   }, [] as CategoryTree[]);

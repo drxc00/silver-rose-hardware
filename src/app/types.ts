@@ -7,7 +7,7 @@ import {
   Prisma,
 } from "@prisma/client";
 
-export type CategoryTree = Category & { subcategories: Category[] };
+export type CategoryTree = Category & { subcategories: Category[], productCount: number };
 
 // We derive a type from the prisma client
 // Since the structure of the database is a bit different on what we can show the user

@@ -89,24 +89,6 @@ export function DataTable<TData extends CategoryTree, TValue>({
             />
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Printer className="h-4 w-4 mr-2" />
-              Print
-            </Button>
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-            <Link href="/admin/categories/add">
-              <Button size="sm">
-                <Plus className="h-4 w-4 mr-2" />
-                New Category
-              </Button>
-            </Link>
-          </div>
-        </div>
       </div>
       <div className="bg-background border-b">
         <Table>

@@ -3,7 +3,14 @@
 import { ProductWithRelatedData } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
-import { Check, CheckCircle, CircleX, MoreHorizontal } from "lucide-react";
+import {
+  Check,
+  CheckCircle,
+  CircleX,
+  MoreHorizontal,
+  PencilLine,
+  Trash,
+} from "lucide-react";
 import Image from "next/image";
 import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -164,7 +171,10 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <Link href={`/admin/products/edit/${row.original.id}`}>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <PencilLine className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
               </Link>
               <DropdownMenuItem
                 className="flex items-center justify-between"
@@ -182,7 +192,8 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
                 </span>
               </DropdownMenuItem>
               <DropdownMenuItem className="text-destructive">
-                Delete
+                <Trash className="mr-2 h-4 w-4" />
+                <span>Delete</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
