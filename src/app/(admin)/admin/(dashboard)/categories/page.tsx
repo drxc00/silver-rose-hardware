@@ -15,7 +15,7 @@ export default async function CategoriesPage() {
       <main className="p-6 flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Categories</h1>
-          <Link href="/admin/products/add">
+          <Link href="/admin/categories/add">
             <Button>
               <Plus />
               <span>Add Category</span>

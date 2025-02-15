@@ -148,23 +148,6 @@ export function AddCategoryForm({ categories }: AddCategoryFormProps) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="bg-sidebar focus-visible:ring-transparent"
-                        placeholder="Category slug"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </CardContent>
           </Card>
           <div>
