@@ -30,7 +30,6 @@ import {
 import {
   CategoryTree,
   FormProductVariant,
-  ProductWithRelatedData,
   SerializedProductWithRelatedData,
 } from "@/app/types";
 import { VariantDataTable } from "../variant-dt";
@@ -73,7 +72,6 @@ export function EditProductForm({
   );
   const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
   // For products without variants, we create a controlled input
   const [variantPrice, setVariantPrice] = useState<number>();
 
@@ -87,7 +85,6 @@ export function EditProductForm({
       hasVariant: false,
     },
   });
-
   const removeVariant = (index: number) => {
     // This is based on the index of the state.
     // NOTE: This may have some issues when the state becomes too large-
