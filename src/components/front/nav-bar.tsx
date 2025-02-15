@@ -24,7 +24,9 @@ export function NavBar({ session }: NavBarProps) {
     <div>
       <div className="flex justify-between p-3 items-center border-b px-32">
         <div>
-          <Image src="/logo.png" alt="Logo" width={150} height={150} />
+          <Link href="/">
+            <Image src="/logo.png" alt="Logo" width={150} height={150} />
+          </Link>
         </div>
         <div className="flex gap-4 items-center">
           <Input
@@ -64,9 +66,13 @@ export function NavBar({ session }: NavBarProps) {
                 </>
               ) : (
                 <>
-                  <DropdownMenuItem>Login</DropdownMenuItem>
+                  <Link href="/login">
+                    <DropdownMenuItem>Login</DropdownMenuItem>
+                  </Link>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Register</DropdownMenuItem>
+                  <Link href="/register">
+                    <DropdownMenuItem>Register</DropdownMenuItem>
+                  </Link>
                 </>
               )}
             </DropdownMenuContent>
