@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { CategoryTree } from "@/app/types";
+import { SearchInput } from "@/components/ui/search-input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -102,15 +103,15 @@ export function ProductDataTable<TData, TValue>({
     <Card>
       <CardContent className="p-4">
         <div className="flex items-center pb-4 gap-4">
-          <Input
-            placeholder="Search by name"
+          <SearchInput
+            placeholder="Search by product name"
             value={
               (table.getColumn("product")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
               table.getColumn("product")?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="max-w-lg"
           />
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-[180px]">

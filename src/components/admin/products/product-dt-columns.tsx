@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { updateIsFeatured } from "@/app/(server)/actions/product-mutations";
 import Link from "next/link";
+import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 
 export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   {
@@ -52,13 +53,12 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
     },
     cell: ({ row }) => (
       <div className="flex items-center gap-4">
-        <Image
+        <ImageWithSkeleton
           className="rounded-lg"
           src={row.original.image as string}
           alt={row.original.name}
           width={40}
           height={40}
-          style={{ width: "auto" }} // Maintain aspect ratio
         />
         <span>{row.original.name}</span>
       </div>
