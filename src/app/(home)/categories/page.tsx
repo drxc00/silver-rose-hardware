@@ -1,5 +1,10 @@
 import { CategoryCard } from "@/components/front/category-card";
 import { fetchCategories } from "@/lib/data-fetch";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Categories | Silver Rose Hardware",
+}
 
 export default async function CategoriesPage() {
   const categories = await fetchCategories();

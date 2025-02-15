@@ -1,21 +1,25 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ProductWithRelatedData } from "@/app/types";
-import { CategoryCard } from "@/components/front/category-card";
-import { ProductCard } from "@/components/front/product-card";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
-import { ChevronRight, LayoutGridIcon, StretchHorizontal } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
 import { ProductsGrid } from "@/components/front/products-grid";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; subSlug: string }>;
+}) {
+  const urlParams = await params;
+  const slug = urlParams.slug;
+  const category = await prisma.category.findUnique({
+    where: { slug },
+  });
+  return {
+    title: `${category?.name} | Silver Rose Hardware`,
+  };
+}
 
 export default async function CategoryPage({
   params,
@@ -64,7 +68,7 @@ export default async function CategoryPage({
   });
 
   return (
-    <div className="px-8 py-8 w-full h-full">
+    <div className="px-8 w-full h-full">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
         <Link href="/" className="hover:text-gray-900">
@@ -81,7 +85,10 @@ export default async function CategoryPage({
       {category.children.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
           {category.children.map((subcategory) => (
-            <Link href={`/categories/${category.slug}/${subcategory.slug}`} key={subcategory.id}>
+            <Link
+              href={`/categories/${category.slug}/${subcategory.slug}`}
+              key={subcategory.id}
+            >
               <Card className="relative h-48 overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
                 {subcategory.image ? (
                   <div className="relative w-full h-full">

@@ -3,6 +3,21 @@ import { prisma } from "@/lib/prisma";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; subSlug: string }>;
+}) {
+  const urlParams = await params;
+  const slug = urlParams.subSlug;
+  const category = await prisma.category.findUnique({
+    where: { slug: slug },
+  });
+  return {
+    title: `${category?.name} | Silver Rose Hardware`,
+  };
+}
+
 export default async function Page({
   params,
 }: {
@@ -17,13 +32,13 @@ export default async function Page({
       },
       include: {
         parent: true,
-      }
+      },
     }),
     prisma.product.findMany({
       where: {
         category: {
           slug: subSlug,
-        }
+        },
       },
       include: {
         category: true,
@@ -41,7 +56,7 @@ export default async function Page({
   ]);
 
   return (
-    <div className="px-8 py-8 w-full h-full">
+    <div className="px-8 w-full h-full">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
         <Link href="/" className="hover:text-gray-900">
