@@ -8,8 +8,10 @@ import { prisma } from "@/lib/prisma";
 import { registrationFormSchema } from "@/lib/form-schema";
 import { z } from "zod";
 import { UserRole } from "@/lib/constants";
+import { isAlreadyAuthenticated } from "@/lib/auth-functions";
 
 export default async function CreateFirstUserPage() {
+    await isAlreadyAuthenticated("/");
     // We first check if there are no existing admin users
     const adminUser = await prisma.user.findFirst({
         where: { role: UserRole.ADMIN },

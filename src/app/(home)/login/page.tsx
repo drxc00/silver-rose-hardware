@@ -2,8 +2,10 @@ import { LoginForm } from "@/components/forms/login-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserRole } from "@/lib/constants";
 import Image from "next/image";
+import { isAlreadyAuthenticated } from "@/lib/auth-functions";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  await isAlreadyAuthenticated("/");
   return (
     <main className="w-full h-vh max-w-4xl mx-auto">
       <div className="flex flex-col gap-6">
