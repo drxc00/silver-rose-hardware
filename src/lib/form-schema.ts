@@ -48,6 +48,7 @@ export const productFormSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   image: z.string().optional(),
+  slug: z.string().optional(),
   status: z.string(),
   category: z.string(),
   hasVariant: z.boolean(),

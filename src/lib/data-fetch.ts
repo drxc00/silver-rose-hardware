@@ -1,6 +1,26 @@
-import { CategoryTree } from "@/app/types";
+import { CategoryTree, ProductWithRelatedData } from "@/app/types";
 import { prisma } from "./prisma";
-import { Attribute, Product } from "@prisma/client";
+import { Attribute, Prisma, Product } from "@prisma/client";
+
+export async function fetchProduct(
+  id: string
+): Promise<ProductWithRelatedData> {
+  return (await prisma.product.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      variants: {
+        include: {
+          attributes: {
+            include: {
+              attribute: true,
+            },
+          },
+        },
+      },
+    },
+  })) as ProductWithRelatedData;
+}
 
 export async function fetchCategories(): Promise<CategoryTree[]> {
   const categories = await prisma.category.findMany({});

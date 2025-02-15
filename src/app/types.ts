@@ -44,3 +44,24 @@ export type ProductWithRelatedData = Prisma.ProductGetPayload<{
     };
   };
 }>;
+
+// Declare the Product Variant type from the prisma client
+export type ProductVariant = Prisma.VariantGetPayload<{
+  include: {
+    attributes: {
+      include: {
+        attribute: true;
+      };
+    };
+  };
+}>;
+// Create a serialized type for type safety of the data
+// This simply removes the Decimal property of the price
+export interface SerializedProductVariant extends Omit<ProductVariant, "price"> {
+  price: string;
+}
+// Then create a serialized Product with related data type cause prisma sucks.
+export interface SerializedProductWithRelatedData
+  extends Omit<ProductWithRelatedData, "variants"> {
+  variants: SerializedProductVariant[];
+}

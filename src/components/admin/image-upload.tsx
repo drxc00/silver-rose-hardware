@@ -7,11 +7,18 @@ import Image from "next/image";
 import { deleteFile } from "@/app/(server)/actions/uploadthing-actions"; // Your server action
 import { Button } from "@/components/ui/button";
 
-export function ImageUpload({ form }: any) {
+export function ImageUpload({ image, form }: { image?: string; form: any }) {
   const [imageData, setImageData] = useState<{
     url: string;
     key: string;
-  } | null>(null);
+  } | null>(
+    image
+      ? {
+          url: image,
+          key: image.split("/").pop() || "",
+        }
+      : null
+  );
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRemove = async () => {

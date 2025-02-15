@@ -3,15 +3,7 @@
 import { ProductWithRelatedData } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  Check,
-  CheckCircle,
-  CircleX,
-  Ellipsis,
-  MoreHorizontal,
-  X,
-} from "lucide-react";
+import { Check, CheckCircle, CircleX, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +17,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { updateIsFeatured } from "@/app/(server)/actions/product-mutations";
+import Link from "next/link";
 
 export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   {
@@ -169,7 +162,9 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
             <DropdownMenuContent>
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <Link href={`/admin/products/edit/${row.original.id}`}>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+              </Link>
               <DropdownMenuItem
                 className="flex items-center justify-between"
                 onClick={async () => {
