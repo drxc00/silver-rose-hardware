@@ -2,12 +2,7 @@
 
 import { CategoryTree } from "@/app/types";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  ChevronDownCircle,
-  MoreHorizontal,
-  PencilLine,
-  Trash,
-} from "lucide-react";
+import { ChevronDown, MoreHorizontal, PencilLine, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -16,10 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
-import Image from "next/image";
-import { useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
+import Link from "next/link";
 
 export const categoryColumns: ColumnDef<CategoryTree>[] = [
   {
@@ -28,15 +21,24 @@ export const categoryColumns: ColumnDef<CategoryTree>[] = [
       const hasSubcategories =
         row.original.subcategories && row.original.subcategories.length > 0;
       return (
-        <ChevronDownCircle
-          className={cn(
-            "h-5 w-5 transition-transform cursor-pointer",
-            (row.getIsExpanded()
-              ? "rotate-180 bg-primary/20 rounded-full text-primary"
-              : "") + (hasSubcategories ? "" : "text-muted-foreground")
+        <>
+          {hasSubcategories && (
+            <Button
+              onClick={() => row.toggleExpanded()}
+              variant="ghost"
+              size="icon"
+            >
+              <ChevronDown
+                className={cn(
+                  "h-5 w-5 transition-transform cursor-pointer",
+                  (row.getIsExpanded() && hasSubcategories
+                    ? "rotate-180 bg-primary/20 rounded-full text-primary"
+                    : "") + (hasSubcategories ? "" : "text-muted-foreground")
+                )}
+              />
+            </Button>
           )}
-          onClick={() => row.toggleExpanded()}
-        />
+        </>
       );
     },
   },
@@ -51,11 +53,11 @@ export const categoryColumns: ColumnDef<CategoryTree>[] = [
       return (
         <div className="flex gap-2">
           <div className="flex items-center gap-2">
-            <ImageWithSkeleton  
+            <ImageWithSkeleton
               src={row.original.image || ""}
               alt={row.original.name}
-              width={50}
-              height={50}
+              width={40}
+              height={40}
               className="rounded-md"
             />
             <span className="font-medium">{row.original.name}</span>
@@ -96,10 +98,12 @@ export const categoryColumns: ColumnDef<CategoryTree>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
-              <PencilLine className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </DropdownMenuItem>
+            <Link href={`/admin/categories/edit/${row.original.id}`}>
+              <DropdownMenuItem>
+                <PencilLine className="mr-2 h-4 w-4" />
+                <span>Edit</span>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem className="text-destructive">
               <Trash className="mr-2 h-4 w-4" />
               <span>Delete</span>
