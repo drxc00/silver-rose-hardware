@@ -177,19 +177,16 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuItem
-                className="flex items-center justify-between"
                 onClick={async () => {
                   await updateIsFeatured(id, !isFeatured);
                 }}
               >
-                <span>Featured</span>
-                <span>
-                  {isFeatured ? (
-                    <CheckCircle className="text-green-500" />
-                  ) : (
-                    <CircleX className="text-muted-foreground" />
-                  )}
-                </span>
+                {isFeatured ? (
+                  <CheckCircle className="text-green-500 mr-2 h-4 w-4" />
+                ) : (
+                  <CircleX className="text-muted-foreground mr-2 h-4 w-4" />
+                )}
+                <span>Toggle Featured</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="text-destructive">
                 <Trash className="mr-2 h-4 w-4" />
