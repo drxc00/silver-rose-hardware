@@ -22,6 +22,19 @@ export async function fetchProduct(
   })) as ProductWithRelatedData;
 }
 
+export async function fetchCategory(id: string): Promise<CategoryTree> {
+  const category = await prisma.category.findUnique({
+    where: { id },
+    include: {
+      Product: true,
+    },
+  });
+  return {
+    ...category,
+    productCount: category?.Product.length || 0,
+  } as CategoryTree;
+}
+
 export async function fetchCategories(): Promise<CategoryTree[]> {
   const categories = await prisma.category.findMany({
     include: {

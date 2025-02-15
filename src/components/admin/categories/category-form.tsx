@@ -25,16 +25,20 @@ import { Category } from "@prisma/client";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { Button } from "@/components/ui/button";
 import { addCategoryFormSchema } from "@/lib/form-schema";
-import { addCategory } from "@/app/(server)/actions/category-mutations";
+import {
+  addCategory,
+  updateCategory,
+} from "@/app/(server)/actions/category-mutations";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, CheckCheck } from "lucide-react";
+import { ArrowLeft, CheckCheck, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 interface AddCategoryFormProps {
+  category?: Category;
   categories: Category[];
 }
 
-export function AddCategoryForm({ categories }: AddCategoryFormProps) {
+export function CategoryForm({ category, categories }: AddCategoryFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -42,10 +46,10 @@ export function AddCategoryForm({ categories }: AddCategoryFormProps) {
   const form = useForm<z.infer<typeof addCategoryFormSchema>>({
     resolver: zodResolver(addCategoryFormSchema),
     defaultValues: {
-      categoryName: "",
-      parentCategory: "",
-      slug: "",
-      image: "",
+      categoryName: category?.name || "",
+      parentCategory: category?.parentCategory || "",
+      slug: category?.slug || "",
+      image: category?.image || "",
     },
   });
 
@@ -61,18 +65,25 @@ export function AddCategoryForm({ categories }: AddCategoryFormProps) {
 
   const onSubmit = async (values: z.infer<typeof addCategoryFormSchema>) => {
     startTransition(async () => {
-      const response = await addCategory({
-        name: values.categoryName,
-        slug: values.slug,
-        image: values.image as string,
-        parentCategory: values.parentCategory,
-      });
-      if (response.success) {
-        router.replace("/admin/categories");
-      } else {
+      try {
+        category
+          ? await updateCategory({
+              id: category!.id,
+              name: values.categoryName,
+              slug: values.slug,
+              image: values.image as string,
+              parentCategory: values.parentCategory,
+            })
+          : await addCategory({
+              name: values.categoryName,
+              slug: values.slug,
+              image: values.image as string,
+              parentCategory: values.parentCategory,
+            });
+      } catch (error) {
         toast({
-          title: "Error adding category",
-          description: "Please try again later.",
+          title: "An Error Occurred",
+          description: (error as Error).message,
           variant: "destructive",
         });
       }
@@ -84,19 +95,21 @@ export function AddCategoryForm({ categories }: AddCategoryFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
         <div className="flex flex-col gap-4 w-full">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 pl-2">
+            <div className="flex items-center">
               <Link href="/admin/categories">
-                <ArrowLeft className="h-5 w-5" />
+                <Button variant="ghost">
+                  <ArrowLeft className="h-5 w-5" />
+                  <span>Back to Categories</span>
+                </Button>
               </Link>
-              <h1 className="font-semibold">Add Category</h1>
             </div>
             <Button type="submit" disabled={isPending} className="mt-4">
               {isPending ? (
-                "Adding..."
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <div className="flex items-center gap-2">
                   <CheckCheck />
-                  <span>Add Category</span>
+                  <span>{category ? "Edit" : "Add"} Category</span>
                 </div>
               )}
             </Button>
@@ -151,7 +164,7 @@ export function AddCategoryForm({ categories }: AddCategoryFormProps) {
             </CardContent>
           </Card>
           <div>
-            <ImageUpload form={form} />
+            <ImageUpload form={form} image={category?.image || ""} />
           </div>
         </div>
       </form>

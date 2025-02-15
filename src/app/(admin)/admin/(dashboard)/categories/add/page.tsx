@@ -1,5 +1,5 @@
 import { AdminHeader } from "@/components/admin/admin-header";
-import { AddCategoryForm } from "@/components/admin/categories/category-form";
+import { CategoryForm } from "@/components/admin/categories/category-form";
 import { fetchCategories } from "@/lib/data-fetch";
 
 export default async function AddCategoryPage() {
@@ -12,7 +12,7 @@ export default async function AddCategoryPage() {
         crumbItems={[{ name: "Categories", href: "/admin/categories" }]}
       />
       <section className="p-4 max-w-4xl mx-auto ">
-        <AddCategoryForm categories={categories} />
+        <CategoryForm categories={categories} />
       </section>
     </div>
   );
