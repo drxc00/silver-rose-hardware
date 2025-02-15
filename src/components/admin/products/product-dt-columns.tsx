@@ -51,6 +51,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
           alt={row.original.name}
           width={40}
           height={40}
+          style={{ width: "auto" }} // Maintain aspect ratio
         />
         <span>{row.original.name}</span>
       </div>

@@ -49,6 +49,7 @@ export function ImageUpload({ image, form }: { image?: string; form: any }) {
               alt="Uploaded Image"
               width={500}
               height={256}
+              priority
               className={`object-cover rounded-lg h-full w-full ${
                 isDeleting ? "opacity-50" : ""
               }`}
