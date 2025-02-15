@@ -1,6 +1,7 @@
-import { CategoryTree, ProductWithRelatedData } from "@/app/types";
+import { CategoryTree, DashboardData, ProductWithRelatedData } from "@/app/types";
 import { prisma } from "./prisma";
 import { Attribute, Prisma, Product } from "@prisma/client";
+import { UserRole } from "./constants";
 
 export async function fetchProduct(
   id: string
@@ -112,4 +113,69 @@ export async function fetchAllProducts(): Promise<Product[]> {
         })),
       }))
     );
+}
+
+export async function fetchUsers() {
+  const users = await prisma.user.findMany({});
+  return {
+    admin: users.filter((user) => user.role === UserRole.ADMIN),
+    customer: users.filter((user) => user.role === UserRole.CUSTOMER),
+  };
+}
+
+export async function fetchDashboardData(): Promise<DashboardData> {
+  const [
+    quotations,
+    allQuotationRequests,
+    pendingQuotations,
+    products,
+    categories,
+    users,
+  ] = await Promise.all([
+    prisma.quotation.findMany({}),
+    prisma.quotationRequest.findMany({}),
+    prisma.quotationRequest.findMany({ where: { status: "pending" } }),
+    fetchAllProducts(),
+    prisma.category.findMany({}),
+    fetchUsers(),
+  ]);
+
+  return {
+    quotations: {
+      total: quotations.length,
+    },
+    quotationRequests: {
+      total: allQuotationRequests.length,
+      details: {
+        requestsFromPastWeek: allQuotationRequests.filter(
+          (qr) => qr.createdAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+        ).length,
+      },
+    },
+    pendingQuotations: {
+      total: pendingQuotations.length,
+      details: {
+        requestsFromLastHour: pendingQuotations.filter(
+          (qr) => qr.createdAt > new Date(Date.now() - 60 * 60 * 1000)
+        ).length,
+      },
+    },
+    products: {
+      total: products.length,
+    },
+    categories: {
+      total: categories.length,
+      details: {
+        parentCategories: categories.filter((c) => !c.parentCategory).length,
+        subCategories: categories.filter((c) => c.parentCategory).length,
+      },
+    },
+    users: {
+      total: users.admin.length + users.customer.length,
+      details: {
+        admin: users.admin.length,
+        customer: users.customer.length,
+      },
+    },
+  };
 }

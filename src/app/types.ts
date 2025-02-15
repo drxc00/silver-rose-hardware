@@ -5,9 +5,13 @@ import {
   Product,
   Variant,
   Prisma,
+  Quotation,
 } from "@prisma/client";
 
-export type CategoryTree = Category & { subcategories: Category[], productCount: number };
+export type CategoryTree = Category & {
+  subcategories: Category[];
+  productCount: number;
+};
 
 // We derive a type from the prisma client
 // Since the structure of the database is a bit different on what we can show the user
@@ -57,11 +61,47 @@ export type ProductVariant = Prisma.VariantGetPayload<{
 }>;
 // Create a serialized type for type safety of the data
 // This simply removes the Decimal property of the price
-export interface SerializedProductVariant extends Omit<ProductVariant, "price"> {
+export interface SerializedProductVariant
+  extends Omit<ProductVariant, "price"> {
   price: string;
 }
 // Then create a serialized Product with related data type cause prisma sucks.
 export interface SerializedProductWithRelatedData
   extends Omit<ProductWithRelatedData, "variants"> {
   variants: SerializedProductVariant[];
+}
+
+export interface DashboardData {
+  quotations: {
+    total: number;
+  };
+  quotationRequests: {
+    total: number;
+    details: {
+      requestsFromPastWeek: number;
+    };
+  };
+  pendingQuotations: {
+    total: number;
+    details: {
+      requestsFromLastHour: number;
+    };
+  };
+  products: {
+    total: number;
+  };
+  categories: {
+    total: number;
+    details: {
+      parentCategories: number;
+      subCategories: number;
+    };
+  };
+  users: {
+    total: number;
+    details: {
+      admin: number;
+      customer: number;
+    };
+  };
 }
