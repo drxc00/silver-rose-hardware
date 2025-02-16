@@ -22,6 +22,7 @@ model User {
   updatedAt        DateTime           @updatedAt
   Quotation        Quotation[]
   QuotationRequest QuotationRequest[]
+  UserQuotation    UserQuotation[]
 }
 
 model Account {
@@ -143,8 +144,19 @@ model Quotation {
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   QuotationRequest QuotationRequest[]
   QuotationItem    QuotationItem[]
+  UserQuotation    UserQuotation[]
 
   @@map("quotations")
+}
+
+model UserQuotation {
+  id          String    @id @default(cuid())
+  quotationId String
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+
+  @@map("user_quotations")
 }
 
 model QuotationRequest {
