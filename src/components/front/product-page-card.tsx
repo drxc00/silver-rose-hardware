@@ -16,6 +16,7 @@ import {
   SelectItem,
 } from "../ui/select";
 import { Input } from "../ui/input";
+import { useProductAttributes } from "@/hooks/use-product-attributes";
 
 export function ProductPageCard({
   product,
@@ -45,14 +46,11 @@ export function ProductPageCard({
     return acc;
   }, [] as unknown as Record<string, string[]>);
 
+  const { params, setParams, removeParams } = useProductAttributes();
+
   const [selectedAttributes, setSelectedAttributes] = useState<
     Record<keyof typeof variantAttributes, string> | {}
-  >(
-    Object.keys(variantAttributes).reduce(
-      (arr, key) => ({ ...arr, [key]: "" }),
-      {}
-    )
-  );
+  >(params || {});
 
   useEffect(() => {
     const selectedVariant = variants.find((variant) => {
@@ -90,8 +88,14 @@ export function ProductPageCard({
             <div key={key} className="space-y-2">
               <label className="text-sm font-medium text-gray-700">{key}</label>
               <Select
-                onValueChange={(value) =>
-                  setSelectedAttributes((prev) => ({ ...prev, [key]: value }))
+                onValueChange={(value) => {
+                  setSelectedAttributes((prev) => ({ ...prev, [key]: value }));
+                  setParams(key as any, value);
+                }}
+                value={
+                  // Typescript is so dumb lmao
+                  selectedAttributes[key as keyof typeof selectedAttributes] ||
+                  ""
                 }
               >
                 <SelectTrigger className="w-full bg-white">
