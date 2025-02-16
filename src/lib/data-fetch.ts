@@ -7,6 +7,77 @@ import { prisma } from "./prisma";
 import { Attribute, Prisma, Product } from "@prisma/client";
 import { UserRole } from "./constants";
 
+export async function fetchRelatedProducts(
+  categoryId: string
+): Promise<Product[]> {
+  // Validate input
+  if (!categoryId) throw new Error("Category ID is required");
+
+  // Get category with parent
+  const category = await prisma.category.findUnique({
+    where: { id: categoryId },
+    include: { parent: true },
+  });
+
+  // Handle category not found
+  if (!category) return [];
+
+  // Collect relevant category IDs
+  const categoryIds = [category.id];
+  if (category.parent) {
+    categoryIds.push(category.parent.id);
+  }
+
+  // Fetch products with proper typing
+  return prisma.product.findMany({
+    where: {
+      categoryId: {
+        in: categoryIds,
+      },
+    },
+    include: {
+      category: {
+        include: {
+          parent: true,
+        },
+      },
+      variants: {
+        include: {
+          attributes: {
+            include: {
+              attribute: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function fetchProductUsingSlug(
+  slug: string
+): Promise<ProductWithRelatedData> {
+  return (await prisma.product.findUnique({
+    where: { slug: slug },
+    include: {
+      category: {
+        include: {
+          parent: true,
+        },
+      },
+      variants: {
+        include: {
+          attributes: {
+            include: {
+              attribute: true,
+            },
+          },
+        },
+      },
+    },
+  })) as ProductWithRelatedData;
+}
+
 export async function fetchProduct(
   id: string
 ): Promise<ProductWithRelatedData> {
