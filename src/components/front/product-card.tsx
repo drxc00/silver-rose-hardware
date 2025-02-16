@@ -46,7 +46,7 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
               <div className="flex gap-2">
                 {productAttributes.length > 0 &&
                   productAttributes.map((attr) => (
-                    <Badge variant="secondary" className="rounded-sm px-2 py-1">
+                    <Badge key={attr} variant="secondary" className="rounded-sm px-2 py-1">
                       {attr}
                     </Badge>
                   ))}
