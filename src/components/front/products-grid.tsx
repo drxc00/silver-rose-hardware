@@ -27,14 +27,6 @@ interface ProductsGridProps {
 export function ProductsGrid({ products }: ProductsGridProps) {
   // Set products view as grid format as default
   const { sort, view, name, category, setParams } = useUrlFilters();
-  // const [productsGridView, setProductsGridView] = useState<"grid" | "list">(
-  //   "grid"
-  // );
-  // // Set filter as all as default
-  // const [filter, setFilter] = useState<string>("all");
-
-  // We create this function called filterProductsList which basicall filters the products
-  // Based on the filter state [all, alphabetical-a-z, alphabetical-z-a, price-low-to-high, price-high-to-low
   const filterProductsList = (products: ProductWithRelatedData[]) => {
     if (sort === "alphabetical-a-z")
       return products.sort((a, b) => a.name.localeCompare(b.name));
