@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CategoryTree,
   ProductWithRelatedData,
   SerializedProductWithRelatedData,
 } from "@/app/types";
@@ -21,65 +22,142 @@ import { getMinMaxPrice } from "@/lib/products-functions";
 import { useUrlFilters } from "@/hooks/use-url-filters";
 
 interface ProductsGridProps {
+  categories?: CategoryTree[];
   products: SerializedProductWithRelatedData[] | ProductWithRelatedData[];
 }
 
-export function ProductsGrid({ products }: ProductsGridProps) {
+export function ProductsGrid({ categories, products }: ProductsGridProps) {
   // Set products view as grid format as default
   const { sort, view, name, category, setParams } = useUrlFilters();
-  const filterProductsList = (products: ProductWithRelatedData[]) => {
-    if (sort === "alphabetical-a-z")
-      return products.sort((a, b) => a.name.localeCompare(b.name));
-    if (sort === "alphabetical-z-a")
-      return products.sort((a, b) => b.name.localeCompare(a.name));
 
-    // For price filters we use the getMinMaxPrice helper function
-    // Which returns the min and max price of a product
-    if (sort === "price-low-to-high")
-      return products.sort((a, b) => {
-        const [minPriceA] = getMinMaxPrice(a);
-        const [minPriceB] = getMinMaxPrice(b);
-        return minPriceA - minPriceB;
+  const matchProductName = (product: ProductWithRelatedData | SerializedProductWithRelatedData) => {
+    return product.name.toLowerCase().includes(name?.toLowerCase() || "");
+  };
+
+  const sortProductsOrder = (
+    productsToSort:
+      | SerializedProductWithRelatedData[]
+      | ProductWithRelatedData[]
+  ) => {
+    const sortedProducts = [...productsToSort];
+    switch (sort) {
+      case "alphabetical-a-z":
+        return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+      case "alphabetical-z-a":
+        return sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+      case "price-low-to-high":
+        return sortedProducts.sort((a, b) => {
+          const [minPriceA] = getMinMaxPrice(a);
+          const [minPriceB] = getMinMaxPrice(b);
+          return minPriceA - minPriceB;
+        });
+      case "price-high-to-low":
+        return sortedProducts.sort((a, b) => {
+          const [minPriceA] = getMinMaxPrice(a);
+          const [minPriceB] = getMinMaxPrice(b);
+          return minPriceB - minPriceA;
+        });
+      default:
+        return sortedProducts;
+    }
+  };
+
+  const filterProducts = (
+    productsToFilter:
+      | SerializedProductWithRelatedData[]
+      | ProductWithRelatedData[]
+  ) => {
+    let filteredProducts = [...productsToFilter];
+
+    // We apply filtering only when the params are set
+    // Else we return all the products
+    // NOTE: When debugging this it took me along time to realize
+    // that the fetch function does not fetch the parent categories of sub categories
+    // If You experience difficulty when filtering products, it might be because of this.
+    // ALWAYS MAKE SURE THAT THE FETCH FUNCTION IS FETCHING THE PARENT CATEGORIES OF SUB CATEGORIES
+    // THEN COMPARE THE SLUGS OF BOTH PARENT AND CHILD.
+    if (categories && category) {
+      filteredProducts = filteredProducts.filter((product) => {
+        // Extract the product category
+        const productCategory = product.category;
+        // We then check if the category of the product is the same as the category selected
+        // Here we consider both its base slug, and its parent slug
+        // We also check here if the category param is "all" which means we want to show all products
+        return (
+          category === "all" ||
+          productCategory.slug === category ||
+          productCategory.parent?.slug === category
+        );
       });
-    if (sort === "price-high-to-low")
-      return products.sort((a, b) => {
-        const [minPriceA] = getMinMaxPrice(a);
-        const [minPriceB] = getMinMaxPrice(b);
-        return minPriceB - minPriceA;
-      });
-    return products;
+    }
+
+    if (name) {
+      filteredProducts = filteredProducts.filter(matchProductName);
+    }
+
+    // Apply sorting after filtering
+    return sortProductsOrder(
+      filteredProducts as SerializedProductWithRelatedData[]
+    );
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex justify-between items-center">
-        <div className="flex gap-2 items-center">
-          <span className="text-sm text-muted-foreground">Sort by</span>
-          <Select
-            value={sort || "all"}
-            onValueChange={(e) => {
-              setParams("sort", e);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select filter" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Products</SelectItem>
-              <SelectItem value="alphabetical-a-z">
-                Alphabetically, A-Z
-              </SelectItem>
-              <SelectItem value="alphabetical-z-a">
-                Alphabetically, Z-A
-              </SelectItem>
-              <SelectItem value="price-low-to-high">
-                Price, low to high
-              </SelectItem>
-              <SelectItem value="price-high-to-low">
-                Price, high to low
-              </SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex items-center gap-4">
+          <div className="flex gap-2 items-center">
+            <span className="text-sm text-muted-foreground">Sort by</span>
+            <Select
+              value={sort || "all"}
+              onValueChange={(e) => {
+                setParams("sort", e);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select sort option" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Products</SelectItem>
+                <SelectItem value="alphabetical-a-z">
+                  Alphabetically, A-Z
+                </SelectItem>
+                <SelectItem value="alphabetical-z-a">
+                  Alphabetically, Z-A
+                </SelectItem>
+                <SelectItem value="price-low-to-high">
+                  Price, low to high
+                </SelectItem>
+                <SelectItem value="price-high-to-low">
+                  Price, high to low
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {categories && (
+            <div className="flex gap-2 items-center">
+              <Select
+                value={category || "all"}
+                onValueChange={(e) => {
+                  setParams("category", e);
+                }}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories?.map((category) => (
+                    <SelectItem
+                      key={category.id}
+                      value={category.slug as string}
+                    >
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
         <div className="flex gap-2 items-center">
           <span className="text-sm text-muted-foreground">View</span>
@@ -98,26 +176,25 @@ export function ProductsGrid({ products }: ProductsGridProps) {
           view === "list" && "hidden"
         )}
       >
-        {filterProductsList(products as ProductWithRelatedData[]).map(
-          (product) => (
-            <ProductCard
-              key={product.id}
-              product={product as unknown as ProductWithRelatedData}
-            />
-          )
-        )}
+        {filterProducts(products as ProductWithRelatedData[]).map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product as unknown as ProductWithRelatedData}
+          />
+        ))}
       </div>
       <div
-        className={cn("grid-cols-1 gap-6 hidden", view === "list" && "grid")}
-      >
-        {filterProductsList(products as ProductWithRelatedData[]).map(
-          (product) => (
-            <ProductCardStack
-              key={product.id}
-              product={product as unknown as ProductWithRelatedData}
-            />
-          )
+        className={cn(
+          "grid-cols-1 gap-6 hidden w-full",
+          view === "list" && "grid"
         )}
+      >
+        {filterProducts(products as ProductWithRelatedData[]).map((product) => (
+          <ProductCardStack
+            key={product.id}
+            product={product as unknown as ProductWithRelatedData}
+          />
+        ))}
       </div>
     </div>
   );

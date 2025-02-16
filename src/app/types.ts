@@ -36,7 +36,11 @@ export type AddProductPayload = {
 
 export type ProductWithRelatedData = Prisma.ProductGetPayload<{
   include: {
-    category: true;
+    category: {
+      include: {
+        parent: true;
+      };
+    };
     variants: {
       include: {
         attributes: {

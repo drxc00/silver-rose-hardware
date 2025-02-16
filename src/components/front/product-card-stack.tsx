@@ -41,7 +41,7 @@ export function ProductCardStack({
   return (
     <Link href={`/products/${product.slug}`}>
       <Card className="">
-        <CardContent className="p-4 sm:p-6">
+        <CardContent className="p-4 sm:p-6 w-full">
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
             {/* Image Container */}
             <div className="relative w-24 h-24 flex-shrink-0">

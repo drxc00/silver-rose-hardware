@@ -55,7 +55,7 @@ export default async function Home() {
             Get the <span className="text-primary">Best Price</span> for your
             Hardware Needs
           </h1>
-          <Link href="/">
+          <Link href="/products">
             <Button size="lg">Shop Now</Button>
           </Link>
         </div>
