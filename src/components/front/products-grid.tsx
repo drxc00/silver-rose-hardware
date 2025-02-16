@@ -30,7 +30,9 @@ export function ProductsGrid({ categories, products }: ProductsGridProps) {
   // Set products view as grid format as default
   const { sort, view, name, category, setParams } = useUrlFilters();
 
-  const matchProductName = (product: ProductWithRelatedData | SerializedProductWithRelatedData) => {
+  const matchProductName = (
+    product: ProductWithRelatedData | SerializedProductWithRelatedData
+  ) => {
     return product.name.toLowerCase().includes(name?.toLowerCase() || "");
   };
 
@@ -101,6 +103,8 @@ export function ProductsGrid({ categories, products }: ProductsGridProps) {
     );
   };
 
+  const filteredProducts = filterProducts(products);
+
   return (
     <div className="space-y-6 w-full">
       <div className="flex justify-between items-center">
@@ -170,32 +174,45 @@ export function ProductsGrid({ categories, products }: ProductsGridProps) {
         </div>
       </div>
 
-      <div
-        className={cn(
-          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
-          view === "list" && "hidden"
-        )}
-      >
-        {filterProducts(products as ProductWithRelatedData[]).map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product as unknown as ProductWithRelatedData}
-          />
-        ))}
-      </div>
-      <div
-        className={cn(
-          "grid-cols-1 gap-6 hidden w-full",
-          view === "list" && "grid"
-        )}
-      >
-        {filterProducts(products as ProductWithRelatedData[]).map((product) => (
-          <ProductCardStack
-            key={product.id}
-            product={product as unknown as ProductWithRelatedData}
-          />
-        ))}
-      </div>
+      {filteredProducts.length > 0 ? (
+        <>
+          <div
+            className={cn(
+              "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
+              view === "list" && "hidden"
+            )}
+          >
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product as unknown as ProductWithRelatedData}
+              />
+            ))}
+          </div>
+          <div
+            className={cn(
+              "grid-cols-1 gap-6 hidden w-full",
+              view === "list" && "grid"
+            )}
+          >
+            {filteredProducts.map((product) => (
+              <ProductCardStack
+                key={product.id}
+                product={product as unknown as ProductWithRelatedData}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-20">
+          <h1 className="text-4xl font-extrabold text-primary">
+            No Products Found
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Try adjusting your filters or search again.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

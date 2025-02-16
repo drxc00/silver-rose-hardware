@@ -44,8 +44,10 @@ export function useUrlFilters() {
   const setParams = useCallback(
     (key: keyof UrlFilters, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
+
       params.set(key, value);
-      router.push(`?${params.toString()}`);
+      if (key === "name") router.push(`/products?${params.toString()}`);
+      else router.push(`?${params.toString()}`);
     },
     [router, searchParams]
   );

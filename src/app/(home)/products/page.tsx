@@ -9,7 +9,8 @@ export default async function ProductsPage() {
   ]);
 
   return (
-    <main className="mx-auto p-20">
+    <main className="mx-auto flex justify-start p-20 min-h-screen">
+
       <div>
         <h1 className="text-3xl font-bold text-center pb-10">All Products</h1>
         <div className="w-screen max-w-7xl">
