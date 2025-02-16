@@ -134,14 +134,17 @@ export default async function Home() {
           <UnderPricesCard
             headerText="Price under ₱ 500"
             image={"/under_500.jpg"}
+            href="/products?maxPrice=500"
           />
           <UnderPricesCard
             headerText="Price under ₱ 1000"
             image={"/under_1000.jpg"}
+            href="/products?maxPrice=1000"
           />
           <UnderPricesCard
             headerText="Price under ₱ 1500"
             image={"/under_1500.jpg"}
+            href="/products?maxPrice=1500"
           />
         </div>
       </section>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
@@ -5,9 +6,14 @@ import Image from "next/image";
 interface UnderPricesCardProps {
   headerText: string;
   image: string;
+  href: string;
 }
 
-export function UnderPricesCard({ headerText, image }: UnderPricesCardProps) {
+export function UnderPricesCard({
+  headerText,
+  image,
+  href,
+}: UnderPricesCardProps) {
   return (
     <div className="h-72 w-full relative aspect-square overflow-hidden rounded-xl group">
       <Image
@@ -21,7 +27,9 @@ export function UnderPricesCard({ headerText, image }: UnderPricesCardProps) {
       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
       <div className="absolute top-10 left-6">
         <h2 className="text-3xl font-bold text-white mb-4">{headerText}</h2>
-        <Button size="lg">View All</Button>
+        <Link href={href}>
+          <Button size="lg">View All</Button>
+        </Link>
       </div>
     </div>
   );
