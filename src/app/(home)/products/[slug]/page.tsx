@@ -54,24 +54,36 @@ export default async function ProductPage({
     product?.category.id || ""
   );
   return (
-    <main className="p-10 px-48 flex min-h-screen flex-col justify-start bg-muted">
+    <main className="p-10 lg:px-32 xl:px-48 flex min-h-screen flex-col justify-start bg-muted">
       <Breadcrumb className="pb-8">
         <BreadcrumbList>
-          {product?.category && product.category.parent && (
+          {product?.category && product.category.parent ? (
             <>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/components">
+                <BreadcrumbLink
+                  href={`/category/${product.category.parent.slug}`}
+                >
+                  {product.category.parent.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  href={`/category/${product.category.parent.slug}/${product.category.slug}`}
+                >
                   {product.category.parent.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
             </>
+          ) : (
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/category/${product?.category.slug}`}>
+                {product?.category.name}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
           )}
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/components">
-              {product?.category.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
+
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>{product?.name}</BreadcrumbPage>

@@ -40,7 +40,7 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="flex flex-col gap-6 bg-background mb-auto">
+    <main className="flex flex-col bg-background mb-auto">
       <section className="relative w-full h-svh max-h-[500px] flex items-center justify-center">
         <Image
           src="/hero_image.jpg"
@@ -148,7 +148,7 @@ export default async function Home() {
           />
         </div>
       </section>
-      <section className="flex justify-center h-52 pb-8">
+      <section className="flex justify-center h-52 pb-8 bg-sidebar">
         <div className="flex flex-col justify-center max-w-lg gap-4">
           <h1 className="text-3xl font-bold text-center">
             Not sure what you are looking for?

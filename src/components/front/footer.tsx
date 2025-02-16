@@ -4,7 +4,7 @@ import Image from "next/image";
 export function Footer() {
   return (
     <div className="w-full">
-      <div className="bg-[#D9D9D9] flex justify-between p-10 items-center">
+      <div className="bg-sidebar border-t flex justify-between p-10 items-center">
         <div>
           <Image
             src="/logo.png"
