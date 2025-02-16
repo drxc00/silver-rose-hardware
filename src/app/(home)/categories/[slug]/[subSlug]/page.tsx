@@ -55,6 +55,14 @@ export default async function Page({
     }),
   ]);
 
+  const serializedProducts = products.map((product) => ({
+    ...product,
+    variants: product.variants.map((variant) => ({
+      ...variant,
+      price: variant.price.toString(),
+    })),
+  }));
+
   return (
     <div className="px-8 w-full h-full">
       {/* Breadcrumb */}
@@ -69,12 +77,10 @@ export default async function Page({
         <ChevronRight className="h-4 w-4" />
         <span className="font-medium text-gray-900">{category?.name}</span>
       </div>
-
       {/* Category Title */}
       <h1 className="text-3xl font-bold mb-4">{category?.name}</h1>
-
       {/* Products Grid */}
-      <ProductsGrid products={products} />
+      <ProductsGrid products={serializedProducts} />
     </div>
   );
 }

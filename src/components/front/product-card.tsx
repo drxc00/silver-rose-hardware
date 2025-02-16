@@ -4,17 +4,10 @@ import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { getMinMaxPrice } from "@/lib/products-functions";
 
 export function ProductCard({ product }: { product: ProductWithRelatedData }) {
-  const productVariants = product.variants;
-  const minPrice = productVariants.reduce(
-    (min, variant) => Math.min(min, Number(variant.price)),
-    Infinity
-  );
-  const maxPrice = productVariants.reduce(
-    (max, variant) => Math.max(max, Number(variant.price)),
-    -Infinity
-  );
+  const [minPrice, maxPrice] = getMinMaxPrice(product);
 
   const productAttributes = [
     ...new Set(
@@ -53,7 +46,7 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
               <div className="flex gap-2">
                 {productAttributes.length > 0 &&
                   productAttributes.map((attr) => (
-                    <Badge variant="secondary" className="rounded-sm">
+                    <Badge variant="secondary" className="rounded-sm px-2 py-1">
                       {attr}
                     </Badge>
                   ))}
