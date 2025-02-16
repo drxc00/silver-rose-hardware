@@ -109,3 +109,61 @@ export interface DashboardData {
     };
   };
 }
+
+export type QuotationWithRelations = Prisma.UserQuotationGetPayload<{
+  include: {
+    quotation: {
+      include: {
+        QuotationItem: {
+          include: {
+            variant: {
+              include: {
+                attributes: {
+                  include: {
+                    attribute: true;
+                  };
+                };
+                product: {
+                  include: {
+                    category: {
+                      include: {
+                        parent: {
+                          include: {
+                            parent: true;
+                          };
+                        };
+                      };
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+}>;
+
+export type VariantWithRelations = Prisma.VariantGetPayload<{
+  include: {
+    attributes: {
+      include: {
+        attribute: true;
+      };
+    };
+    product: {
+      include: {
+        category: {
+          include: {
+            parent: {
+              include: {
+                parent: true;
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+}>;
