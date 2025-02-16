@@ -48,7 +48,7 @@ export async function createNewUser(
   // Else Create the new user
   // Note that this create user function is specific to the credentials provider
   // It will create a new user in line with the schema provided by auth.js
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       email: email,
       name: name,
@@ -60,6 +60,26 @@ export async function createNewUser(
           type: "credentials",
           password: hashedPassword,
           providerAccountId: "1",
+        },
+      },
+    },
+  });
+
+  // Create a new quotation for the new user
+  await prisma.userQuotation.create({
+    data: {
+      user: {
+        connect: {
+          id: user.id,
+        },
+      },
+      quotation: {
+        create: {
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
       },
     },
