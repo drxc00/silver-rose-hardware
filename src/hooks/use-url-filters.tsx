@@ -32,11 +32,15 @@ export function useUrlFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Get the search params form the URL
+  // and cast them to the correct types
   const sort = searchParams.get("sort") as UrlFilters["sort"];
   const view = searchParams.get("view") as UrlFilters["view"];
   const name = searchParams.get("name");
   const category = searchParams.get("category");
 
+  // The set Params function updates the URL search params
+  // It takes a key and value as arguments
   const setParams = useCallback(
     (key: keyof UrlFilters, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
