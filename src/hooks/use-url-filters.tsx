@@ -26,6 +26,8 @@ export interface UrlFilters {
   view?: ViewOption;
   page?: number;
   limit?: number;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export function useUrlFilters() {
@@ -38,6 +40,8 @@ export function useUrlFilters() {
   const view = searchParams.get("view") as UrlFilters["view"];
   const name = searchParams.get("name");
   const category = searchParams.get("category");
+  const minPrice = searchParams.get("minPrice");
+  const maxPrice = searchParams.get("maxPrice");
 
   // The set Params function updates the URL search params
   // It takes a key and value as arguments
@@ -62,5 +66,5 @@ export function useUrlFilters() {
     [router, searchParams]
   );
 
-  return { sort, view, name, category, setParams, removeParams };
+  return { sort, view, name, category, minPrice, maxPrice, setParams, removeParams };
 }

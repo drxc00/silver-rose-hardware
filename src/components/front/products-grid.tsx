@@ -15,11 +15,13 @@ import {
 import { Button } from "../ui/button";
 import { LayoutGridIcon, StretchHorizontal } from "lucide-react";
 import { ProductCard } from "./product-card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductCardStack } from "./product-card-stack";
 import { cn } from "@/lib/utils";
 import { getMinMaxPrice } from "@/lib/products-functions";
 import { useUrlFilters } from "@/hooks/use-url-filters";
+import { Input } from "../ui/input";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface ProductsGridProps {
   categories?: CategoryTree[];
@@ -28,12 +30,59 @@ interface ProductsGridProps {
 
 export function ProductsGrid({ categories, products }: ProductsGridProps) {
   // Set products view as grid format as default
-  const { sort, view, name, category, setParams } = useUrlFilters();
+  const {
+    sort,
+    view,
+    name,
+    category,
+    minPrice,
+    maxPrice,
+    setParams,
+    removeParams,
+  } = useUrlFilters();
+
+  const [localMinPrice, setLocalMinPrice] = useState<string>(minPrice ?? "");
+  const [localMaxPrice, setLocalMaxPrice] = useState<string>(maxPrice ?? "");
+  const debouncedMinPrice = useDebounce(localMinPrice);
+  const debouncedMaxPrice = useDebounce(localMaxPrice);
+
+  useEffect(() => {
+    if (debouncedMinPrice !== "") {
+      setParams("minPrice", debouncedMinPrice.toString());
+    } else {
+      removeParams("minPrice");
+    }
+  }, [debouncedMinPrice]);
+
+  useEffect(() => {
+    if (debouncedMaxPrice !== "") {
+      setParams("maxPrice", debouncedMaxPrice.toString());
+    } else {
+      removeParams("maxPrice");
+    }
+  }, [debouncedMaxPrice]);
 
   const matchProductName = (
     product: ProductWithRelatedData | SerializedProductWithRelatedData
   ) => {
     return product.name.toLowerCase().includes(name?.toLowerCase() || "");
+  };
+
+  const matchProductPrice = (product: ProductWithRelatedData) => {
+    const [minProductPrice, maxProductPrice] = getMinMaxPrice(product);
+    // Convert inputs to numbers only when they're not empty
+    const minPriceNum = debouncedMinPrice ? Number(debouncedMinPrice) : null;
+    const maxPriceNum = debouncedMaxPrice ? Number(debouncedMaxPrice) : null;
+
+    // Handle price filtering based on available inputs
+    if (minPriceNum !== null && maxPriceNum !== null) {
+      return minProductPrice >= minPriceNum && maxProductPrice <= maxPriceNum;
+    } else if (minPriceNum !== null) {
+      return minProductPrice >= minPriceNum;
+    } else if (maxPriceNum !== null) {
+      return maxProductPrice <= maxPriceNum;
+    }
+    return true;
   };
 
   const sortProductsOrder = (
@@ -95,6 +144,12 @@ export function ProductsGrid({ categories, products }: ProductsGridProps) {
 
     if (name) {
       filteredProducts = filteredProducts.filter(matchProductName);
+    }
+
+    if (minPrice || maxPrice) {
+      filteredProducts = filteredProducts.filter((product) => {
+        return matchProductPrice(product as ProductWithRelatedData);
+      });
     }
 
     // Apply sorting after filtering
@@ -162,6 +217,28 @@ export function ProductsGrid({ categories, products }: ProductsGridProps) {
               </Select>
             </div>
           )}
+          <div className="flex gap-2 items-center">
+            <span className="text-sm text-muted-foreground">Price</span>
+            <div className="flex items-center gap-2">
+              <Input
+                value={localMinPrice}
+                onChange={(e) => setLocalMinPrice(e.target.value)}
+                type="number"
+                placeholder="Min Price"
+                className="w-28"
+                min="0"
+              />
+              <span className="text-muted-foreground text-sm">to</span>
+              <Input
+                value={localMaxPrice}
+                onChange={(e) => setLocalMaxPrice(e.target.value)}
+                type="number"
+                placeholder="Max Price"
+                className="w-28"
+                min="0"
+              />
+            </div>
+          </div>
         </div>
         <div className="flex gap-2 items-center">
           <span className="text-sm text-muted-foreground">View</span>
