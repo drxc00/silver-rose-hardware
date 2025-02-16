@@ -1,7 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { Quote, User } from "lucide-react";
+import {
+  ChevronDown,
+  Loader2,
+  MinusCircle,
+  PlusCircle,
+  Quote,
+  Trash2,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { Session } from "next-auth";
 import {
@@ -17,12 +25,23 @@ import { useUrlFilters } from "@/hooks/use-url-filters";
 import { SearchInput } from "../ui/search-input";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
+import { QuotationWithRelations } from "@/app/types";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { UserQuotation } from "./user-quotation";
 
 interface NavBarProps {
   session?: Session;
+  userQuotation?: QuotationWithRelations;
 }
 
-export function NavBar({ session }: NavBarProps) {
+export function NavBar({ session, userQuotation }: NavBarProps) {
   const { name, setParams, removeParams } = useUrlFilters();
   const [localSearch, setLocalSearch] = useState<string>(name || "");
   const debouncedSearch = useDebounce(localSearch);
@@ -61,9 +80,31 @@ export function NavBar({ session }: NavBarProps) {
             placeholder="Search..."
             className="rounded-full w-96"
           />
-          <div className="p-2 border bg-sidebar rounded-full">
-            <Quote className="h-5 w-5 text-muted-foreground" />
-          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="relative rounded-full border bg-sidebar p-2 hover:bg-sidebar/90">
+                <Quote className="h-5 w-5 text-muted-foreground" />
+                {userQuotation?.quotation?.QuotationItem?.length &&
+                  userQuotation?.quotation?.QuotationItem?.length > 0 && (
+                    <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+                      {userQuotation?.quotation?.QuotationItem?.length}
+                    </span>
+                  )}
+              </button>
+            </SheetTrigger>
+            <SheetContent className="w-[400px] sm:w-[540px]">
+              <SheetHeader className="space-y-4">
+                <SheetTitle className="text-xl">
+                  Quotation ({userQuotation?.quotation?.QuotationItem?.length}{" "}
+                  {userQuotation?.quotation?.QuotationItem?.length === 1
+                    ? "item"
+                    : "items"}
+                  )
+                </SheetTitle>
+              </SheetHeader>
+              {userQuotation && <UserQuotation userQuotation={userQuotation} />}
+            </SheetContent>
+          </Sheet>
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="cursor-pointer">
               <div className="p-2 border bg-sidebar rounded-full">

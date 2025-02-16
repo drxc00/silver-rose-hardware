@@ -5,6 +5,7 @@ import { createNewUser, getUserRole } from "@/lib/auth-functions";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/lib/constants";
 import authCache from "@/lib/auth-cache";
+import { revalidateTag } from "next/cache";
 
 export async function clientLogout(redirectTo: string) {
   // Validate first if a session exists
@@ -12,6 +13,9 @@ export async function clientLogout(redirectTo: string) {
   const session = await authCache();
   if (!session) throw new Error("You are not logged in.");
   await signOut({ redirectTo: redirectTo });
+
+  // For any revalidation iguess
+  revalidateTag("userQuotation");
 }
 
 export async function clientLogin(

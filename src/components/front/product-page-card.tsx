@@ -2,11 +2,12 @@
 
 import {
   ProductWithRelatedData,
+  SerializedProductVariant,
   SerializedProductWithRelatedData,
 } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "../ui/card";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { Loader2, MinusIcon, PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   SelectValue,
@@ -17,6 +18,8 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input";
 import { useProductAttributes } from "@/hooks/use-product-attributes";
+import { addQuotationItem } from "@/app/(server)/actions/quotation-mutations";
+import { useToast } from "@/hooks/use-toast";
 
 export function ProductPageCard({
   product,
@@ -26,6 +29,11 @@ export function ProductPageCard({
   const variants = product.variants;
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] =
+    useState<SerializedProductVariant | null>(null);
+  const [addingToQuotation, setAddingToQuotation] = useState(false);
+
+  const { toast } = useToast();
 
   // Keeping all the existing logic unchanged
   const variantAttributes = variants.reduce((acc, variant) => {
@@ -65,9 +73,33 @@ export function ProductPageCard({
       });
     });
     if (selectedVariant) {
+      setSelectedVariant(selectedVariant as SerializedProductVariant);
       setPrice(Number(selectedVariant.price) ?? 0);
     }
   }, [selectedAttributes]);
+
+  const handleAddToQuotation = async () => {
+    setAddingToQuotation(true);
+    const payload = {
+      variantId: selectedVariant?.id as string,
+      quantity: quantity,
+    };
+    try {
+      await addQuotationItem(payload);
+      toast({
+        title: "Added to quotation",
+        description: "Product added to quotation successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "An error occurred while adding to quotation",
+        description: (error as Error).message, // This typecasting is so dumb bruh
+        variant: "destructive",
+      });
+    } finally {
+      setAddingToQuotation(false);
+    }
+  };
 
   return (
     <Card className="w-full border-noneshadow-none">
@@ -131,8 +163,17 @@ export function ProductPageCard({
           </div>
         </div>
 
-        <Button className="w-full" size="lg">
-          Add to Quotation
+        <Button
+          className="w-full"
+          size="lg"
+          onClick={handleAddToQuotation}
+          disabled={addingToQuotation}
+        >
+          {addingToQuotation ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <span>Add to Quotation</span>
+          )}
         </Button>
       </CardContent>
     </Card>

@@ -7,6 +7,66 @@ import { prisma } from "./prisma";
 import { Attribute, Prisma, Product } from "@prisma/client";
 import { UserRole } from "./constants";
 
+export async function fetchUserQuotation(userId: string) {
+  if (!userId) return null;
+  return prisma.userQuotation
+    .findFirst({
+      where: {
+        userId: userId, // Ensuring `userId` exists in `UserQuotation`
+      },
+      include: {
+        quotation: {
+          include: {
+            QuotationItem: {
+              include: {
+                variant: {
+                  include: {
+                    attributes: {
+                      include: {
+                        attribute: true,
+                      },
+                    },
+                    product: {
+                      include: {
+                        category: {
+                          include: {
+                            parent: {
+                              include: {
+                                parent: true,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+    .then((userQuotation) => ({
+      ...userQuotation,
+      quotation: {
+        ...userQuotation?.quotation,
+        QuotationItem: userQuotation?.quotation?.QuotationItem.map((item) => ({
+          ...item,
+          quantity: Number(item.quantity),
+          variant: {
+            ...item.variant,
+            attributes: item.variant.attributes.map((attribute) => ({
+              ...attribute,
+              value: attribute.value as string,
+            })),
+            price: Number(item.variant.price),
+          },
+        })),
+      },
+    }));
+}
+
 export async function fetchRelatedProducts(
   categoryId: string
 ): Promise<Product[]> {
