@@ -17,7 +17,7 @@ export function SearchInput({
   return (
     <div
       className={cn(
-        "flex h-10 items-center rounded-lg border bg-background pl-3 pr-1 text-sm ring-offset-background",
+        "flex h-10 items-center rounded-lg border bg-background pl-3 pr-3 text-sm ring-offset-background",
         className
       )}
     >

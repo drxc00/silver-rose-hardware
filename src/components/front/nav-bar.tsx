@@ -23,15 +23,19 @@ interface NavBarProps {
 }
 
 export function NavBar({ session }: NavBarProps) {
-  const { name, setParams } = useUrlFilters();
+  const { name, setParams, removeParams } = useUrlFilters();
   const [localSearch, setLocalSearch] = useState<string>(name || "");
   const debouncedSearch = useDebounce(localSearch);
 
+  // Update the search params when the debounced search value changes
+  // Before implementing a remove Params options, the page gets redirected to
+  // the products page all the time, so we need to remove the name param if the search is empty
+  // There may be better alternatives but for now this works.
   useEffect(() => {
-    if (debouncedSearch.trim() === "") {
-      setParams("name", ""); // This ensures the parameter gets removed
-    } else {
+    if (debouncedSearch.trim() !== "") {
       setParams("name", debouncedSearch);
+    } else {
+      removeParams("name");
     }
   }, [debouncedSearch]);
 
@@ -55,7 +59,7 @@ export function NavBar({ session }: NavBarProps) {
             value={(localSearch as string) || ""}
             onChange={(e) => setLocalSearch(e.target.value || "")}
             placeholder="Search..."
-            className="rounded-full "
+            className="rounded-full w-96"
           />
           <div className="p-2 border bg-sidebar rounded-full">
             <Quote className="h-5 w-5 text-muted-foreground" />

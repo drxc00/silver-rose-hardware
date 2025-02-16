@@ -52,5 +52,15 @@ export function useUrlFilters() {
     [router, searchParams]
   );
 
-  return { sort, view, name, category, setParams };
+  const removeParams = useCallback(
+    (key: keyof UrlFilters) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      params.delete(key);
+      router.push(`?${params.toString()}`);
+    },
+    [router, searchParams]
+  );
+
+  return { sort, view, name, category, setParams, removeParams };
 }
