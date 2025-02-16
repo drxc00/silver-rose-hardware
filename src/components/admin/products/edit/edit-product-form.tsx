@@ -73,7 +73,9 @@ export function EditProductForm({
   const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
   const { toast } = useToast();
   // For products without variants, we create a controlled input
-  const [variantPrice, setVariantPrice] = useState<number>();
+  const [variantPrice, setVariantPrice] = useState<number>(
+    !hasVariant ? Number(product?.variants[0].price) : 0
+  );
 
   const form = useForm<z.infer<typeof productFormSchema>>({
     defaultValues: {
