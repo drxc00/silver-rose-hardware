@@ -5,6 +5,7 @@ import { fetchUserQuotation } from "@/lib/data-fetch";
 import { Session } from "next-auth";
 import { QuotationWithRelations } from "../types";
 import { unstable_cache as cache } from "next/cache";
+import { QuotationProvider } from "@/components/providers/quotation-provider";
 
 const fetchUserQuotationCache = cache(fetchUserQuotation, ["userQuotation"], {
   tags: ["userQuotation"],
@@ -17,15 +18,16 @@ export default async function Layout({
 }) {
   const session = await authCache();
   const user = session?.user;
-  const userQuotation = await fetchUserQuotationCache(user?.id as string);
+  const userQuotation = await fetchUserQuotation(user?.id as string);
   return (
     <main className="flex flex-col min-h-screen justify-between">
-      <NavBar
-        session={session as Session}
-        userQuotation={userQuotation as any}
-      />
-      {children}
-      <Footer />
+      <QuotationProvider
+        initialQuotation={(userQuotation as unknown as QuotationWithRelations) || null}
+      >
+        <NavBar session={session as Session} />
+        {children}
+        <Footer />
+      </QuotationProvider>
     </main>
   );
 }

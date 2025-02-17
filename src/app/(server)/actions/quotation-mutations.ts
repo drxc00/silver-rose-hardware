@@ -28,15 +28,12 @@ export async function removeQuotationItem(quotationItemId: string) {
   const quotationItem = userQuotation?.quotation.QuotationItem.find(
     (item) => item.id === quotationItemId
   );
-
-  console.log(userQuotation);
   if (!quotationItem) throw new Error("Quotation item not found.");
   await prisma.quotationItem.delete({
     where: {
       id: quotationItem.id,
     },
   });
-  revalidateTag("userQuotation");
 }
 
 export async function addQuotationItem(payload: {
@@ -83,5 +80,4 @@ export async function addQuotationItem(payload: {
       quotationId: userQuotation?.quotationId as string,
     },
   });
-  revalidateTag("userQuotation");
 }
