@@ -71,10 +71,6 @@ export const QuotationItemCard = ({
       removeToQuotation(itemId);
       await removeQuotationItem(itemId);
       router.refresh();
-      toast({
-        title: "Item removed",
-        description: "The item has been removed from your quotation",
-      });
     } catch (error) {
       toast({
         title: "Error",

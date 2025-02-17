@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuotation } from "../providers/quotation-provider";
 import { addQuotationItem } from "@/app/(server)/actions/quotation-mutations";
 import { useRouter } from "next/navigation";
+import { AddToQuotationButton } from "./add-to-quotation-button";
 
 interface ProductPageCardProps {
   product: ProductWithRelatedData | SerializedProductWithRelatedData;
@@ -33,16 +34,12 @@ export function ProductPageCard({ product }: ProductPageCardProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] =
     useState<SerializedProductVariant | null>(null);
-  const [addingToQuotation, setAddingToQuotation] = useState(false);
   const [selectedAttributes, setSelectedAttributes] = useState<
     Record<string, string>
   >({});
 
   // Hooks
-  const { toast } = useToast();
   const { params, setParams } = useProductAttributes();
-  const { addToQuotation } = useQuotation();
-  const router = useRouter();
 
   // Process variant attributes
   const variantAttributes = product.variants.reduce((acc, variant) => {
@@ -85,36 +82,6 @@ export function ProductPageCard({ product }: ProductPageCardProps) {
       setSelectedAttributes(params);
     }
   }, [params]);
-
-  const handleAddToQuotation = async () => {
-    if (!selectedVariant) return;
-
-    try {
-      // First, trigger optimistic update immediately
-      addToQuotation(selectedVariant.id, quantity);
-
-      // Then, perform the server action in the background
-      await addQuotationItem({
-        variantId: selectedVariant.id,
-        quantity,
-      });
-      router.refresh();
-      toast({
-        title: "Added to quotation",
-        description: "Product added to quotation successfully",
-      });
-    } catch (error) {
-      // Handle error (maybe implement a rollback of the optimistic update)
-      toast({
-        title: "Error adding to quotation",
-        description:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleQuantityChange = (newQuantity: number) => {
     const validQuantity = Math.max(1, newQuantity);
@@ -195,26 +162,10 @@ export function ProductPageCard({ product }: ProductPageCardProps) {
             </Button>
           </div>
         </div>
-
-        <form action={async() => {
-          handleAddToQuotation();
-        }}>
-          <Button
-            className="w-full"
-            size="lg"
-            
-            disabled={addingToQuotation || !selectedVariant}
-          >
-            {addingToQuotation ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Adding to quotation...
-              </>
-            ) : (
-              "Add to Quotation"
-            )}
-          </Button>
-        </form>
+        <AddToQuotationButton
+          quantity={quantity}
+          selectedVariant={selectedVariant}
+        />
       </CardContent>
     </Card>
   );
