@@ -2,8 +2,23 @@
 
 import authCache from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { connect } from "http2";
-import { revalidateTag } from "next/cache";
+
+export async function updateQuotationQuantity(
+  quotationItemId: string,
+  quantity: number
+) {
+  const session = await authCache();
+  if (!session) throw new Error("You are not logged in.");
+
+  await prisma.quotationItem.update({
+    where: {
+      id: quotationItemId,
+    },
+    data: {
+      quantity: quantity,
+    },
+  });
+}
 
 export async function removeQuotationItem(quotationItemId: string) {
   const session = await authCache();

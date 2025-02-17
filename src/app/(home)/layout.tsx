@@ -7,10 +7,6 @@ import { QuotationWithRelations } from "../types";
 import { unstable_cache as cache } from "next/cache";
 import { QuotationProvider } from "@/components/providers/quotation-provider";
 
-const fetchUserQuotationCache = cache(fetchUserQuotation, ["userQuotation"], {
-  tags: ["userQuotation"],
-});
-
 export default async function Layout({
   children,
 }: {

@@ -84,7 +84,7 @@ export function NavBar({ session }: NavBarProps) {
                 )}
               </button>
             </SheetTrigger>
-            <SheetContent className="w-[400px] sm:w-[540px]">
+            <SheetContent>
               <SheetHeader className="space-y-4">
                 <SheetTitle className="text-xl">
                   Quotation (
@@ -95,9 +95,7 @@ export function NavBar({ session }: NavBarProps) {
                   )
                 </SheetTitle>
               </SheetHeader>
-              {optimisticQuotation && (
-                <UserQuotation userQuotation={optimisticQuotation as any} />
-              )}
+              {optimisticQuotation && <UserQuotation />}
             </SheetContent>
           </Sheet>
           <DropdownMenu>

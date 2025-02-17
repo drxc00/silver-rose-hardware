@@ -1,12 +1,10 @@
 "use client";
 
 import { useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useOptimistic } from "react";
 import { QuotationWithRelations } from "@/app/types";
 import { Prisma } from "@prisma/client";
 
-// Define more specific types
 type QuotationItem =
   QuotationWithRelations["quotation"]["QuotationItem"][number];
 type OptimisticQuotationState = {
@@ -15,7 +13,6 @@ type OptimisticQuotationState = {
   };
 };
 
-// Define action types
 type AddAction = {
   type: "add";
   item: QuotationItem;
@@ -26,13 +23,16 @@ type RemoveAction = {
   variantId: string;
 };
 
-type QuotationAction = AddAction | RemoveAction;
+type QuantityAction = {
+  type: "increment" | "decrement";
+  variantId: string;
+};
+
+type QuotationAction = AddAction | RemoveAction | QuantityAction;
 
 export function useQuotationOptimistic(
   initialQuotation?: QuotationWithRelations | null
 ) {
-  const router = useRouter();
-
   const [optimisticQuotation, updateOptimisticQuotation] = useOptimistic<
     OptimisticQuotationState,
     QuotationAction
@@ -59,37 +59,75 @@ export function useQuotationOptimistic(
               ),
             },
           };
+
         case "add":
-          // Check if the item already exists
           const existingItem = state.quotation.QuotationItem.find(
             (item) => item.variantId === action.item.variantId
           );
-          const updated = (
-            existingItem
-              ? {
-                  ...existingItem,
-                  quantity:
-                    Number(existingItem.quantity) +
-                    Number(action.item.quantity),
-                }
-              : action.item
-          ) as QuotationItem; // Type assertation
+
+          if (existingItem) {
+            return {
+              quotation: {
+                ...state.quotation,
+                QuotationItem: state.quotation.QuotationItem.map((item) =>
+                  item.variantId === action.item.variantId
+                    ? {
+                        ...item,
+                        quantity: new Prisma.Decimal(
+                          Number(item.quantity) + Number(action.item.quantity)
+                        ),
+                      }
+                    : item
+                ),
+              },
+            };
+          }
+
           return {
             quotation: {
               ...state.quotation,
-              // Replace the existing item with the updated one
-              QuotationItem: [
-                ...state.quotation.QuotationItem.filter(
-                  (item) => item.variantId !== updated.variantId
-                ),
-                updated,
-              ],
+              QuotationItem: [...state.quotation.QuotationItem, action.item],
             },
           };
+
+        case "increment":
+        case "decrement": {
+          const currentItems = state.quotation.QuotationItem;
+          const updatedItems = currentItems.map((item) => {
+            if (item.id === action.variantId) {
+              const currentQuantity = Number(item.quantity);
+              const newQuantity =
+                action.type === "increment"
+                  ? currentQuantity + 1
+                  : Math.max(1, currentQuantity - 1);
+
+              return {
+                ...item,
+                quantity: new Prisma.Decimal(newQuantity),
+              };
+            }
+            return item;
+          });
+
+          return {
+            quotation: {
+              ...state.quotation,
+              QuotationItem: updatedItems,
+            },
+          };
+        }
+
         default:
           return state;
       }
     }
+  );
+
+  const updateQuantity = useCallback(
+    (variantId: string, type: "increment" | "decrement") => {
+      updateOptimisticQuotation({ type, variantId });
+    },
+    [updateOptimisticQuotation]
   );
 
   const removeToQuotation = useCallback(
@@ -102,7 +140,7 @@ export function useQuotationOptimistic(
   const addToQuotation = useCallback(
     (variantId: string, quantity: number) => {
       const optimisticItem: QuotationItem = {
-        id: crypto.randomUUID(), // temporary quotation item id
+        id: crypto.randomUUID(),
         variantId,
         quantity: new Prisma.Decimal(quantity),
         quotationId: initialQuotation?.quotation.id as string,
@@ -140,15 +178,13 @@ export function useQuotationOptimistic(
 
       updateOptimisticQuotation({ type: "add", item: optimisticItem });
     },
-    [updateOptimisticQuotation, router, initialQuotation?.quotation.id]
+    [updateOptimisticQuotation, initialQuotation?.quotation.id]
   );
 
   return {
     quotation: optimisticQuotation,
     addToQuotation,
     removeToQuotation,
+    updateQuantity,
   } as const;
 }
-
-// Export the hook's return type
-export type QuotationHookReturn = ReturnType<typeof useQuotationOptimistic>;
