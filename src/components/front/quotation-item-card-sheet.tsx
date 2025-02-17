@@ -114,7 +114,10 @@ export const QuotationItemCard = ({
 
         {/* Price */}
         <p className="mt-1 text-sm font-medium">
-          ₱{Number(item.variant.price).toLocaleString()}
+          ₱
+          {(
+            Number(item.variant.price) * Number(item.quantity)
+          ).toLocaleString()}
         </p>
       </div>
 

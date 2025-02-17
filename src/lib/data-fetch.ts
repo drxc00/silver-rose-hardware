@@ -51,18 +51,23 @@ export async function fetchUserQuotation(userId: string) {
       ...userQuotation,
       quotation: {
         ...userQuotation?.quotation,
-        QuotationItem: userQuotation?.quotation?.QuotationItem.map((item) => ({
-          ...item,
-          quantity: Number(item.quantity),
-          variant: {
-            ...item.variant,
-            attributes: item.variant.attributes.map((attribute) => ({
-              ...attribute,
-              value: attribute.value as string,
-            })),
-            price: Number(item.variant.price),
-          },
-        })),
+        QuotationItem:
+          userQuotation?.quotation?.QuotationItem?.sort(
+            (a, b) =>
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          ) // Oldest first
+            .map((item) => ({
+              ...item,
+              quantity: Number(item.quantity),
+              variant: {
+                ...item.variant,
+                attributes: item.variant.attributes.map((attribute) => ({
+                  ...attribute,
+                  value: attribute.value as string,
+                })),
+                price: Number(item.variant.price),
+              },
+            })) ?? [],
       },
     }));
 }
