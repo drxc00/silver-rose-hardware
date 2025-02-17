@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useQuotation } from "../providers/quotation-provider";
 import { QuotationItemCard } from "./quotation-item-card-sheet";
+import Link from "next/link";
 
 export function UserQuotation() {
   const { quotation: optimisticQuotation } = useQuotation();
@@ -32,7 +33,9 @@ export function UserQuotation() {
             </span>
           </div>
         </div>
-        <Button className="w-full">View Quotation</Button>
+        <Link href="/quotation">
+          <Button className="w-full">View Quotation</Button>
+        </Link>
       </div>
     </div>
   );
