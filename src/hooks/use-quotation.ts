@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback } from "react";
 import { useOptimistic } from "react";
 import { QuotationWithRelations } from "@/app/types";

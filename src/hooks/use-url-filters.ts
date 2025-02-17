@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -66,5 +64,14 @@ export function useUrlFilters() {
     [router, searchParams]
   );
 
-  return { sort, view, name, category, minPrice, maxPrice, setParams, removeParams };
+  return {
+    sort,
+    view,
+    name,
+    category,
+    minPrice,
+    maxPrice,
+    setParams,
+    removeParams,
+  };
 }
