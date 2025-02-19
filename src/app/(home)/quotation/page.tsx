@@ -10,7 +10,7 @@ export function generateMetadata() {
 
 export default async function QuotationPage() {
   return (
-    <div className="min-h-screen bg-muted w-screen">
+    <div className="min-h-screen bg-muted w-full">
       <main className="px-32 pt-8 flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">My Quotation</h1>
