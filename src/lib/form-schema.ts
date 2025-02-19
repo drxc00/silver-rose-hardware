@@ -54,3 +54,12 @@ export const productFormSchema = z.object({
   hasVariant: z.boolean(),
   variants: z.array(variantSchema),
 });
+
+export const quotationRequestSchema = z.object({
+  userId: z.string(),
+  quotationId: z.string(),
+  name: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().min(1),
+  note: z.string().optional(),
+});

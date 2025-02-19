@@ -5,7 +5,9 @@ import { Prisma } from "@prisma/client";
 
 type QuotationItem =
   QuotationWithRelations["quotation"]["QuotationItem"][number];
-type OptimisticQuotationState = {
+export type OptimisticQuotationState = {
+  id: string;
+  quotationId: string;
   quotation: {
     QuotationItem: QuotationItem[];
   };
@@ -37,11 +39,15 @@ export function useQuotationOptimistic(
   >(
     initialQuotation
       ? {
+          id: initialQuotation.id,
+          quotationId: initialQuotation.quotationId,
           quotation: {
             QuotationItem: initialQuotation.quotation.QuotationItem || [],
           },
         }
       : {
+          id: "",
+          quotationId: "",
           quotation: {
             QuotationItem: [],
           },
@@ -50,6 +56,7 @@ export function useQuotationOptimistic(
       switch (action.type) {
         case "remove":
           return {
+            ...state,
             quotation: {
               ...state.quotation,
               QuotationItem: state.quotation.QuotationItem.filter(
@@ -65,6 +72,7 @@ export function useQuotationOptimistic(
 
           if (existingItem) {
             return {
+              ...state,
               quotation: {
                 ...state.quotation,
                 QuotationItem: state.quotation.QuotationItem.map((item) =>
@@ -82,6 +90,7 @@ export function useQuotationOptimistic(
           }
 
           return {
+            ...state,
             quotation: {
               ...state.quotation,
               QuotationItem: [...state.quotation.QuotationItem, action.item],
@@ -108,6 +117,7 @@ export function useQuotationOptimistic(
           });
 
           return {
+            ...state,
             quotation: {
               ...state.quotation,
               QuotationItem: updatedItems,
