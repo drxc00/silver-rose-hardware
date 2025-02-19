@@ -1,6 +1,7 @@
 import { QuotationTable } from "@/components/front/quotation/quotation-table";
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export function generateMetadata() {
   return {
@@ -21,7 +22,9 @@ export default async function QuotationPage() {
         <div className="flex justify-end">
           <div className="flex flex-col gap-2">
             <h2 className="text-xl font-bold">Need a Custom Quote?</h2>
-            <Button size="lg">Send a Quotation Request</Button>
+            <Link href="/quotation/request">
+              <Button size="lg">Send a Quotation Request</Button>
+            </Link>
           </div>
         </div>
       </main>

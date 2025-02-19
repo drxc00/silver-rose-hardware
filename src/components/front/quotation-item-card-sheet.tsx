@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { startTransition } from "react";
 import { MinusCircle, PlusCircle, X } from "lucide-react";
 import { ImageWithSkeleton } from "../image-with-skeleton";
 import { Button } from "../ui/button";
@@ -68,7 +68,9 @@ export const QuotationItemCard = ({
 
   const handleRemoveItem = async (itemId: string) => {
     try {
-      removeToQuotation(itemId);
+      startTransition(() => {
+        removeToQuotation(itemId);
+      });
       await removeQuotationItem(itemId);
       router.refresh();
     } catch (error) {
