@@ -27,7 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { CardContent, Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -49,19 +48,6 @@ export function ProductDataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-
-  // Custom filter function for categories
-  const categoryFilter: FilterFn<any> = (row, columnId, filterValue) => {
-    if (filterValue === "all") return true;
-
-    const rowCategory = row.original.id;
-
-    console.log(rowCategory);
-
-    if (rowCategory === filterValue) return true;
-
-    return false;
-  };
 
   const table = useReactTable({
     data,

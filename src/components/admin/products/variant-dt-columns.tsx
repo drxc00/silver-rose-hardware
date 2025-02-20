@@ -1,13 +1,13 @@
 "use client";
 
-import { FormProductVariant } from "@/app/types";
+import { CategoryTree, FormProductVariant } from "@/app/types";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { VariantDialog } from "./variant-dialog";
 import { Attribute } from "@prisma/client";
@@ -26,10 +26,8 @@ interface VariantDTColumnsProps {
 
 export const getVariantDTColumns = ({
   removeVariant,
-  addVariant,
   updateVariant,
   attributes,
-  attributeValues,
 }: VariantDTColumnsProps): ColumnDef<FormProductVariant>[] => [
   {
     accessorKey: "attributes",
@@ -59,41 +57,57 @@ export const getVariantDTColumns = ({
   {
     accessorKey: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
-
-      return (
-        <>
-          <VariantDialog
-            updateVariant={updateVariant}
-            dialogType="update"
-            index={row.index}
-            attributes={attributes}
-            attributeValues={row.original.attributes}
-            variantPrice={row.original.price}
-            isOpen={isVariantDialogOpen}
-            setIsOpen={setIsVariantDialogOpen}
-          />
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setIsVariantDialogOpen(true)}>
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => removeVariant(row.index)}
-                className="text-destructive"
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
-      );
-    },
+    cell: ({ row }) => (
+      <ActionsComponent
+        {...{ removeVariant, updateVariant, row, attributes }}
+      />
+    ),
   },
 ];
+
+function ActionsComponent({
+  removeVariant,
+  updateVariant,
+  row,
+  attributes,
+}: {
+  removeVariant: (index: number) => void;
+  updateVariant: (index: number, attributes: any, price: number) => void;
+  row: Row<FormProductVariant>;
+  attributes: Attribute[];
+}) {
+  const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
+
+  return (
+    <>
+      <VariantDialog
+        updateVariant={updateVariant}
+        dialogType="update"
+        index={row.index}
+        attributes={attributes}
+        attributeValues={row.original.attributes}
+        variantPrice={row.original.price}
+        isOpen={isVariantDialogOpen}
+        setIsOpen={setIsVariantDialogOpen}
+      />
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost">
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setIsVariantDialogOpen(true)}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => removeVariant(row.index)}
+            className="text-destructive"
+          >
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+}

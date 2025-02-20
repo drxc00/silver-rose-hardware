@@ -164,7 +164,7 @@ export function ProductPageCard({ product }: ProductPageCardProps) {
         </div>
         <AddToQuotationButton
           quantity={quantity}
-          selectedVariant={selectedVariant}
+          selectedVariant={selectedVariant as SerializedProductVariant}
         />
       </CardContent>
     </Card>

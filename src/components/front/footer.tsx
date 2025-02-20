@@ -1,4 +1,4 @@
-import { MapPin, Phone, Pin } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 
 export function Footer() {

@@ -4,7 +4,7 @@ import {
   ProductWithRelatedData,
 } from "@/app/types";
 import { prisma } from "./prisma";
-import { Attribute, Prisma, Product } from "@prisma/client";
+import { Attribute, Product } from "@prisma/client";
 import { UserRole } from "./constants";
 
 export async function fetchUserQuotation(userId: string) {

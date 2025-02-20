@@ -4,7 +4,6 @@ import authCache from "@/lib/auth-cache";
 import { fetchUserQuotation } from "@/lib/data-fetch";
 import { Session } from "next-auth";
 import { QuotationWithRelations } from "../types";
-import { unstable_cache as cache } from "next/cache";
 import { QuotationProvider } from "@/components/providers/quotation-provider";
 
 export default async function Layout({
@@ -18,7 +17,9 @@ export default async function Layout({
   return (
     <main className="flex flex-col min-h-screen justify-between">
       <QuotationProvider
-        initialQuotation={(userQuotation as unknown as QuotationWithRelations) || null}
+        initialQuotation={
+          (userQuotation as unknown as QuotationWithRelations) || null
+        }
       >
         <NavBar session={session as Session} />
         {children}

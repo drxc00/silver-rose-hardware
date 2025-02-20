@@ -13,12 +13,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { fetchProductUsingSlug, fetchRelatedProducts } from "@/lib/data-fetch";
-import { unstable_cache as cache } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
-
-const fetchProductUsingSlugCache = cache(fetchProductUsingSlug);
-const fetchRelatedProductsCache = cache(fetchRelatedProducts);
 
 export async function generateMetadata({
   params,

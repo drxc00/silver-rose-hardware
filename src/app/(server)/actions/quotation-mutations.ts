@@ -95,7 +95,7 @@ export async function removeQuotationItem(quotationItemId: string) {
 
   // Check first if the variant exist in the quotation
   const quotationItem = userQuotation?.quotation?.QuotationItem.find(
-    (item) => item.id === quotationItemId
+    (item) => item?.id === quotationItemId
   );
   if (!quotationItem) throw new Error("Quotation item not found.");
   await prisma.quotationItem.delete({

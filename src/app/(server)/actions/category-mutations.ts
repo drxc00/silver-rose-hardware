@@ -18,17 +18,17 @@ export async function updateCategory({
 }): Promise<void> {
   try {
     await prisma.category.update({
-        where: { id },
-        data: {
-          name,
-          slug,
-          image,
-          // Only include parentCategory if it exists
-          ...(parentCategory && { parentCategory }),
-        },
-      });
+      where: { id },
+      data: {
+        name,
+        slug,
+        image,
+        // Only include parentCategory if it exists
+        ...(parentCategory && { parentCategory }),
+      },
+    });
   } catch (error) {
-      throw new Error("Failed to update category");
+    throw new Error("Failed to update category: " + (error as Error).name);
   }
   revalidatePath("/admin/categories/edit/" + id);
 }

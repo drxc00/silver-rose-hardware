@@ -51,12 +51,12 @@ export function NavBar({ session }: NavBarProps) {
     } else {
       removeParams("name");
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, setParams, removeParams]);
 
   // Use effect for the quotation animation
   useEffect(() => {
     controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
-  }, [optimisticQuotation]); // Re-run effect when itemCount changes
+  }, [optimisticQuotation, controls]); // Re-run effect when itemCount changes
 
   return (
     <div>

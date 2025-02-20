@@ -21,15 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Download,
-  Plus,
-  Printer,
-  Search,
-} from "lucide-react";
-import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { CategoryTree } from "@/app/types";
 import {
@@ -63,7 +55,7 @@ export function DataTable<TData extends CategoryTree, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getSubRows: (row) => (row as any).subcategories, // Add this line to handle subcategories
+    getSubRows: (row) => (row as CategoryTree).subcategories as any, // Add this line to handle subcategories
     state: {
       sorting,
       columnFilters,

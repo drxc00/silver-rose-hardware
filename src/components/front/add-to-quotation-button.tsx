@@ -2,18 +2,17 @@
 
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "../ui/button";
-import { useProductAttributes } from "@/hooks/use-product-attributes";
 import { useQuotation } from "../providers/quotation-provider";
 import { useRouter } from "next/navigation";
 import { addQuotationItem } from "@/app/(server)/actions/quotation-mutations";
-import { Loader2 } from "lucide-react";
+import { SerializedProductVariant } from "@/app/types";
 
 export function AddToQuotationButton({
   quantity,
   selectedVariant,
 }: {
   quantity: number;
-  selectedVariant: any;
+  selectedVariant: SerializedProductVariant;
 }) {
   const { toast } = useToast();
   const { addToQuotation } = useQuotation();

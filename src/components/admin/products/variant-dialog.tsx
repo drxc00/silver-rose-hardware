@@ -112,7 +112,7 @@ export function VariantDialog({
         toast({
           title: "Error",
           description:
-            "There was an error adding the attribute. Please try again",
+            "There was an error adding the attribute. Please try again: " + (err as Error).name,
           variant: "destructive",
         });
       }

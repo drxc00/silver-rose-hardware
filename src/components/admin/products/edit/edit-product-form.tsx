@@ -39,7 +39,6 @@ import { VariantDialog } from "../variant-dialog";
 import { Attribute } from "@prisma/client";
 import { updateProduct } from "@/app/(server)/actions/product-mutations";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface ProductFormProps {

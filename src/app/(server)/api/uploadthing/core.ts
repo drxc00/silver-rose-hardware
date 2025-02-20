@@ -18,7 +18,8 @@ export const ourFileRouter = {
         },
     })
         // Set permissions and file types for this FileRoute
-        .middleware(async ({ req }) => {
+        // This takes { req } as an argument, we removed this for now since we don't need it
+        .middleware(async () => {
             // This code runs on your server before upload
             const user = await auth();
 

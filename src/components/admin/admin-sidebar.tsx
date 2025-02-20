@@ -27,7 +27,6 @@ import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { clientLogout } from "@/app/(server)/actions/auth-actions";
-import { Card } from "@/components/ui/card";
 
 // Menu items.
 const items = [
@@ -60,7 +59,7 @@ const items = [
   },
 ];
 
-export function AdminSidebar({ user }: { user: User }) {
+export function AdminSidebar() {
   // Get url of the current page
   const pathname = usePathname();
   return (

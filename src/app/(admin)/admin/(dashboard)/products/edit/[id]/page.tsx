@@ -1,4 +1,4 @@
-import { CategoryTree, ProductWithRelatedData, SerializedProductWithRelatedData } from "@/app/types";
+import { CategoryTree, SerializedProductWithRelatedData } from "@/app/types";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { EditProductForm } from "@/components/admin/products/edit/edit-product-form";
 import {

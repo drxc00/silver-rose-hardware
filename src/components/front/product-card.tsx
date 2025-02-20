@@ -69,7 +69,7 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
               quantity={1}
               selectedVariant={{
                 ...product.variants[0],
-                price: Number(product.variants[0].price), // Type cast to number since prisma is ass
+                price: String(product.variants[0].price), // Type cast to number since prisma is ass
               }}
             />
           )}

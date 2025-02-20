@@ -66,6 +66,6 @@ export async function createFirstAdminUser({
   try {
     await createNewUser({ name, username, email, password }, UserRole.ADMIN);
   } catch (error) {
-    throw new Error("Failed to create admin user");
+    throw new Error("Failed to create admin user: " + (error as Error).name);
   }
 }

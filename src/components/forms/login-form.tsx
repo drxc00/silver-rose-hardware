@@ -22,8 +22,6 @@ import { Loader2Icon } from "lucide-react";
 
 export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
   const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -55,7 +53,6 @@ export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
 
   return (
     <Form {...form}>
-      <div>{error && <p className="text-red-500">{error}</p>}</div>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}

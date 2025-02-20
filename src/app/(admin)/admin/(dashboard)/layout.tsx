@@ -17,7 +17,7 @@ export default async function Layout({
   if (session?.user?.role !== UserRole.ADMIN) redirect("/");
   return (
     <SidebarProvider>
-      <AdminSidebar user={session?.user as User} />
+      <AdminSidebar />
       <header className="sticky top-0 z-40 border-b bg-background w-screen block md:hidden">
         <div className="container flex h-16 items-center">
           <SidebarTrigger className="ml-2" />

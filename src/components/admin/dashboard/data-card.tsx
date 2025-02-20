@@ -1,4 +1,4 @@
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface DataCardProps {
   title: string;
@@ -17,7 +17,9 @@ export function DataCard({ title, value, description, icon }: DataCardProps) {
         </div>
         <div className="grid">
           <h1 className="text-2xl font-bold">{value}</h1>
-          {description && <p className="text-muted-foreground text-xs">{description}</p>}
+          {description && (
+            <p className="text-muted-foreground text-xs">{description}</p>
+          )}
         </div>
       </CardContent>
     </Card>

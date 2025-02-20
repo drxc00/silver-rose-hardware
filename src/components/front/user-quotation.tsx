@@ -10,7 +10,7 @@ export function UserQuotation() {
 
   const calculateSubtotal = () => {
     return optimisticQuotation.quotation.QuotationItem.reduce(
-      (acc, item) => acc + Number(item.variant.price) * Number(item.quantity),
+      (acc, item) => acc + Number(item?.variant.price) * Number(item?.quantity),
       0
     );
   };
@@ -19,7 +19,7 @@ export function UserQuotation() {
     <div className="mt-6 flex h-[calc(100vh-200px)] flex-col">
       <div className="flex-1 overflow-y-auto pr-1">
         {optimisticQuotation.quotation.QuotationItem.map((item) => (
-          <QuotationItemCard key={item.id} item={item as any} />
+          <QuotationItemCard key={item?.id} item={item as any} />
         ))}
       </div>
 

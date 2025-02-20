@@ -28,10 +28,10 @@ export function QuotationSummaryTable({
       </TableHeader>
       <TableBody>
         {quotation.quotation.QuotationItem.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell>{item.variant.product.name}</TableCell>
+          <TableRow key={item?.id}>
+            <TableCell>{item?.variant.product.name}</TableCell>
             <TableCell>
-              {item.variant.attributes
+              {item?.variant.attributes
                 .map(
                   (attribute) =>
                     attribute.attribute.name + ": " + attribute.value
@@ -39,14 +39,14 @@ export function QuotationSummaryTable({
                 .join("; ")}
             </TableCell>
             <TableCell>
-              ₱ {Number(item.variant.price).toLocaleString()}
+              ₱ {Number(item?.variant.price).toLocaleString()}
             </TableCell>
-            <TableCell>{Number(item.quantity)}</TableCell>
+            <TableCell>{Number(item?.quantity)}</TableCell>
             <TableCell>
               {" "}
               ₱
               {(
-                Number(item.variant.price) * Number(item.quantity)
+                Number(item?.variant.price) * Number(item?.quantity)
               ).toLocaleString()}
             </TableCell>
           </TableRow>

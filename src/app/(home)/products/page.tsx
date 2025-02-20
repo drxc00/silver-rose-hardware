@@ -1,4 +1,4 @@
-import { ProductWithRelatedData } from "@/app/types";
+import { CategoryTree, ProductWithRelatedData } from "@/app/types";
 import { ProductsGrid } from "@/components/front/products-grid";
 import { fetchAllProducts, fetchCategories } from "@/lib/data-fetch";
 
@@ -21,7 +21,7 @@ export default async function ProductsPage() {
         <div className="w-screen max-w-7xl">
           <ProductsGrid
             products={products as ProductWithRelatedData[]}
-            categories={categories}
+            categories={categories as CategoryTree[]}
           />
         </div>
       </div>

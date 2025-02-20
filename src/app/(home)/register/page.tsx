@@ -1,10 +1,9 @@
 import { RegistrationForm } from "@/components/forms/registration-form";
 import { Card, CardContent } from "@/components/ui/card";
-import { createNewUser, isAlreadyAuthenticated, routeProtection } from "@/lib/auth-functions";
+import { createNewUser, isAlreadyAuthenticated } from "@/lib/auth-functions";
 import { UserRole } from "@/lib/constants";
 import { registrationFormSchema } from "@/lib/form-schema";
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 
 export default async function RegisterPage() {

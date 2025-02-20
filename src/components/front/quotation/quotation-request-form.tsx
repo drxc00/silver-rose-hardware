@@ -71,7 +71,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
       } catch (error) {
         toast({
           title: "An Error Occurred",
-          description: "Please try again later.",
+          description: `[${(error as Error).name}] Please try again later.`,
           variant: "destructive",
         });
       }

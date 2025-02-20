@@ -20,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 import { useEffect, useTransition } from "react";
 import { SelectValue } from "@radix-ui/react-select";
-import { useRouter } from "next/navigation";
 import { Category } from "@prisma/client";
 import { ImageUpload } from "@/components/admin/image-upload";
 import { Button } from "@/components/ui/button";
@@ -39,7 +38,6 @@ interface AddCategoryFormProps {
 }
 
 export function CategoryForm({ category, categories }: AddCategoryFormProps) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   // Initialize form
@@ -66,20 +64,22 @@ export function CategoryForm({ category, categories }: AddCategoryFormProps) {
   const onSubmit = async (values: z.infer<typeof addCategoryFormSchema>) => {
     startTransition(async () => {
       try {
-        category
-          ? await updateCategory({
-              id: category!.id,
-              name: values.categoryName,
-              slug: values.slug,
-              image: values.image as string,
-              parentCategory: values.parentCategory,
-            })
-          : await addCategory({
-              name: values.categoryName,
-              slug: values.slug,
-              image: values.image as string,
-              parentCategory: values.parentCategory,
-            });
+        if (category) {
+          await updateCategory({
+            id: category!.id,
+            name: values.categoryName,
+            slug: values.slug,
+            image: values.image as string,
+            parentCategory: values.parentCategory,
+          });
+        } else {
+          await addCategory({
+            name: values.categoryName,
+            slug: values.slug,
+            image: values.image as string,
+            parentCategory: values.parentCategory,
+          });
+        }
       } catch (error) {
         toast({
           title: "An Error Occurred",

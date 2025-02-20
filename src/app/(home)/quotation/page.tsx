@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 import Link from "next/link";
 
-export function generateMetadata() {
+export function generateMetadata(): Metadata {
   return {
     title: "My Quotation | Silver Rose Hardware",
   };

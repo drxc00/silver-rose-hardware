@@ -1,12 +1,4 @@
-import {
-  Attribute,
-  AttributeValue,
-  Category,
-  Product,
-  Variant,
-  Prisma,
-  Quotation,
-} from "@prisma/client";
+import { Category, Product, Variant, Prisma } from "@prisma/client";
 
 export type CategoryTree = Category & {
   subcategories: Category[];

@@ -1,6 +1,4 @@
 import { QuotationRequestForm } from "@/components/front/quotation/quotation-request-form";
-import { QuotationSummaryTable } from "@/components/front/quotation/quotation-summary-table";
-import { Card, CardContent } from "@/components/ui/card";
 import authCache from "@/lib/auth-cache";
 import { User } from "next-auth";
 

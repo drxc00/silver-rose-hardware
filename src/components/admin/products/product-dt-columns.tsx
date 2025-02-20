@@ -11,7 +11,6 @@ import {
   PencilLine,
   Trash,
 } from "lucide-react";
-import Image from "next/image";
 import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

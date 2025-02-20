@@ -52,7 +52,7 @@ export function ProductsGrid({ categories, products }: ProductsGridProps) {
     } else {
       removeParams("minPrice");
     }
-  }, [debouncedMinPrice]);
+  }, [debouncedMinPrice, removeParams, setParams]);
 
   useEffect(() => {
     if (debouncedMaxPrice !== "") {
@@ -60,7 +60,7 @@ export function ProductsGrid({ categories, products }: ProductsGridProps) {
     } else {
       removeParams("maxPrice");
     }
-  }, [debouncedMaxPrice]);
+  }, [debouncedMaxPrice, removeParams, setParams]);
 
   const matchProductName = (
     product: ProductWithRelatedData | SerializedProductWithRelatedData

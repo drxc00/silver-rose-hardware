@@ -18,6 +18,7 @@ class InvalidLoginError extends CredentialsSignin {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    secret: process.env.NEXTAUTH_SECRET,
     adapter: PrismaAdapter(prisma) as any, // Type assertation due to authJs bug
     providers: [
         Credentials({
