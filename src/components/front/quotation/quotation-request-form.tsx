@@ -89,7 +89,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
 
   if (isPending) {
     return (
-      <div className="flex mx-auto justify-center">
+      <div className="flex mx-auto h-full justify-center">
         <div className="flex flex-col gap-4 items-center">
           <Loader2 className="animate-spin w-10 h-10" />
           <p className="text-muted-foreground text-lg">Sending Request</p>
@@ -100,7 +100,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
 
   if (isRequestSuccess) {
     return (
-      <div className="flex mx-auto justify-center">
+      <div className="flex mx-auto h-full justify-center">
         <div className="flex flex-col text-center items-center justify-center">
           <MailCheck className="text-green-500 w-10 h-10" />
           <h1 className="text-2xl font-bold">Request Sent</h1>

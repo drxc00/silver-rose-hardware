@@ -12,14 +12,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { QuotationItemWithRelations } from "@/app/types";
+import Link from "next/link";
 
 export const columns: ColumnDef<QuotationItemWithRelations>[] = [
   {
-    accessorKey: "requestDate",
-    header: "Requested At",
+    accessorKey: "id",
+    header: "#",
     cell: ({ row }) => (
-      <span>{row.original.createdAt.toLocaleString().split("T")[0]}</span>
+      <span>
+        #{row.original.quotation.quotationNumber.toString().padStart(4, "0")}
+      </span>
     ),
+  },
+  {
+    accessorKey: "user",
+    header: "User",
+    cell: ({ row }) => <span>{row.original.user.name}</span>,
   },
   {
     accessorKey: "items",
@@ -54,6 +62,13 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
     ),
   },
   {
+    accessorKey: "requestDate",
+    header: "Requested At",
+    cell: ({ row }) => (
+      <span>{row.original.createdAt.toLocaleString().split("T")[0]}</span>
+    ),
+  },
+  {
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
@@ -69,7 +84,9 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>View</DropdownMenuItem>
+            <Link href={`/admin/quotations/view/${row.original.id}`}>
+              <DropdownMenuItem>View</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>Print</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

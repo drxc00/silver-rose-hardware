@@ -159,3 +159,20 @@ export type VariantWithRelations = Prisma.VariantGetPayload<{
     };
   };
 }>;
+
+export type QuotationItemWithRelations = Prisma.QuotationRequestGetPayload<{
+  include: {
+    quotation: {
+      include: {
+        QuotationItem: {
+          include: { variant: true };
+        };
+      };
+    };
+    user: {
+      include: {
+        accounts: true;
+      };
+    };
+  };
+}>;

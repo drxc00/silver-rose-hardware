@@ -6,7 +6,7 @@ export default async function QuotationRequestPage() {
   const session = await authCache();
 
   return (
-    <div className="bg-muted w-full">
+    <div className="w-full">
       <main className="px-32 py-8 flex flex-col gap-6">
         <div>
           <QuotationRequestForm user={session?.user as User} />

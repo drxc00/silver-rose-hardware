@@ -27,7 +27,7 @@ export default async function QuotationHistoryPage() {
     },
   });
   return (
-    <div className="bg-muted w-full justify-start h-full">
+    <div className="w-full justify-start h-full">
       <main className="px-32 pt-8 flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Quotation History</h1>

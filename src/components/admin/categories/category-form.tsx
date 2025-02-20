@@ -31,6 +31,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { ArrowLeft, CheckCheck, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface AddCategoryFormProps {
   category?: Category;
@@ -39,6 +40,7 @@ interface AddCategoryFormProps {
 
 export function CategoryForm({ category, categories }: AddCategoryFormProps) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   // Initialize form
   const form = useForm<z.infer<typeof addCategoryFormSchema>>({
@@ -78,6 +80,11 @@ export function CategoryForm({ category, categories }: AddCategoryFormProps) {
             slug: values.slug,
             image: values.image as string,
             parentCategory: values.parentCategory,
+          });
+          router.push("/admin/categories");
+          toast({
+            title: "Category added successfully",
+            variant: "default",
           });
         }
       } catch (error) {
