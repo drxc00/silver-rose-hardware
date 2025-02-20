@@ -165,7 +165,18 @@ export type QuotationItemWithRelations = Prisma.QuotationRequestGetPayload<{
     quotation: {
       include: {
         QuotationItem: {
-          include: { variant: true };
+          include: {
+            variant: {
+              include: {
+                attributes: {
+                  include: {
+                    attribute: true;
+                  };
+                };
+                product: true;
+              };
+            };
+          };
         };
       };
     };
