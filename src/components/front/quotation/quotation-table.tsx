@@ -26,6 +26,7 @@ import {
 } from "@/app/(server)/actions/quotation-mutations";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export function QuotationTable() {
   const { quotation, removeToQuotation, updateQuantity } = useQuotation();
@@ -63,10 +64,12 @@ export function QuotationTable() {
             Products ({quotation.quotation.QuotationItem.length})
           </h1>
           <div className="flex items-center gap-4">
-            <Button variant="outline">
-              <History />
-              <span>History</span>
-            </Button>
+            <Link href="/quotation/history">
+              <Button variant="outline">
+                <History />
+                <span>History</span>
+              </Button>
+            </Link>
             <Button>
               <Printer />
               <span>Print Quotation</span>

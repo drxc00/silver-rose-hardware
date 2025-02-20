@@ -54,6 +54,15 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
   };
 
   const onSubmit = async (values: z.infer<typeof quotationRequestSchema>) => {
+    // Check if the quotation is empty
+    if (quotation.quotation.QuotationItem.length === 0) {
+      toast({
+        title: "Empty Quotation",
+        description: "Your quotation is empty.",
+        variant: "destructive",
+      });
+      return;
+    }
     // Validate the payload
     if (values.note === "") {
       toast({
@@ -80,9 +89,11 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
 
   if (isPending) {
     return (
-      <div className="flex mx-auto justify-center my-auto">
-        <Loader2 className="animate-spin" />
-        <p>Sending request...</p>
+      <div className="flex mx-auto justify-center">
+        <div className="flex flex-col gap-4 items-center">
+          <Loader2 className="animate-spin w-10 h-10" />
+          <p className="text-muted-foreground text-lg">Sending Request</p>
+        </div>
       </div>
     );
   }
@@ -107,89 +118,94 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Card>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Name" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="example@example.com" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+639123456789" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="note"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Note <span className="text-red-500">*</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      className="min-h-[100px]"
-                      placeholder="Add any special requests or instructions (e.g., cutting, bulk order discounts, custom sizes, etc.)"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div>
-              <h3 className="pb-2 font-semibold">Quotation Summary</h3>
-              <QuotationSummaryTable quotation={quotation} />
-              <div className="flex flex-row gap-4 justify-end text-xl pt-8">
-                <h3 className="font-semibold text-muted-foreground">
-                  Total Cost
-                </h3>
-                <h3 className="font-semibold text-primary">
-                  ₱ {calculateSubtotal().toLocaleString()}
-                </h3>
+    <>
+      <div className="flex text-center justify-center items-center pb-6">
+        <h1 className="text-3xl font-bold text-center">Quotation Request</h1>
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Name" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="example@example.com" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="+639123456789" {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <div className="text-center space-y-4">
-          <p className="text-muted-foreground">
-            &quot;Tap on &apos;Request Quotation, &apos; and we &apos;ll provide
-            our best price, including any applicable service charges for custom
-            requests.&quot;
-          </p>
-          <Button size="lg">Request Quotation</Button>
-        </div>
-      </form>
-    </Form>
+              <FormField
+                control={form.control}
+                name="note"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Note <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        className="min-h-[100px]"
+                        placeholder="Add any special requests or instructions (e.g., cutting, bulk order discounts, custom sizes, etc.)"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div>
+                <h3 className="pt-4 pb-2 font-semibold">Quotation Summary</h3>
+                <QuotationSummaryTable quotation={quotation} />
+                <div className="flex flex-row gap-4 justify-end text-xl pt-8">
+                  <h3 className="font-semibold text-muted-foreground">
+                    Total Cost
+                  </h3>
+                  <h3 className="font-semibold text-primary">
+                    ₱ {calculateSubtotal().toLocaleString()}
+                  </h3>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <div className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              &quot;Tap on &apos;Request Quotation, &apos; and we &apos;ll
+              provide our best price, including any applicable service charges
+              for custom requests.&quot;
+            </p>
+            <Button size="lg">Request Quotation</Button>
+          </div>
+        </form>
+      </Form>
+    </>
   );
 }
