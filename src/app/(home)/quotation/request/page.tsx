@@ -10,8 +10,8 @@ export default async function QuotationRequestPage() {
   return (
     <div className="min-h-screen bg-muted w-full">
       <main className="px-32 py-8 flex flex-col gap-6">
-        <div className="flex text-center items-center">
-          <h1 className="text-3xl font-bold">Quotation Request</h1>
+        <div className="flex text-center justify-center items-center">
+          <h1 className="text-3xl font-bold text-center">Quotation Request</h1>
         </div>
         <div>
           <QuotationRequestForm user={session?.user as User} />

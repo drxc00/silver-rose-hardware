@@ -12,7 +12,5 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await authCache();
-  if (session?.user?.role !== UserRole.ADMIN) redirect("/");
   return <>{children}</>;
 }

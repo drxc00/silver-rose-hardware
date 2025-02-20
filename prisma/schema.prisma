@@ -150,11 +150,11 @@ model Quotation {
 }
 
 model UserQuotation {
-  id          String    @id @default(cuid())
-  quotationId String
+  id          String     @id @default(cuid())
+  quotationId String?
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quotation   Quotation? @relation(fields: [quotationId], references: [id], onDelete: Cascade)
 
   @@map("user_quotations")
 }
@@ -163,6 +163,9 @@ model QuotationRequest {
   id           String   @id @default(cuid())
   userId       String
   quotationId  String
+  name         String?
+  email        String?
+  phone        String?
   customerNote String
   remarks      String
   status       String

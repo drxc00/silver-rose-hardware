@@ -1,7 +1,61 @@
 "use server";
 
 import authCache from "@/lib/auth-cache";
+import { quotationRequestSchema } from "@/lib/form-schema";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+export async function createQuotationRequest(
+  payload: z.infer<typeof quotationRequestSchema>
+) {
+  // Validate the payload
+  const parsedPayload = quotationRequestSchema.safeParse(payload);
+  if (!parsedPayload) throw new Error("Invalid Request Payload");
+
+  await prisma.$transaction(async (tx) => {
+    // Create the quotation request
+    await tx.quotationRequest.create({
+      data: {
+        userId: payload.userId,
+        quotationId: payload.quotationId,
+        name: payload.name || "",
+        customerNote: payload.note || "",
+        remarks: "",
+        status: "Pending",
+        email: payload.email,
+      },
+    });
+
+    // Remove quotation from user quotation
+    await tx.userQuotation.update({
+      where: {
+        id: payload.userQuotationId,
+        userId: payload.userId,
+      },
+      data: {
+        quotationId: null,
+      },
+    });
+
+    // Create new quotation reference
+    await tx.userQuotation.update({
+      where: {
+        id: payload.userQuotationId,
+      },
+      data: {
+        quotation: {
+          create: {
+            user: {
+              connect: {
+                id: payload.userId,
+              },
+            },
+          },
+        },
+      },
+    });
+  });
+}
 
 export async function updateQuotationQuantity(
   quotationItemId: string,
@@ -40,7 +94,7 @@ export async function removeQuotationItem(quotationItemId: string) {
   });
 
   // Check first if the variant exist in the quotation
-  const quotationItem = userQuotation?.quotation.QuotationItem.find(
+  const quotationItem = userQuotation?.quotation?.QuotationItem.find(
     (item) => item.id === quotationItemId
   );
   if (!quotationItem) throw new Error("Quotation item not found.");
@@ -73,7 +127,7 @@ export async function addQuotationItem(payload: {
   });
 
   // Check first if the variant exist in the quotation
-  const quotationItem = userQuotation?.quotation.QuotationItem.find(
+  const quotationItem = userQuotation?.quotation?.QuotationItem.find(
     (item) => item.variantId === payload.variantId
   );
   if (quotationItem) {

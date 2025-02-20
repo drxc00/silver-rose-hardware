@@ -56,10 +56,11 @@ export const productFormSchema = z.object({
 });
 
 export const quotationRequestSchema = z.object({
-  userId: z.string(),
-  quotationId: z.string(),
-  name: z.string().min(1),
-  email: z.string().email(),
+  userId: z.string().min(1),
+  userQuotationId: z.string().min(1),
+  quotationId: z.string().min(1),
+  name: z.string().min(1).min(1),
+  email: z.string().email().min(1),
   phone: z.string().min(1),
-  note: z.string().optional(),
+  note: z.string(),
 });

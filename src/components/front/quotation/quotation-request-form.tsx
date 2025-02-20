@@ -16,6 +16,11 @@ import { User } from "next-auth";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { QuotationSummaryTable } from "./quotation-summary-table";
+import { useToast } from "@/hooks/use-toast";
+import { createQuotationRequest } from "@/app/(server)/actions/quotation-mutations";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { Loader2, MailCheck } from "lucide-react";
 
 interface QuotationRequestFormProps {
   user: User;
@@ -23,11 +28,16 @@ interface QuotationRequestFormProps {
 
 export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
   const { quotation } = useQuotation();
+  const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+  const [isRequestSuccess, setIsRequestSuccess] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof quotationRequestSchema>>({
     defaultValues: {
       userId: user.id,
       quotationId: quotation.quotationId,
+      userQuotationId: quotation.id,
       name: user.name || "",
       email: user.email || "",
       phone: "",
@@ -38,15 +48,62 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
   // Calculate
   const calculateSubtotal = () => {
     return quotation.quotation.QuotationItem.reduce(
-      (acc, item) => acc + Number(item.variant.price) * Number(item.quantity),
+      (acc, item) => acc + Number(item?.variant.price) * Number(item?.quantity),
       0
     );
   };
 
-  function onSubmit(values: z.infer<typeof quotationRequestSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof quotationRequestSchema>) => {
+    // Validate the payload
+    if (values.note === "") {
+      toast({
+        title: "Invalid Form Data",
+        description: "Please check your form data and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+    startTransition(async () => {
+      try {
+        await createQuotationRequest(values);
+        router.refresh();
+        setIsRequestSuccess(true);
+      } catch (error) {
+        toast({
+          title: "An Error Occurred",
+          description: "Please try again later.",
+          variant: "destructive",
+        });
+      }
+    });
+  };
+
+  if (isPending) {
+    return (
+      <div className="flex mx-auto justify-center my-auto">
+        <Loader2 className="animate-spin" />
+        <p>Sending request...</p>
+      </div>
+    );
+  }
+
+  if (isRequestSuccess) {
+    return (
+      <div className="flex mx-auto justify-center">
+        <div className="flex flex-col text-center items-center justify-center">
+          <MailCheck className="text-green-500 w-10 h-10" />
+          <h1 className="text-2xl font-bold">Request Sent</h1>
+          <p>
+            Thank you for your request. We&apos;ve successfully received your
+            quotation details.
+          </p>
+          <p className="text-muted-foreground italic">
+            You will receive an update on your quotation within 24-48 hours.
+          </p>
+          <Button className="mt-4">View Requests</Button>
+        </div>
+      </div>
+    );
   }
 
   return (

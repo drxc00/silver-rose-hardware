@@ -4,7 +4,9 @@ import { QuotationWithRelations } from "@/app/types";
 import { Prisma } from "@prisma/client";
 
 type QuotationItem =
-  QuotationWithRelations["quotation"]["QuotationItem"][number];
+  | NonNullable<QuotationWithRelations["quotation"]>["QuotationItem"][number]
+  | undefined
+  | null;
 export type OptimisticQuotationState = {
   id: string;
   quotationId: string;
@@ -39,10 +41,10 @@ export function useQuotationOptimistic(
   >(
     initialQuotation
       ? {
-          id: initialQuotation.id,
-          quotationId: initialQuotation.quotationId,
+          id: initialQuotation.id as string,
+          quotationId: initialQuotation.quotationId as string,
           quotation: {
-            QuotationItem: initialQuotation.quotation.QuotationItem || [],
+            QuotationItem: initialQuotation.quotation?.QuotationItem || [],
           },
         }
       : {
@@ -60,14 +62,14 @@ export function useQuotationOptimistic(
             quotation: {
               ...state.quotation,
               QuotationItem: state.quotation.QuotationItem.filter(
-                (item) => item.id !== action.variantId
+                (item) => item?.id !== action.variantId
               ),
             },
           };
 
         case "add":
           const existingItem = state.quotation.QuotationItem.find(
-            (item) => item.variantId === action.item.variantId
+            (item) => item?.variantId === action.item?.variantId
           );
 
           if (existingItem) {
@@ -76,11 +78,11 @@ export function useQuotationOptimistic(
               quotation: {
                 ...state.quotation,
                 QuotationItem: state.quotation.QuotationItem.map((item) =>
-                  item.variantId === action.item.variantId
+                  item?.variantId === action.item?.variantId
                     ? {
                         ...item,
                         quantity: new Prisma.Decimal(
-                          Number(item.quantity) + Number(action.item.quantity)
+                          Number(item?.quantity) + Number(action.item?.quantity)
                         ),
                       }
                     : item
@@ -92,7 +94,7 @@ export function useQuotationOptimistic(
           return {
             ...state,
             quotation: {
-              ...state.quotation,
+              ...state.quotation as any,
               QuotationItem: [...state.quotation.QuotationItem, action.item],
             },
           };
@@ -101,7 +103,7 @@ export function useQuotationOptimistic(
         case "decrement": {
           const currentItems = state.quotation.QuotationItem;
           const updatedItems = currentItems.map((item) => {
-            if (item.id === action.variantId) {
+            if (item?.id === action.variantId) {
               const currentQuantity = Number(item.quantity);
               const newQuantity =
                 action.type === "increment"
@@ -151,7 +153,7 @@ export function useQuotationOptimistic(
         id: crypto.randomUUID(),
         variantId,
         quantity: new Prisma.Decimal(quantity),
-        quotationId: initialQuotation?.quotation.id as string,
+        quotationId: initialQuotation?.quotation?.id as string,
         createdAt: new Date(),
         updatedAt: new Date(),
         variant: {
@@ -186,7 +188,7 @@ export function useQuotationOptimistic(
 
       updateOptimisticQuotation({ type: "add", item: optimisticItem });
     },
-    [updateOptimisticQuotation, initialQuotation?.quotation.id]
+    [updateOptimisticQuotation, initialQuotation?.quotation?.id]
   );
 
   return {
