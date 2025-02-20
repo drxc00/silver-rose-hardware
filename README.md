@@ -14,6 +14,8 @@ Create a `.env` file in the project root and add the following environment varia
 AUTH_SECRET=
 DATABASE_URL=
 UPLOADTHING_TOKEN=
+NEXTAUTH_URL="http://localhost:3000"
+AUTH_TRUST_HOST=true
 ```  
 
 #### Environment Variables Explained:  
@@ -39,10 +41,9 @@ UPLOADTHING_TOKEN=
 ### Next Steps  
 After configuring the .env file, generate the Prisma client and apply migrations to set up the database schema:  
 ```sh
-npx prisma generate
-npx prisma db push
+npx prisma migrate dev
 ```  
-This ensures Prisma is properly set up before you start the server. Let me know if you need any refinements!
+This ensures Prisma is properly set up before you start the server.
 
 
 
@@ -53,3 +54,11 @@ npm run dev
 ### Creating first user
 Now we'll create our first admin user. Navigate to `http://localhost:3000/admin/create-first-user`
 - **NOTE:** After creating the first admin user, this page will not be accessible anymore, unless you clear the database. Please be careful and do not forget your admin credentials.
+
+To start a production build, run the following command:  
+```sh
+npm run build
+npm run start
+``` 
+NOTE: Please make sure to configure your environment variables because, auth.js may fail.
+
