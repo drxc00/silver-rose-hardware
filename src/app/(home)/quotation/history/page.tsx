@@ -4,9 +4,13 @@ import authCache from "@/lib/auth-cache";
 import { User } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent } from "@/components/ui/card";
+import { redirect } from "next/navigation";
 
 export default async function QuotationHistoryPage() {
   const session = await authCache();
+  
+  if (!session) redirect("/login");
+
   const user = session?.user as User;
   const quotationRequests = await prisma.quotationRequest.findMany({
     where: {
