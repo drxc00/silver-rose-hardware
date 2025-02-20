@@ -5,7 +5,7 @@
 ### 1. Install Dependencies  
 Run the following command to install all required dependencies:  
 ```sh
-npm install
+npm install --legacy-peer-deps
 ```  
 
 ### 2. Create a `.env` File  
