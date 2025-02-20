@@ -10,10 +10,10 @@ export default async function CategoriesPage() {
   const categories = await fetchCategories();
 
   return (
-    <main className="mx-auto p-20">
-      <div>
+    <main className="mx-auto h-full py-10">
+      <div className="flex flex-col items-center">
         <h1 className="text-3xl font-bold text-center pb-10">Categories</h1>
-        <div className="grid grid-cols-4 gap-10">
+        <div className="grid grid-cols-4 gap-10 justify-center">
           {categories.map((category) => (
             <div key={category.id} className="h-72 w-72 rounded-md">
               <CategoryCard category={category} />

@@ -96,7 +96,7 @@ export default async function Home() {
           <CarouselNext />
         </Carousel>
       </section>
-      <section className="px-40 py-10 bg-sidebar">
+      <section className="px-40 py-10 bg-background">
         <h1 className="text-3xl font-bold text-star mb-4">Categories</h1>
         <div className="w-full">
           <Carousel
@@ -148,7 +148,7 @@ export default async function Home() {
           />
         </div>
       </section>
-      <section className="flex justify-center h-52 pb-8 bg-sidebar">
+      <section className="flex justify-center h-52 pb-8">
         <div className="flex flex-col justify-center max-w-lg gap-4">
           <h1 className="text-3xl font-bold text-center">
             Not sure what you are looking for?

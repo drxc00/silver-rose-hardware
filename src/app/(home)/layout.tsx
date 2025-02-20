@@ -15,7 +15,7 @@ export default async function Layout({
   const user = session?.user;
   const userQuotation = await fetchUserQuotation(user?.id as string);
   return (
-    <main className="flex flex-col h-screen justify-between bg-muted">
+    <main className="flex flex-col h-screen justify-between">
       <QuotationProvider
         initialQuotation={
           (userQuotation as unknown as QuotationWithRelations) || null

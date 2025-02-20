@@ -79,7 +79,7 @@ export default async function CategoryPage({
   return (
     <div className="px-8 w-full h-full">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
         <Link href="/" className="hover:text-gray-900">
           Categories
         </Link>

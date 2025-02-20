@@ -8,7 +8,7 @@ export default async function Layout({
 }) {
   const categories = await fetchCategories();
   return (
-    <main className="p-10 flex min-h-screen">
+    <main className="p-10 flex h-full">
       <CategorySidebar categories={categories} />
       {children}
     </main>
