@@ -23,6 +23,7 @@ export async function updateIsFeatured(
     data: { isFeatured: isFeatured },
   });
   revalidatePath("/admin/products");
+  revalidatePath("/"); // Revalidate the home page
 }
 
 export async function updateProduct(
@@ -109,6 +110,7 @@ export async function updateProduct(
     });
     // Revalidate path
     revalidatePath(`/admin/products/edit/${id}`);
+    revalidatePath("/products/" + payload.slug);
   } catch (error) {
     console.error("Failed to update product:", error);
     throw new Error("Failed to update product");
@@ -167,4 +169,6 @@ export async function addProduct(
       },
     },
   });
+
+  revalidatePath("/products/" + slug);
 }

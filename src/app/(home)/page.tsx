@@ -17,7 +17,11 @@ import { CategoryCard } from "@/components/front/category-card";
 import { UnderPricesCard } from "@/components/front/under-prices-card";
 import { Sparkles } from "lucide-react";
 
-export default async function Home() {
+// In order to show new categories, and featured products, we need to revalidate
+// The revalidation happens in the server action
+export const dynamic = "force-static"; // Force static generation
+
+async function getHomePageData() {
   const [featuredProducts, allCategories] = await Promise.all([
     prisma.product.findMany({
       where: {
@@ -39,6 +43,14 @@ export default async function Home() {
     fetchCategories(),
   ]);
 
+  return {
+    featuredProducts,
+    allCategories,
+  };
+}
+
+export default async function Home() {
+  const { featuredProducts, allCategories } = await getHomePageData();
   return (
     <main className="flex flex-col bg-background mb-auto">
       <section className="relative w-full h-svh max-h-[500px] flex items-center justify-center">

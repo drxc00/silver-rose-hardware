@@ -30,6 +30,7 @@ export async function updateCategory({
   } catch (error) {
     throw new Error("Failed to update category: " + (error as Error).name);
   }
+  revalidatePath("/"); // Revalidate the carousel in the home page
   revalidatePath("/admin/categories/edit/" + id);
 }
 
@@ -53,5 +54,7 @@ export async function addCategory({
       ...(parentCategory && { parentCategory }),
     },
   });
+  revalidatePath("/"); // Revalidate the carousel in the home page
+  revalidatePath("/categories"); // Categories page
   revalidatePath("/admin/categories");
 }

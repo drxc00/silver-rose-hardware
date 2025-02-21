@@ -5,6 +5,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Categories | Silver Rose Hardware",
 };
+export const dynamic = "force-static"; // Force static generation
 
 export default async function CategoriesPage() {
   const categories = await fetchCategories();

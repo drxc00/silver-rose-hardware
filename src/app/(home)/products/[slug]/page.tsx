@@ -12,9 +12,22 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { fetchProductUsingSlug, fetchRelatedProducts } from "@/lib/data-fetch";
+import { fetchAllProducts, fetchProductUsingSlug, fetchRelatedProducts } from "@/lib/data-fetch";
 import Image from "next/image";
 import Link from "next/link";
+
+// Static generation
+// Add revalidate to the page
+export const revalidate = 3600; // Revalidate every hour
+
+// Add generateStaticParams to pre-render all product pages at build time
+export async function generateStaticParams() {
+  const products = await fetchAllProducts();
+
+  return products.map((product) => ({
+    slug: product.slug,
+  }));
+}
 
 export async function generateMetadata({
   params,
