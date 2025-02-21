@@ -17,10 +17,6 @@ import { CategoryCard } from "@/components/front/category-card";
 import { UnderPricesCard } from "@/components/front/under-prices-card";
 import { Sparkles } from "lucide-react";
 
-// In order to show new categories, and featured products, we need to revalidate
-// The revalidation happens in the server action
-export const dynamic = "force-static"; // Force static generation
-
 async function getHomePageData() {
   const [featuredProducts, allCategories] = await Promise.all([
     prisma.product.findMany({

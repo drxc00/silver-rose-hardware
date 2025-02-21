@@ -7,6 +7,8 @@ import { ToastProvider } from "@radix-ui/react-toast";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./(server)/api/uploadthing/core";
+import authCache from "@/lib/auth-cache";
+import { Session } from "next-auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,16 +20,17 @@ export const metadata: Metadata = {
   description: "Hardware store for your needs",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await authCache();
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        <AuthProvider>
+        <AuthProvider session={session as Session}>
           <ToastProvider>
             {children}
             <Toaster />
