@@ -138,9 +138,16 @@ export function RegistrationForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending ? "Registering..." : "Register"}
-        </Button>
+        <div className="pt-4">
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            disabled={isPending}
+          >
+            {isPending ? "Registering..." : "Register"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

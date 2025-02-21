@@ -17,10 +17,11 @@ import { clientLogin } from "@/app/(server)/actions/auth-actions";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { Loader2Icon } from "lucide-react";
+import { Eye, EyeOff, Loader2Icon } from "lucide-react";
 
 export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
   const [isPending, setIsPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -45,14 +46,13 @@ export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
         description: (error as Error).message,
         variant: "destructive",
       });
-    } finally {
-      setIsPending(false);
     }
+    setIsPending(false);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="username"
@@ -61,7 +61,8 @@ export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
               <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Username"
+                  placeholder="Enter your email"
+                  required
                   {...field}
                   className="focus-visible:ring-transparent"
                 />
@@ -77,26 +78,48 @@ export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="password"
-                  type="password"
-                  {...field}
-                  className="focus-visible:ring-transparent"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    placeholder="Enter your password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    autoComplete="current-password"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending ? (
-            <>
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-            </>
-          ) : (
-            "Login"
-          )}
-        </Button>
+        <div className="pt-4">
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+              </>
+            ) : (
+              "Login"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

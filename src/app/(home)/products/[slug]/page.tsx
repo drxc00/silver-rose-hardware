@@ -125,7 +125,7 @@ export default async function ProductPage({
             </Link>
           </div>
           <div className="grid grid-cols-4 gap-4">
-            {relatedProducts.map(
+            {relatedProducts.slice(0, 4).map(
               (relatedProduct) =>
                 // This ensures that the current product is not displayed
                 relatedProduct.id !== product?.id && (
