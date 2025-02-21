@@ -98,8 +98,6 @@ export function useQuotationOptimistic(
               QuotationItem: [...state.quotation.QuotationItem, action.item],
             },
           };
-
-        // NOTE: The variantId is the id of the QuotationItem
         //
         case "increment":
         case "decrement": {
