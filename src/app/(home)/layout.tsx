@@ -6,8 +6,6 @@ import { Session } from "next-auth";
 import { QuotationWithRelations } from "../types";
 import { QuotationProvider } from "@/components/providers/quotation-provider";
 
-
-
 export default async function Layout({
   children,
 }: {
@@ -20,13 +18,13 @@ export default async function Layout({
     <main className="flex flex-col min-h-screen h-full justify-between">
       <QuotationProvider
         initialQuotation={
-          (userQuotation as unknown as QuotationWithRelations) || null
+          (JSON.parse(
+            JSON.stringify(userQuotation)
+          ) as QuotationWithRelations) || null
         }
       >
         <NavBar session={session as Session} />
-        <main className="flex-1">
-        {children}
-        </main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </QuotationProvider>
     </main>
