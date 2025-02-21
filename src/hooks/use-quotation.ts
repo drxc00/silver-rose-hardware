@@ -27,7 +27,7 @@ type RemoveAction = {
 
 type QuantityAction = {
   type: "increment" | "decrement";
-  variantId: string;
+  quotationItemId: string;
 };
 
 type QuotationAction = AddAction | RemoveAction | QuantityAction;
@@ -99,11 +99,13 @@ export function useQuotationOptimistic(
             },
           };
 
+        // NOTE: The variantId is the id of the QuotationItem
+        //
         case "increment":
         case "decrement": {
           const currentItems = state.quotation.QuotationItem;
           const updatedItems = currentItems.map((item) => {
-            if (item?.id === action.variantId) {
+            if (item?.id === action.quotationItemId) {
               const currentQuantity = Number(item.quantity);
               const newQuantity =
                 action.type === "increment"
@@ -134,8 +136,8 @@ export function useQuotationOptimistic(
   );
 
   const updateQuantity = useCallback(
-    (variantId: string, type: "increment" | "decrement") => {
-      updateOptimisticQuotation({ type, variantId });
+    (quotationItemId: string, type: "increment" | "decrement") => {
+      updateOptimisticQuotation({ type, quotationItemId: quotationItemId });
     },
     [updateOptimisticQuotation]
   );
@@ -149,10 +151,13 @@ export function useQuotationOptimistic(
 
   const addToQuotation = useCallback(
     (variantId: string, quantity: number) => {
+      // NOTE: This is simply a placeholder item
+      // This will be replaced with the actual item from the database after the server mutation
       const optimisticItem: QuotationItem = {
         id: crypto.randomUUID(),
         variantId,
         quantity: new Prisma.Decimal(quantity),
+        priceAtQuotation: new Prisma.Decimal(0),
         quotationId: initialQuotation?.quotation?.id as string,
         createdAt: new Date(),
         updatedAt: new Date(),

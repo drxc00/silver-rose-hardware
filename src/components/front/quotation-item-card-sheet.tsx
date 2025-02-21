@@ -60,7 +60,9 @@ const QuantityButton = ({
 export const QuotationItemCard = ({
   item,
 }: {
-  item:NonNullable<QuotationWithRelations["quotation"]>["QuotationItem"][number];
+  item: NonNullable<
+    QuotationWithRelations["quotation"]
+  >["QuotationItem"][number];
 }) => {
   const { removeToQuotation, updateQuantity } = useQuotation();
   const router = useRouter();
@@ -76,7 +78,9 @@ export const QuotationItemCard = ({
     } catch (error) {
       toast({
         title: "Error",
-        description: `[${(error as Error).name}] Failed to remove item from quotation`,
+        description: `[${
+          (error as Error).name
+        }] Failed to remove item from quotation`,
         variant: "destructive",
       });
     }
