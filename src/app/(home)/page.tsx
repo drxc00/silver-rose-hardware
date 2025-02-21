@@ -16,8 +16,9 @@ import { fetchCategories } from "@/lib/data-fetch";
 import { CategoryCard } from "@/components/front/category-card";
 import { UnderPricesCard } from "@/components/front/under-prices-card";
 import { Sparkles } from "lucide-react";
+import { unstable_cache as cache } from "next/cache";
 
-async function getHomePageData() {
+const getHomePageData = cache(async () => {
   const [featuredProducts, allCategories] = await Promise.all([
     prisma.product.findMany({
       where: {
@@ -43,7 +44,7 @@ async function getHomePageData() {
     featuredProducts,
     allCategories,
   };
-}
+});
 
 export default async function Home() {
   const { featuredProducts, allCategories } = await getHomePageData();
