@@ -74,7 +74,7 @@ export default async function Home() {
           <h1 className="text-3xl font-bold text-star mb-4">
             Featured Products
           </h1>
-          <Link href="/" className="underline">
+          <Link href="/products" className="underline">
             View all products
           </Link>
         </div>
