@@ -1,6 +1,6 @@
 "use client";
 
-import { CategoryTree, FormProductVariant } from "@/app/types";
+import { FormProductVariant } from "@/app/types";
 import {
   DropdownMenu,
   DropdownMenuTrigger,

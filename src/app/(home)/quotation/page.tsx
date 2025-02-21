@@ -1,10 +1,8 @@
 import { QuotationTable } from "@/components/front/quotation/quotation-table";
 import { Button } from "@/components/ui/button";
-import authCache from "@/lib/auth-cache";
 import { routeProtection } from "@/lib/auth-functions";
 import { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export function generateMetadata(): Metadata {
   return {

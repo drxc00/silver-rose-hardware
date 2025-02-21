@@ -72,8 +72,6 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

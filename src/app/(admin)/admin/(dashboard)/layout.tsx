@@ -2,7 +2,6 @@ import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import authCache from "@/lib/auth-cache";
 import { UserRole } from "@/lib/constants";
-import { User } from "next-auth";
 import { redirect } from "next/navigation";
 
 export default async function Layout({

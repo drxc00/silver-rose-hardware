@@ -1,6 +1,5 @@
 import {
   ProductWithRelatedData,
-  SerializedProductWithRelatedData,
 } from "@/app/types";
 import { ProductCard } from "@/components/front/product-card";
 import { ProductPageCard } from "@/components/front/product-page-card";

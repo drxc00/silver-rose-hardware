@@ -15,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { clientLogin } from "@/app/(server)/actions/auth-actions";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { Loader2Icon } from "lucide-react";

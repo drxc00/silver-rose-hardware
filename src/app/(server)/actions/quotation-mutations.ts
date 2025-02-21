@@ -7,7 +7,6 @@ import {
   quotationRequestSchema,
 } from "@/lib/form-schema";
 import { prisma } from "@/lib/prisma";
-import { Prisma, QuotationItem } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 

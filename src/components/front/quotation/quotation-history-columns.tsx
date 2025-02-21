@@ -57,7 +57,9 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
   {
     accessorKey: "actions",
     header: "Actions",
-    cell: ({ row }) => {
+    // Accepts row as a parameter.
+    // Removed here for linting reasons
+    cell: ({}) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

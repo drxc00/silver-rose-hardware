@@ -7,7 +7,7 @@ import {
 } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Loader2, MinusIcon, PlusIcon } from "lucide-react";
+import { MinusIcon, PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   SelectValue,
@@ -18,10 +18,6 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input";
 import { useProductAttributes } from "@/hooks/use-product-attributes";
-import { useToast } from "@/hooks/use-toast";
-import { useQuotation } from "../providers/quotation-provider";
-import { addQuotationItem } from "@/app/(server)/actions/quotation-mutations";
-import { useRouter } from "next/navigation";
 import { AddToQuotationButton } from "./add-to-quotation-button";
 
 interface ProductPageCardProps {

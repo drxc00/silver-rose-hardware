@@ -1,8 +1,7 @@
-// @ts-ignore
+// @ts-expect-error zeptomail is not offically typed
 import { SendMailClient } from "zeptomail";
 import { QuotationItemWithRelations } from "@/app/types";
 import { formatCurrency } from "./utils";
-import { getQuotationRequest } from "./data-fetch";
 
 export const zeptoMail = new SendMailClient({
   url: "api.zeptomail.com/",
