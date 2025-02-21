@@ -45,6 +45,7 @@ export default async function QuotationPage({
   // Quotation Id
   const id = (await params).id || "";
   const quotationData = await getQuotation(id);
+  const status = quotationData?.status || "Pending";
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader
@@ -53,10 +54,10 @@ export default async function QuotationPage({
       />
       <section className="p-4 max-w-7xl mx-auto">
         <QuotationInformation
-          quotationRequest={JSON.parse(JSON.stringify(quotationData))}
+          quotationRequest={JSON.parse(JSON.stringify(quotationData))} readOnly={status !== "Pending"}
         />
         <RemarksForm
-          quotationRequest={JSON.parse(JSON.stringify(quotationData))}
+          quotationRequest={JSON.parse(JSON.stringify(quotationData))} readOnly={status !== "Pending"}
         />
       </section>
     </div>

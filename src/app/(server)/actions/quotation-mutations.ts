@@ -7,6 +7,7 @@ import {
   quotationRequestSchema,
 } from "@/lib/form-schema";
 import { prisma } from "@/lib/prisma";
+import { Prisma, QuotationItem } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -188,7 +189,15 @@ export async function addQuotationItem(payload: {
     include: {
       quotation: {
         include: {
-          QuotationItem: true,
+          QuotationItem: {
+            include: {
+              variant: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -209,12 +218,24 @@ export async function addQuotationItem(payload: {
     });
     return;
   }
+
+  // Fetch the variant price
+  const variant = await prisma.variant.findUnique({
+    where: { id: payload.variantId },
+    select: { price: true },
+  });
+
+  if (!variant) {
+    throw new Error("Variant not found.");
+  }
+
   // Add the quotation item to the quotation
   await prisma.quotationItem.create({
     data: {
       variantId: payload.variantId,
       quantity: payload.quantity,
       quotationId: userQuotation?.quotationId as string,
+      priceAtQuotation: variant.price,
     },
   });
 }

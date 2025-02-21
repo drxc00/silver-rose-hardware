@@ -298,58 +298,71 @@ export async function fetchUsers() {
 }
 
 export async function fetchDashboardData(): Promise<DashboardData> {
-  const [
-    quotations,
-    allQuotationRequests,
-    pendingQuotations,
-    products,
-    categories,
-    users,
-  ] = await Promise.all([
-    prisma.quotation.findMany({}),
-    prisma.quotationRequest.findMany({}),
-    prisma.quotationRequest.findMany({ where: { status: "pending" } }),
-    fetchAllProducts(),
-    prisma.category.findMany({}),
-    fetchUsers(),
-  ]);
+  try {
+    // Fetch database-related data in a single transaction to reduce connections
+    const [
+      totalQuotations,
+      totalQuotationRequests,
+      pendingQuotationsCount,
+      recentRequestsCount,
+      recentPendingCount,
+      categories,
+    ] = await prisma.$transaction([
+      prisma.quotation.count(), // Only fetch count
+      prisma.quotationRequest.count(), // Only fetch count
+      prisma.quotationRequest.count({ where: { status: "pending" } }),
+      prisma.quotationRequest.count({
+        where: {
+          createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        },
+      }),
+      prisma.quotationRequest.count({
+        where: {
+          status: "pending",
+          createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
+        },
+      }),
+      prisma.category.findMany({ select: { id: true, parentCategory: true } }), // Minimal fields
+    ]);
 
-  return {
-    quotations: {
-      total: quotations.length,
-    },
-    quotationRequests: {
-      total: allQuotationRequests.length,
-      details: {
-        requestsFromPastWeek: allQuotationRequests.filter(
-          (qr) => qr.createdAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-        ).length,
+    // Fetch external API data (kept separate to avoid blocking DB transactions)
+    const [products, users] = await Promise.all([
+      fetchAllProducts(), // Fetch products from external API
+      fetchUsers(), // Fetch users from external API
+    ]);
+
+    return {
+      quotations: { total: totalQuotations },
+      quotationRequests: {
+        total: totalQuotationRequests,
+        details: {
+          requestsFromPastWeek: recentRequestsCount,
+        },
       },
-    },
-    pendingQuotations: {
-      total: pendingQuotations.length,
-      details: {
-        requestsFromLastHour: pendingQuotations.filter(
-          (qr) => qr.createdAt > new Date(Date.now() - 60 * 60 * 1000)
-        ).length,
+      pendingQuotations: {
+        total: pendingQuotationsCount,
+        details: {
+          requestsFromLastHour: recentPendingCount,
+        },
       },
-    },
-    products: {
-      total: products.length,
-    },
-    categories: {
-      total: categories.length,
-      details: {
-        parentCategories: categories.filter((c) => !c.parentCategory).length,
-        subCategories: categories.filter((c) => c.parentCategory).length,
+      products: { total: products.length },
+      categories: {
+        total: categories.length,
+        details: {
+          parentCategories: categories.filter((c) => !c.parentCategory).length,
+          subCategories: categories.filter((c) => c.parentCategory).length,
+        },
       },
-    },
-    users: {
-      total: users.admin.length + users.customer.length,
-      details: {
-        admin: users.admin.length,
-        customer: users.customer.length,
+      users: {
+        total: users.admin.length + users.customer.length,
+        details: {
+          admin: users.admin.length,
+          customer: users.customer.length,
+        },
       },
-    },
-  };
+    };
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    throw error;
+  }
 }

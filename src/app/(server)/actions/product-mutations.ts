@@ -109,6 +109,7 @@ export async function updateProduct(
       });
     });
     // Revalidate path
+    revalidatePath("/");
     revalidatePath(`/admin/products/edit/${id}`);
     revalidatePath("/products/" + payload.slug);
   } catch (error) {

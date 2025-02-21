@@ -39,13 +39,9 @@ export function QuotationSummaryTable({
                 )
                 .join("; ")}
             </TableCell>
-            <TableCell>
-              ₱ {formatCurrency(Number(item?.variant.price))}
-            </TableCell>
+            <TableCell>{formatCurrency(Number(item?.variant.price))}</TableCell>
             <TableCell>{Number(item?.quantity)}</TableCell>
             <TableCell>
-              {" "}
-              ₱
               {formatCurrency(
                 Number(item?.variant.price) * Number(item?.quantity)
               )}

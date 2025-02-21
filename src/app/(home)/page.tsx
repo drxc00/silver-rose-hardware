@@ -96,7 +96,7 @@ export default async function Home() {
                 className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
               >
                 <div className="h-full">
-                  <ProductCard product={product as ProductWithRelatedData} />
+                  <ProductCard product={JSON.parse(JSON.stringify(product)) as ProductWithRelatedData} />
                 </div>
               </CarouselItem>
             ))}

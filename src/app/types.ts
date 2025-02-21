@@ -160,6 +160,8 @@ export type VariantWithRelations = Prisma.VariantGetPayload<{
   };
 }>;
 
+
+
 export type QuotationItemWithRelations = Prisma.QuotationRequestGetPayload<{
   include: {
     quotation: {

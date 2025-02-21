@@ -29,19 +29,24 @@ import {
 import { AdditionalChargesTable } from "./additional-charges-table";
 import { formatCurrency } from "@/lib/utils";
 import { useTransition } from "react";
-import { sendQuotationToEmail } from "@/app/(server)/actions/other-actions";
+import { respondToQuotationRequest } from "@/app/(server)/actions/other-actions";
+import { useToast } from "@/hooks/use-toast";
 
 interface QuotationInformationProps {
   quotationRequest: QuotationItemWithRelations;
+  readOnly?: boolean;
 }
 
 export function QuotationInformation({
   quotationRequest,
+  readOnly = false,
 }: QuotationInformationProps) {
   const [isMailPending, startSendMailTransition] = useTransition();
+  const { toast } = useToast();
   const calculateSubtotal = () => {
     return quotationRequest.quotation.QuotationItem.reduce(
-      (acc, item) => acc + Number(item?.variant.price) * Number(item?.quantity),
+      (acc, item) =>
+        acc + Number(item?.priceAtQuotation) * Number(item?.quantity),
       0
     );
   };
@@ -69,26 +74,41 @@ export function QuotationInformation({
             <Printer />
             <span>Print Quotation</span>
           </Button>
-          <form
-            action={async () => {
-              startSendMailTransition(async () => {
-                await sendQuotationToEmail(quotationRequest.id);
-              });
-            }}
-          >
-            <Button>
-              <MailCheck />
-              <span>
-                {isMailPending ? (
-                  <span className="w-full">
-                    <Loader2 className="animate-spin" />
-                  </span>
-                ) : (
-                  "Respond"
-                )}
-              </span>
-            </Button>
-          </form>
+          {!readOnly && (
+            <form
+              action={async () => {
+                startSendMailTransition(async () => {
+                  try {
+                    await respondToQuotationRequest(quotationRequest.id);
+                    // If successful show toast
+                    toast({
+                      title: "Success",
+                      description: "Successfully sent mail to customer",
+                    });
+                  } catch (error) {
+                    toast({
+                      title: "Error",
+                      description: (error as Error).message,
+                      variant: "destructive",
+                    });
+                  }
+                });
+              }}
+            >
+              <Button>
+                <MailCheck />
+                <span>
+                  {isMailPending ? (
+                    <span className="w-full">
+                      <Loader2 className="animate-spin" />
+                    </span>
+                  ) : (
+                    "Respond"
+                  )}
+                </span>
+              </Button>
+            </form>
+          )}
         </div>
       </div>
       <Card className="border-b-none">
@@ -165,14 +185,14 @@ export function QuotationInformation({
                         .join("; ")}
                     </TableCell>
                     <TableCell>
-                      ₱ {Number(item?.variant.price).toLocaleString()}
+                      ₱ {Number(item?.priceAtQuotation).toLocaleString()}
                     </TableCell>
                     <TableCell>{Number(item?.quantity)}</TableCell>
                     <TableCell>
                       {" "}
                       ₱
                       {(
-                        Number(item?.variant.price) * Number(item?.quantity)
+                        Number(item?.priceAtQuotation) * Number(item?.quantity)
                       ).toLocaleString()}
                     </TableCell>
                   </TableRow>
@@ -181,7 +201,7 @@ export function QuotationInformation({
             </Table>
           </div>
           <div className="py-6">
-            <AdditionalChargesTable quotationRequest={quotationRequest} />
+            <AdditionalChargesTable quotationRequest={quotationRequest} readOnly={readOnly} />
           </div>
         </CardContent>
         <CardFooter className="bg-sidebar border-t flex justify-end">
