@@ -178,6 +178,7 @@ export type QuotationItemWithRelations = Prisma.QuotationRequestGetPayload<{
             };
           };
         };
+        AdditionalCharge: true;
       };
     };
     user: {

@@ -146,6 +146,7 @@ model Quotation {
   QuotationRequest QuotationRequest[]
   QuotationItem    QuotationItem[]
   UserQuotation    UserQuotation[]
+  AdditionalCharge AdditionalCharge[]
 
   @@map("quotations")
 }
@@ -180,15 +181,27 @@ model QuotationRequest {
 }
 
 model QuotationItem {
-  id          String   @id @default(cuid())
-  quotationId String
-  variantId   String
-  quantity    Decimal
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  quotationId      String
+  variantId        String
+  quantity         Decimal
+  priceAtQuotation Decimal // Store price snapshot
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
   variant   Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
   @@map("quotation_items")
+}
+
+model AdditionalCharge {
+  id          String   @id @default(cuid())
+  quotationId String
+  name        String
+  amount      Decimal
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
 }

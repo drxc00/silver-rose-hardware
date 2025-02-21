@@ -64,3 +64,9 @@ export const quotationRequestSchema = z.object({
   phone: z.string().min(1),
   note: z.string(),
 });
+
+export const additionalChargeShcema = z.object({
+  quotationId: z.string().min(1),
+  name: z.string().min(1),
+  amount: z.number().min(1),
+});

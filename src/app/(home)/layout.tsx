@@ -6,6 +6,8 @@ import { Session } from "next-auth";
 import { QuotationWithRelations } from "../types";
 import { QuotationProvider } from "@/components/providers/quotation-provider";
 
+
+
 export default async function Layout({
   children,
 }: {

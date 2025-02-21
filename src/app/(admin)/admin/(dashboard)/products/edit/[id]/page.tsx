@@ -1,4 +1,4 @@
-import { CategoryTree, SerializedProductWithRelatedData } from "@/app/types";
+import { CategoryTree } from "@/app/types";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { EditProductForm } from "@/components/admin/products/edit/edit-product-form";
 import {
@@ -21,15 +21,6 @@ export default async function EditProductPage({
     fetchAttributes(),
   ]);
 
-  // Transform Decimal fields to string
-  const serializedProduct = {
-    ...product,
-    variants: product.variants.map((variant) => ({
-      ...variant,
-      price: variant.price.toString(), // Convert Decimal to string
-    })),
-  };
-
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader
@@ -38,7 +29,7 @@ export default async function EditProductPage({
       />
       <section className="p-4 max-w-4xl mx-auto">
         <EditProductForm
-          product={serializedProduct as SerializedProductWithRelatedData}
+          product={JSON.parse(JSON.stringify(product))}
           categories={categories as CategoryTree[]}
           attributes={attributes}
         />

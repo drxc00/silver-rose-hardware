@@ -7,6 +7,36 @@ import { prisma } from "./prisma";
 import { Attribute, Product } from "@prisma/client";
 import { UserRole } from "./constants";
 
+export const getQuotationRequest = async (quotationRequestId: string) => {
+  return prisma.quotationRequest.findFirst({
+    where: { id: quotationRequestId },
+    include: {
+      quotation: {
+        include: {
+          QuotationItem: {
+            include: {
+              variant: {
+                include: {
+                  attributes: {
+                    include: { attribute: true },
+                  },
+                  product: true,
+                },
+              },
+            },
+          },
+          AdditionalCharge: true,
+        },
+      },
+      user: {
+        include: {
+          accounts: true,
+        },
+      },
+    },
+  });
+};
+
 export async function fetchUserQuotation(userId: string) {
   if (!userId) return null;
   return prisma.userQuotation

@@ -1,4 +1,3 @@
-import { SerializedProductWithRelatedData } from "@/app/types";
 import { ProductsGrid } from "@/components/front/products-grid";
 import { prisma } from "@/lib/prisma";
 import { ChevronRight } from "lucide-react";
@@ -56,14 +55,6 @@ export default async function Page({
     }),
   ]);
 
-  const serializedProducts = products.map((product) => ({
-    ...product,
-    variants: product.variants.map((variant) => ({
-      ...variant,
-      price: variant.price.toString(),
-    })),
-  }));
-
   return (
     <div className="px-8 w-full h-full">
       {/* Breadcrumb */}
@@ -81,7 +72,7 @@ export default async function Page({
       {/* Category Title */}
       <h1 className="text-3xl font-bold mb-4">{category?.name}</h1>
       {/* Products Grid */}
-      <ProductsGrid products={serializedProducts as SerializedProductWithRelatedData[]} />
+      <ProductsGrid products={JSON.parse(JSON.stringify(products))} />
     </div>
   );
 }

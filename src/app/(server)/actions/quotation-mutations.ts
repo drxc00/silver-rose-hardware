@@ -1,9 +1,77 @@
 "use server";
 
 import authCache from "@/lib/auth-cache";
-import { quotationRequestSchema } from "@/lib/form-schema";
+import { UserRole } from "@/lib/constants";
+import {
+  additionalChargeShcema,
+  quotationRequestSchema,
+} from "@/lib/form-schema";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
+
+export async function addAdditionalQuotationCharge({
+  payload,
+}: {
+  payload: z.infer<typeof additionalChargeShcema>;
+}) {
+  // Check first if there the user is logged in
+  // and check if the role is admin
+  const session = await authCache();
+  if (!session) throw new Error("You are not logged in.");
+  const user = session?.user;
+  if (user?.role !== UserRole.ADMIN) throw new Error("You are not admin.");
+
+  // Parse the payload to match the schema
+  const parsedPayload = additionalChargeShcema.safeParse(payload);
+  if (!parsedPayload) throw new Error("Invalid Request Payload");
+  await prisma.additionalCharge.create({
+    data: {
+      name: payload.name,
+      amount: payload.amount,
+      quotationId: payload.quotationId,
+    },
+  });
+}
+
+export async function addQuotationRequestRemark({
+  quotationRequestId,
+  remark,
+}: {
+  quotationRequestId: string;
+  remark: string;
+}) {
+  // Check first if there the user is logged in
+  // and check if the role is admin
+  const session = await authCache();
+  if (!session) throw new Error("You are not logged in.");
+  const user = session?.user;
+  if (user?.role !== UserRole.ADMIN) throw new Error("You are not admin.");
+
+  // Add the remark to the quotation request
+  await prisma.quotationRequest.update({
+    where: {
+      id: quotationRequestId,
+    },
+    data: {
+      remarks: remark,
+    },
+  });
+  revalidatePath(`/admin/quotations/view/${quotationRequestId}`);
+}
+
+export async function removeAdditionalQuotationCharge(
+  additionalChargeId: string,
+  quotationRequestId: string
+) {
+  if (!additionalChargeId) throw new Error("Invalid Request Payload");
+  await prisma.additionalCharge.delete({
+    where: {
+      id: additionalChargeId,
+    },
+  });
+  revalidatePath(`/admin/quotations/view/${quotationRequestId}`);
+}
 
 export async function createQuotationRequest(
   payload: z.infer<typeof quotationRequestSchema>

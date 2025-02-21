@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { QuotationItemWithRelations } from "@/app/types";
+import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<QuotationItemWithRelations>[] = [
   {
@@ -38,7 +39,7 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
           acc + Number(item?.variant.price) * Number(item?.quantity),
         0
       );
-      return <span>₱ {totalPrice.toLocaleString()}</span>;
+      return <span>{formatCurrency(totalPrice)}</span>;
     },
   },
   {
@@ -57,8 +58,6 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

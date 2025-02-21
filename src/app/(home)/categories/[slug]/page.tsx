@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import { ProductsGrid } from "@/components/front/products-grid";
-import { SerializedProductWithRelatedData } from "@/app/types";
 
 export async function generateMetadata({
   params,
@@ -68,14 +67,6 @@ export default async function CategoryPage({
     },
   });
 
-  const serializedProducts = products.map((product) => ({
-    ...product,
-    variants: product.variants.map((variant) => ({
-      ...variant,
-      price: variant.price.toString(),
-    })),
-  }));
-
   return (
     <div className="px-8 w-full h-full">
       {/* Breadcrumb */}
@@ -126,9 +117,7 @@ export default async function CategoryPage({
       )}
 
       {/* Products Grid */}
-      <ProductsGrid
-        products={serializedProducts as SerializedProductWithRelatedData[]}
-      />
+      <ProductsGrid products={JSON.parse(JSON.stringify(products))} />
     </div>
   );
 }

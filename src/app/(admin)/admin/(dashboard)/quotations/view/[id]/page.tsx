@@ -1,16 +1,10 @@
-import { QuotationItemWithRelations } from "@/app/types";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { QuotationInformation } from "@/components/admin/quotations/quotation-information";
+import { RemarksForm } from "@/components/admin/quotations/remarks-form";
 import { prisma } from "@/lib/prisma";
 
-export default async function QuotationPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  // Quotation Id
-  const id = (await params).id || "";
-  const quotationData = await prisma.quotationRequest.findFirst({
+const getQuotation = async (id: string) => {
+  return prisma.quotationRequest.findFirst({
     where: {
       id: id,
     },
@@ -31,6 +25,7 @@ export default async function QuotationPage({
               },
             },
           },
+          AdditionalCharge: true,
         },
       },
       user: {
@@ -40,6 +35,16 @@ export default async function QuotationPage({
       },
     },
   });
+};
+
+export default async function QuotationPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  // Quotation Id
+  const id = (await params).id || "";
+  const quotationData = await getQuotation(id);
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader
@@ -48,6 +53,9 @@ export default async function QuotationPage({
       />
       <section className="p-4 max-w-7xl mx-auto">
         <QuotationInformation
+          quotationRequest={JSON.parse(JSON.stringify(quotationData))}
+        />
+        <RemarksForm
           quotationRequest={JSON.parse(JSON.stringify(quotationData))}
         />
       </section>

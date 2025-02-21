@@ -12,22 +12,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { fetchAllProducts, fetchProductUsingSlug, fetchRelatedProducts } from "@/lib/data-fetch";
+import {
+  fetchAllProducts,
+  fetchProductUsingSlug,
+  fetchRelatedProducts,
+} from "@/lib/data-fetch";
 import Image from "next/image";
 import Link from "next/link";
 
 // Static generation
-// Add revalidate to the page
-export const revalidate = 3600; // Revalidate every hour
-
-// Add generateStaticParams to pre-render all product pages at build time
-export async function generateStaticParams() {
-  const products = await fetchAllProducts();
-
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
 
 export async function generateMetadata({
   params,
@@ -43,22 +36,23 @@ export async function generateMetadata({
   };
 }
 
+// Add generateStaticParams to pre-render all product pages at build time
+export async function generateStaticParams() {
+  const products = await fetchAllProducts();
+
+  return products.map((product) => ({
+    slug: product.slug?.toString() || "",
+  }));
+}
+
 export default async function ProductPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const urlParams = await params;
-  const productSlug = urlParams.slug;
-  const product = (await fetchProductUsingSlug(productSlug).then(
-    (product: ProductWithRelatedData) => ({
-      ...product,
-      variants: product.variants.map((variant) => ({
-        ...variant,
-        price: variant.price.toNumber(),
-      })),
-    })
-  )) as SerializedProductWithRelatedData;
+  const productSlug = (await params).slug;
+  const productData = await fetchProductUsingSlug(productSlug);
+  const product = JSON.parse(JSON.stringify(productData));
   const relatedProducts = await fetchRelatedProducts(
     product?.category.id || ""
   );
@@ -109,9 +103,7 @@ export default async function ProductPage({
             className="w-full h-full object-contain"
           />
         </div>
-        <ProductPageCard
-          product={product as SerializedProductWithRelatedData}
-        />
+        <ProductPageCard product={product} />
       </section>
       <section className="pt-10">
         <div>

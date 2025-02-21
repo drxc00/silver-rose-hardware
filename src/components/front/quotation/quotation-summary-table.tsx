@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OptimisticQuotationState } from "@/hooks/use-quotation";
+import { formatCurrency } from "@/lib/utils";
 
 export function QuotationSummaryTable({
   quotation,
@@ -39,15 +40,15 @@ export function QuotationSummaryTable({
                 .join("; ")}
             </TableCell>
             <TableCell>
-              ₱ {Number(item?.variant.price).toLocaleString()}
+              ₱ {formatCurrency(Number(item?.variant.price))}
             </TableCell>
             <TableCell>{Number(item?.quantity)}</TableCell>
             <TableCell>
               {" "}
               ₱
-              {(
+              {formatCurrency(
                 Number(item?.variant.price) * Number(item?.quantity)
-              ).toLocaleString()}
+              )}
             </TableCell>
           </TableRow>
         ))}
