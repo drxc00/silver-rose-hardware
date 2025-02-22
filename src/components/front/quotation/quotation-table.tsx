@@ -70,10 +70,12 @@ export function QuotationTable() {
                 <span>History</span>
               </Button>
             </Link>
-            <Button>
-              <Printer />
-              <span>Print Quotation</span>
-            </Button>
+            <Link href={`/api/quotation/${quotation.quotationId}/pdf`}>
+              <Button>
+                <Printer />
+                <span>Print Quotation</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </CardHeader>

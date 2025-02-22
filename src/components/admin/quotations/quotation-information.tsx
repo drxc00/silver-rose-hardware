@@ -42,6 +42,7 @@ export function QuotationInformation({
   readOnly = false,
 }: QuotationInformationProps) {
   const [isMailPending, startSendMailTransition] = useTransition();
+  const [isPrinting, startPrintTransition] = useTransition();
   const { toast } = useToast();
   const calculateSubtotal = () => {
     return quotationRequest.quotation.QuotationItem.reduce(
@@ -62,6 +63,28 @@ export function QuotationInformation({
     return calculateSubtotal() + calculateAdditionalCharges();
   };
 
+  const handlePrint = async () => {
+    startPrintTransition(async () => {
+      try {
+        const response = await fetch(
+          `/api/quotation/${quotationRequest.quotationId}/pdf`
+        );
+        const pdfBlob = await response.blob();
+        const url = URL.createObjectURL(pdfBlob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Quotation-${quotationRequest.quotationId}.pdf`; // Suggested filename
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setTimeout(() => URL.revokeObjectURL(url), 5000); // Delay revocation
+      } catch (error) {
+        console.error("Error generating PDF:", error);
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -70,10 +93,23 @@ export function QuotationInformation({
           <span>Back to Quotations</span>
         </Button>
         <div className="flex gap-4">
-          <Button variant="outline">
-            <Printer />
-            <span>Print Quotation</span>
-          </Button>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // Prevent form submission
+              handlePrint();
+            }}
+          >
+            <Button type="submit" variant="outline">
+              {isPrinting ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <>
+                  <Printer />
+                  <span>Print Quotation</span>
+                </>
+              )}
+            </Button>
+          </form>
           {!readOnly && (
             <form
               action={async () => {
@@ -201,7 +237,10 @@ export function QuotationInformation({
             </Table>
           </div>
           <div className="py-6">
-            <AdditionalChargesTable quotationRequest={quotationRequest} readOnly={readOnly} />
+            <AdditionalChargesTable
+              quotationRequest={quotationRequest}
+              readOnly={readOnly}
+            />
           </div>
         </CardContent>
         <CardFooter className="bg-sidebar border-t flex justify-end">
