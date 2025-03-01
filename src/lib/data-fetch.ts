@@ -270,15 +270,20 @@ export async function fetchAllProducts(options?: Prisma.ProductFindManyArgs): Pr
         id: true,
         name: true,
         slug: true,
+        image: true,
         description: true,
+        status: true,
+        isFeatured: true,
         category: {
           select: {
             id: true,
             name: true,
+            slug: true,
             parent: {
               select: {
                 id: true,
-                name: true
+                name: true,
+                slug: true
               }
             }
           }

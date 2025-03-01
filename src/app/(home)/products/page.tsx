@@ -57,8 +57,15 @@ async function ProductsContent({
         category: {
           select: {
             id: true,
+            slug: true,
             name: true,
-            parent: true,
+            parent: {
+              select: {
+                id: true,
+                name: true,
+                slug: true
+              }
+            }
           },
         },
         variants: {
@@ -69,6 +76,7 @@ async function ProductsContent({
               select: {
                 attribute: {
                   select: {
+                    id: true,
                     name: true,
                   },
                 },

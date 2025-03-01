@@ -1,42 +1,18 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import { ProductsGrid } from "@/components/front/products-grid";
-import { fetchCategories } from "@/lib/data-fetch";
 import { Pagination } from "@/components/front/products-pagination";
-
-export async function generateStaticParams() {
-  // We invoke the fetchCategories() function to create the tree structure
-  const categories = await fetchCategories();
-  // Run a flatMap on the categories to create the paths
-  return categories.flatMap((category) => {
-    const paths = [];
-    // Add the main category path
-    paths.push({ slug: category.slug });
-
-    // Add paths for each subcategory
-    if (category.subcategories.length > 0) {
-      paths.push(
-        ...category.subcategories.map((subcategory) => ({
-          slug: category.slug,
-          subSlug: subcategory.slug,
-        }))
-      );
-    }
-    return paths;
-  });
-}
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string; subSlug: string }>;
 }) {
-  const urlParams = await params;
-  const slug = urlParams.slug;
+  const slug = (await params).slug;
   const category = await prisma.category.findUnique({
     where: { slug },
   });
@@ -52,11 +28,50 @@ export default async function CategoryPage({
   params: Promise<{ slug: string; subSlug: string }>;
   searchParams?: Promise<{ page?: string }>;
 }) {
-  const urlParams = await params;
-  const slug = urlParams.slug;
-
+  const slug = (await params).slug;
   const currentPage = Number((await searchParams)?.page) || 1;
-  const itemsPerPage = 20; // Number of products per page
+
+  return (
+    <Suspense fallback={<CategoryPageLoading />}>
+      <CategoryContent slug={slug} currentPage={currentPage} />
+    </Suspense>
+  );
+}
+
+function CategoryPageLoading() {
+  return (
+    <div className="px-8 w-full h-full">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+        <Link href="/" className="hover:text-gray-900">
+          Categories
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <div className="w-32 h-5 bg-gray-200 animate-pulse rounded"></div>
+      </div>
+
+      <div className="w-64 h-9 bg-gray-200 animate-pulse rounded mb-6"></div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="relative h-48 overflow-hidden">
+            <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
+          </Card>
+        ))}
+      </div>
+
+      <ProductsGrid products={[]} isLoading />
+    </div>
+  );
+}
+
+async function CategoryContent({ 
+  slug, 
+  currentPage 
+}: { 
+  slug: string; 
+  currentPage: number;
+}) {
+  const itemsPerPage = 20;
 
   const category = await prisma.category.findUnique({
     where: { slug },
