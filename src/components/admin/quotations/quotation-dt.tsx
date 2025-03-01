@@ -2,8 +2,10 @@
 
 import {
   ColumnDef,
+  FilterFn,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -31,6 +33,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { SearchInput } from "@/components/ui/search-input";
+import { useEffect, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,23 +44,67 @@ export function QuotationDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     filterFns: {
+      statusFilter: (row, columnId, filterValue) => {
+        if (filterValue === "all") return true;
+
+        // Check if we can access the status directly from the row original
+        const status = row.original.status;
+
+        console.log("Filter debug:", {
+          status,
+          filterValue,
+          columnId,
+          accessedValue: row.getValue(columnId),
+        });
+
+        // If status is undefined, try to get it another way
+        if (status === undefined) {
+          return false;
+        }
+
+        return (
+          String(status).toLowerCase() === String(filterValue).toLowerCase()
+        );
+      },
       includeSubcategories: () => {
         return true;
       },
-    },
+    } as Record<string, FilterFn<any>>,
   });
+
+  useEffect(() => {
+    table.getColumn("status")?.setFilterValue(filterStatus);
+  }, [filterStatus, setFilterStatus, table]);
 
   return (
     <div>
       <Card>
         <CardContent className="p-4">
-          <div className="w-[300px] pb-4">
-            <SearchInput placeholder="Search..." value="" onChange={() => {}} />
+          <div className="pb-4 flex items-center gap-4">
+            <SearchInput
+              placeholder="Search..."
+              value=""
+              className="w-[300px]"
+              onChange={() => {}}
+            />
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-[250px]" value="all">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="responded">Responded</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <Table className="border-b">
             <TableHeader className="bg-muted">

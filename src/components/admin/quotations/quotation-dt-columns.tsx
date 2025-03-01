@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { QuotationItemWithRelations } from "@/app/types";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<QuotationItemWithRelations>[] = [
   {
@@ -43,19 +44,20 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
       const quotationItems = row.original.quotation.QuotationItem;
       const totalPrice = quotationItems.reduce(
         (acc, item) =>
-          acc + Number(item?.variant.price) * Number(item?.quantity),
+          acc + Number(item?.priceAtQuotation) * Number(item?.quantity),
         0
       );
-      return <span>₱ {totalPrice.toLocaleString()}</span>;
+      return <span>{formatCurrency(totalPrice)}</span>;
     },
   },
   {
     accessorKey: "status",
     header: "Status",
+    filterFn: "statusFilter" as any,
     cell: ({ row }) => (
       <Badge
         className="rounded-sm"
-        variant={row.original.status == "Responded" ? "default" : "secondary"}
+        variant={row.original.status === "Responded" ? "default" : "secondary"}
       >
         {row.original.status}
       </Badge>

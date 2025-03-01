@@ -2,6 +2,11 @@
 import { Prisma } from "@prisma/client";
 import { formatCurrency } from "./utils";
 
+/*
+ *This function generates an HTML string that represents a quotation.
+ *It takes a quotation object as an argument and returns an HTML string.
+ *The generated HTML string is useds with the puppeteer library to generate a PDF file.
+ */
 export const generateHTMLPDF = (
   quotationData: Prisma.QuotationGetPayload<{
     include: {
@@ -25,139 +30,23 @@ export const generateHTMLPDF = (
     };
   }>
 ) => {
+  /*
+  Calculate the subtotal of the quotation items
+  We use the priceAtQuotation field to calculate the total of the quotation items
+  Since the price of the product may have changed after the quotation was created
+  */
   const quotationSubTotal = quotationData?.QuotationItem.reduce(
-    (total, item) => total + Number(item.quantity) * Number(item.variant.price),
+    (total, item) =>
+      total + Number(item.quantity) * Number(item.priceAtQuotation),
     0
   );
-
+  // Calculate the total of the additional charges
   const additionalChargesTotal = quotationData?.AdditionalCharge.reduce(
     (total, charge) => total + Number(charge.amount),
     0
   );
 
   return `
-      <!DOCTYPE html>
-      <html>
-      <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Quotation from Silver Rose Hardware</title>
-      <style>
-        @page {
-          margin: 0.5cm;
-          size: letter;
-        }
-        
-        /* Reset styles for email clients */
-        body { 
-          margin: 0; 
-          padding: 0; 
-          min-width: 100%; 
-          width: 100% !important; 
-          height: 100% !important;
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-        
-        body, table, td, div, p, a { 
-          -webkit-font-smoothing: antialiased; 
-          text-size-adjust: 100%; 
-          -ms-text-size-adjust: 100%; 
-          -webkit-text-size-adjust: 100%; 
-          line-height: 1.4;
-        }
-        
-        /* Basic styles */
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #ffffff;
-          color: #333333;
-        }
-        
-        .container {
-          max-width: 800px;
-          margin: 20px auto;
-          background: #ffffff;
-          padding: 20px;
-          box-shadow: none;
-        }
-        
-        .header {
-          text-align: center;
-          padding-bottom: 20px;
-          border-bottom: 2px solid #e1e1e1;
-        }
-        
-        .header h1 {
-          color: #ff0000;
-          font-size: 28px;
-          margin: 0;
-          padding: 20px 0;
-          font-weight: bold;
-        }
-        
-        table {
-          width: 100%;
-          margin: 20px 0;
-          border-collapse: collapse;
-        }
-        
-        th {
-          background-color: #f8f9fa !important;
-          padding: 12px;
-          text-align: left;
-          border: 1px solid #dee2e6;
-          color: #333333;
-        }
-        
-        td {
-          padding: 12px;
-          border: 1px solid #dee2e6;
-          vertical-align: top;
-        }
-        
-        .text-right {
-          text-align: right;
-        }
-        
-        .specifications ul {
-          margin: 0;
-          padding-left: 20px;
-        }
-        
-        .specifications li {
-          margin-bottom: 4px;
-        }
-        
-        .totals-table {
-          width: auto;
-          margin-left: auto;
-          margin-right: 0;
-          min-width: 250px;
-        }
-        
-        .total-row {
-          font-weight: bold;
-          border-top: 2px solid #dee2e6;
-        }
-        
-        @media print {
-          body {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          
-          .header h1 {
-            color: #ff0000 !important;
-          }
-          
-          th {
-            background-color: #f8f9fa !important;
-          }
-        }
-      </style>
-      </head>
-      <body>
         <div class="container">
           <div class="header">
             <h1>Silver Rose Hardware</h1>
@@ -261,7 +150,5 @@ export const generateHTMLPDF = (
             </tr>
           </table>
         </div>
-      </body>
-      </html>
     `;
 };

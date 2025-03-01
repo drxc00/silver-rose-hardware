@@ -310,7 +310,7 @@ export async function fetchDashboardData(): Promise<DashboardData> {
     ] = await prisma.$transaction([
       prisma.quotation.count(), // Only fetch count
       prisma.quotationRequest.count(), // Only fetch count
-      prisma.quotationRequest.count({ where: { status: "pending" } }),
+      prisma.quotationRequest.count({ where: { status: "Pending" } }),
       prisma.quotationRequest.count({
         where: {
           createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
@@ -318,7 +318,7 @@ export async function fetchDashboardData(): Promise<DashboardData> {
       }),
       prisma.quotationRequest.count({
         where: {
-          status: "pending",
+          status: "Pending",
           createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
         },
       }),

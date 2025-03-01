@@ -1,7 +1,6 @@
 "use client";
 
 import { QuotationItemWithRelations } from "@/app/types";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -18,19 +17,12 @@ import {
 } from "@/components/ui/table";
 import {
   Calendar,
-  ChevronLeft,
-  Loader2,
   Mail,
-  MailCheck,
   Phone,
-  Printer,
   User,
 } from "lucide-react";
 import { AdditionalChargesTable } from "./additional-charges-table";
 import { formatCurrency } from "@/lib/utils";
-import { useTransition } from "react";
-import { respondToQuotationRequest } from "@/app/(server)/actions/other-actions";
-import { useToast } from "@/hooks/use-toast";
 
 interface QuotationInformationProps {
   quotationRequest: QuotationItemWithRelations;
@@ -41,9 +33,6 @@ export function QuotationInformation({
   quotationRequest,
   readOnly = false,
 }: QuotationInformationProps) {
-  const [isMailPending, startSendMailTransition] = useTransition();
-  const [isPrinting, startPrintTransition] = useTransition();
-  const { toast } = useToast();
   const calculateSubtotal = () => {
     return quotationRequest.quotation.QuotationItem.reduce(
       (acc, item) =>
@@ -62,91 +51,8 @@ export function QuotationInformation({
   const calculateTotal = () => {
     return calculateSubtotal() + calculateAdditionalCharges();
   };
-
-  const handlePrint = async () => {
-    startPrintTransition(async () => {
-      try {
-        const response = await fetch(
-          `/api/quotation/${quotationRequest.quotationId}/pdf`
-        );
-        const pdfBlob = await response.blob();
-        const url = URL.createObjectURL(pdfBlob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `Quotation-${quotationRequest.quotationId}.pdf`; // Suggested filename
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        setTimeout(() => URL.revokeObjectURL(url), 5000); // Delay revocation
-      } catch (error) {
-        console.error("Error generating PDF:", error);
-      }
-    });
-  };
-
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <Button variant="ghost">
-          <ChevronLeft />
-          <span>Back to Quotations</span>
-        </Button>
-        <div className="flex gap-4">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault(); // Prevent form submission
-              handlePrint();
-            }}
-          >
-            <Button type="submit" variant="outline">
-              {isPrinting ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <>
-                  <Printer />
-                  <span>Print Quotation</span>
-                </>
-              )}
-            </Button>
-          </form>
-          {!readOnly && (
-            <form
-              action={async () => {
-                startSendMailTransition(async () => {
-                  try {
-                    await respondToQuotationRequest(quotationRequest.id);
-                    // If successful show toast
-                    toast({
-                      title: "Success",
-                      description: "Successfully sent mail to customer",
-                    });
-                  } catch (error) {
-                    toast({
-                      title: "Error",
-                      description: (error as Error).message,
-                      variant: "destructive",
-                    });
-                  }
-                });
-              }}
-            >
-              <Button>
-                <MailCheck />
-                <span>
-                  {isMailPending ? (
-                    <span className="w-full">
-                      <Loader2 className="animate-spin" />
-                    </span>
-                  ) : (
-                    "Respond"
-                  )}
-                </span>
-              </Button>
-            </form>
-          )}
-        </div>
-      </div>
       <Card className="border-b-none">
         <CardHeader className="flex flex-row items-center justify-between bg-sidebar border-b">
           <div className="flex flex-col gap-2">
