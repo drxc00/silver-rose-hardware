@@ -18,6 +18,8 @@ import { UnderPricesCard } from "@/components/front/under-prices-card";
 import { Sparkles } from "lucide-react";
 import { unstable_cache as cache } from "next/cache";
 
+export const revalidate = 3600; // Revalidate every hour
+
 const getHomePageData = cache(async () => {
   const [featuredProducts, allCategories] = await Promise.all([
     prisma.product.findMany({

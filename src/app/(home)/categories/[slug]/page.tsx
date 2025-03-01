@@ -5,6 +5,29 @@ import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import { ProductsGrid } from "@/components/front/products-grid";
+import { fetchCategories } from "@/lib/data-fetch";
+
+export async function generateStaticParams() {
+  // We invoke the fetchCategories() function to create the tree structure
+  const categories = await fetchCategories();
+  // Run a flatMap on the categories to create the paths
+  return categories.flatMap((category) => {
+    const paths = [];
+    // Add the main category path
+    paths.push({ slug: category.slug });
+
+    // Add paths for each subcategory
+    if (category.subcategories.length > 0) {
+      paths.push(
+        ...category.subcategories.map((subcategory) => ({
+          slug: category.slug,
+          subSlug: subcategory.slug,
+        }))
+      );
+    }
+    return paths;
+  });
+}
 
 export async function generateMetadata({
   params,

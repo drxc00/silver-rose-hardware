@@ -212,13 +212,15 @@ export async function fetchCategories(): Promise<CategoryTree[]> {
       Product: true,
     },
   });
-  // Re-organize the categories to create a tree structure
-  // Since the categories are fetched in a flat structure,
-  // we need to create a tree structure for the categories and subcategories
-
-  // First, we filter the categories into parent categories and subcategories
-  // We have to sort them with parent categories first since we have a reducer function -
-  // that organizes the categories into a tree which updates parent categories when a subcategory is detected
+  /*
+   * Re-organize the categories to create a tree structure
+   * Since the categories are fetched in a flat structure,
+   * we need to create a tree structure for the categories and subcategories
+   *
+   * First, we filter the categories into parent categories and subcategories
+   * We have to sort them with parent categories first since we have a reducer function
+   * that organizes the categories into a tree which updates parent categories when a subcategory is detected
+   */
   const parentCateogires = categories.filter(
     (category) => !category.parentCategory
   );
