@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import { ProductsGrid } from "@/components/front/products-grid";
 import { fetchCategories } from "@/lib/data-fetch";
+import { Pagination } from "@/components/front/products-pagination";
 
 export async function generateStaticParams() {
   // We invoke the fetchCategories() function to create the tree structure
@@ -46,11 +47,16 @@ export async function generateMetadata({
 
 export default async function CategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string; subSlug: string }>;
+  searchParams?: Promise<{ page?: string }>;
 }) {
   const urlParams = await params;
   const slug = urlParams.slug;
+
+  const currentPage = Number((await searchParams)?.page) || 1;
+  const itemsPerPage = 20; // Number of products per page
 
   const category = await prisma.category.findUnique({
     where: { slug },
@@ -68,7 +74,7 @@ export default async function CategoryPage({
     ...category.children.map((child) => child.id),
   ];
 
-  const products = await prisma.product.findMany({
+  const args = {
     where: {
       category: {
         id: {
@@ -88,7 +94,26 @@ export default async function CategoryPage({
         },
       },
     },
-  });
+  };
+
+  const [products, productsCount] = await Promise.all([
+    prisma.product.findMany({
+      ...args,
+      skip: (currentPage - 1) * itemsPerPage,
+      take: itemsPerPage,
+    }),
+    prisma.product.count({
+      where: {
+        category: {
+          id: {
+            in: allCategoryIds,
+          },
+        },
+      },
+    }),
+  ]);
+
+  const totalPages = Math.ceil(productsCount / itemsPerPage);
 
   return (
     <div className="px-8 w-full h-full">
@@ -141,6 +166,9 @@ export default async function CategoryPage({
 
       {/* Products Grid */}
       <ProductsGrid products={JSON.parse(JSON.stringify(products))} />
+      <div className="mt-8 flex justify-center">
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
+      </div>
     </div>
   );
 }
