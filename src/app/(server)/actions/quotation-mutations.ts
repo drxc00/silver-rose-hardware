@@ -123,6 +123,8 @@ export async function createQuotationRequest(
       },
     });
   });
+
+  revalidatePath("/admin/quotations");
 }
 
 export async function updateQuotationQuantity(

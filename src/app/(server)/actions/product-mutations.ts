@@ -110,6 +110,7 @@ export async function updateProduct(
     });
     // Revalidate path
     revalidatePath("/");
+    revalidatePath("/admin/products");
     revalidatePath(`/admin/products/edit/${id}`);
     revalidatePath("/products/" + payload.slug);
   } catch (error) {
@@ -172,4 +173,5 @@ export async function addProduct(
   });
 
   revalidatePath("/products/" + slug);
+  revalidatePath("/admin/products");
 }

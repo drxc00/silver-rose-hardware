@@ -3,10 +3,10 @@ import { QuotationDataTable } from "@/components/admin/quotations/quotation-dt";
 import { columns } from "@/components/admin/quotations/quotation-dt-columns";
 import { routeProtection } from "@/lib/auth-functions";
 import { prisma } from "@/lib/prisma";
+import { unstable_cache as cache } from "next/cache";
 
-export default async function QuotationsPage() {
-  await routeProtection("/admin/login");
-  const quotationRequests = await prisma.quotationRequest.findMany({
+const cachedFetchQuotationRequests = cache(async () => {
+  return prisma.quotationRequest.findMany({
     include: {
       quotation: {
         include: {
@@ -22,6 +22,11 @@ export default async function QuotationsPage() {
       },
     },
   });
+});
+
+export default async function QuotationsPage() {
+  await routeProtection("/admin/login");
+  const quotationRequests = await cachedFetchQuotationRequests();
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader currentPage="Quotations" />

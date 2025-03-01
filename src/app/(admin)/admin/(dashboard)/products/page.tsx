@@ -5,11 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { fetchAllProducts, fetchCategories } from "@/lib/data-fetch";
+import { unstable_cache as cache } from "next/cache";
+
+const cachedFetchAllProducts = cache(fetchAllProducts);
+const cachedFetchCategories = cache(fetchCategories);
 
 export default async function ProductsPage() {
   const [products, categories] = await Promise.all([
-    fetchAllProducts(),
-    fetchCategories(),
+    cachedFetchAllProducts(),
+    cachedFetchCategories(),
   ]);
   return (
     <div className="min-h-screen bg-muted w-vh">
