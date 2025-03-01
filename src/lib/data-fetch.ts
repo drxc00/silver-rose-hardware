@@ -6,6 +6,7 @@ import {
 import { prisma } from "./prisma";
 import { Attribute, Product } from "@prisma/client";
 import { UserRole } from "./constants";
+import { Prisma } from "@prisma/client";
 
 export const getQuotationRequest = async (quotationRequestId: string) => {
   return prisma.quotationRequest.findFirst({
@@ -260,32 +261,52 @@ export async function fetchAttributes(): Promise<Attribute[]> {
   return prisma.attribute.findMany({});
 }
 
-export async function fetchAllProducts(): Promise<Product[]> {
+export async function fetchAllProducts(options?: Prisma.ProductFindManyArgs): Promise<Product[]> {
   return prisma.product
     .findMany({
-      include: {
+      ...options,
+      // Set a default select incase options not provided
+      select: options?.select || {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
         category: {
-          include: {
-            parent: true,
-          },
+          select: {
+            id: true,
+            name: true,
+            parent: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
         },
         variants: {
-          include: {
+          select: {
+            id: true,
+            price: true,
             attributes: {
-              include: {
-                attribute: true,
-              },
-            },
-          },
-        },
-      },
+              select: {
+                attribute: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     })
     .then((products) =>
       products.map((product) => ({
         ...product,
         variants: product.variants.map((variant) => ({
           ...variant,
-          price: variant.price.toNumber(), // Convert Decimal to number
+          price: variant.price.toNumber(),
         })),
       }))
     );

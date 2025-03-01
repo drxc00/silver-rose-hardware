@@ -11,7 +11,40 @@ export function generateMetadata() {
 export default async function ProductsPage() {
   const [categories, products] = await Promise.all([
     fetchCategories(),
-    fetchAllProducts(),
+    // Fetch all products
+    // Select only the fields we need
+    fetchAllProducts({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        image: true,
+        description: true,
+        hasVariant: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            parent: true,
+          },
+        },
+        variants: {
+          select: {
+            id: true,
+            price: true,
+            attributes: {
+              select: {
+                attribute: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }),
   ]);
 
   return (
@@ -20,7 +53,9 @@ export default async function ProductsPage() {
         <h1 className="text-3xl font-bold text-center pb-10">All Products</h1>
         <div className="w-screen max-w-7xl">
           <ProductsGrid
-            products={JSON.parse(JSON.stringify(products)) as ProductWithRelatedData[]}
+            products={
+              JSON.parse(JSON.stringify(products)) as ProductWithRelatedData[]
+            }
             categories={categories as CategoryTree[]}
           />
         </div>
