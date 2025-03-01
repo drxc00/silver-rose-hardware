@@ -63,20 +63,6 @@ export function QuotationTable() {
           <h1 className="text-2xl font-bold">
             Products ({quotation.quotation.QuotationItem.length})
           </h1>
-          <div className="flex items-center gap-4">
-            <Link href="/quotation/history">
-              <Button variant="outline">
-                <History />
-                <span>History</span>
-              </Button>
-            </Link>
-            <Link href={`/api/quotation/${quotation.quotationId}/pdf`}>
-              <Button>
-                <Printer />
-                <span>Print Quotation</span>
-              </Button>
-            </Link>
-          </div>
         </div>
       </CardHeader>
       <CardContent className="py-2">

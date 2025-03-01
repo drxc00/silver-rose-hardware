@@ -21,6 +21,7 @@ import { createQuotationRequest } from "@/app/(server)/actions/quotation-mutatio
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Loader2, MailCheck } from "lucide-react";
+import Link from "next/link";
 
 interface QuotationRequestFormProps {
   user: User;
@@ -89,7 +90,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
 
   if (isPending) {
     return (
-      <div className="flex mx-auto h-full justify-center">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col gap-4 items-center">
           <Loader2 className="animate-spin w-10 h-10" />
           <p className="text-muted-foreground text-lg">Sending Request</p>
@@ -100,7 +101,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
 
   if (isRequestSuccess) {
     return (
-      <div className="flex mx-auto h-full justify-center">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col text-center items-center justify-center">
           <MailCheck className="text-green-500 w-10 h-10" />
           <h1 className="text-2xl font-bold">Request Sent</h1>
@@ -111,7 +112,9 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
           <p className="text-muted-foreground italic">
             You will receive an update on your quotation within 24-48 hours.
           </p>
-          <Button className="mt-4">View Requests</Button>
+          <Link href="/quotations/history">
+            <Button className="mt-4">View All Requests</Button>
+          </Link>
         </div>
       </div>
     );

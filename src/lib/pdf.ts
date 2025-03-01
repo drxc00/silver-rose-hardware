@@ -58,7 +58,13 @@ export const generateHTMLPDF = (
               <td style="width: 50%; border: none;">
                 <strong>Quotation For:</strong><br>
                 ${quotationData.user.name}<br>
-                Phone: ${quotationData.QuotationRequest[0].phone || ""}<br>
+                ${
+                  quotationData.QuotationRequest[0]
+                    ? "Phone: " +
+                      quotationData.QuotationRequest[0].phone +
+                      "<br>"
+                    : ""
+                }
                 Email: ${quotationData.user.email}
               </td>
               <td style="width: 50%; text-align: right; border: none;">
@@ -136,12 +142,16 @@ export const generateHTMLPDF = (
                 Number(quotationSubTotal)
               )}</td>
             </tr>
-            <tr>
+            ${
+              additionalChargesTotal > 0
+                ? `<tr>
               <td>Additional Charges:</td>
               <td class="text-right">${formatCurrency(
                 Number(additionalChargesTotal)
               )}</td>
-            </tr>
+            </tr>`
+                : ""
+            }
             <tr class="total-row">
               <td>Total:</td>
               <td class="text-right">${formatCurrency(
