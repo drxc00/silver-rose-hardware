@@ -20,43 +20,45 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
   return (
     <Card className="h-full">
       <CardContent className="p-6 flex flex-col justify-between gap-2 h-full">
-        <div>
-          <div className="relative w-full h-48 mb-4">
-            {" "}
-            {/* Fixed height container */}
-            <Image
-              src={product.image || ""}
-              alt="Product Card Image"
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-contain" // or object-cover, depending on your preference
-            />
-          </div>
-          <div className="flex flex-col gap-4">
-            <div>
-              <h1 className="font-bold text-xl mb-2">{product.name}</h1>
-              {product.hasVariant || minPrice != maxPrice ? (
-                <h2>
-                  ₱ {minPrice.toFixed(2)}-{maxPrice.toFixed(2)}
-                </h2>
-              ) : (
-                <h2>₱ {minPrice.toFixed(2)}</h2>
-              )}
+        <Link href={`/products/${product.slug}`}>
+          <div>
+            <div className="relative w-full h-48 mb-4">
+              {" "}
+              {/* Fixed height container */}
+              <Image
+                src={product.image || ""}
+                alt="Product Card Image"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-contain" // or object-cover, depending on your preference
+              />
             </div>
-            <div className="flex gap-2">
-              {productAttributes.length > 0 &&
-                productAttributes.map((attr) => (
-                  <Badge
-                    key={attr}
-                    variant="secondary"
-                    className="rounded-sm px-2 py-1"
-                  >
-                    {attr}
-                  </Badge>
-                ))}
+            <div className="flex flex-col gap-4">
+              <div>
+                <h1 className="font-bold text-xl mb-2">{product.name}</h1>
+                {product.hasVariant || minPrice != maxPrice ? (
+                  <h2>
+                    ₱ {minPrice.toFixed(2)}-{maxPrice.toFixed(2)}
+                  </h2>
+                ) : (
+                  <h2>₱ {minPrice.toFixed(2)}</h2>
+                )}
+              </div>
+              <div className="flex gap-2">
+                {productAttributes.length > 0 &&
+                  productAttributes.map((attr) => (
+                    <Badge
+                      key={attr}
+                      variant="secondary"
+                      className="rounded-sm px-2 py-1"
+                    >
+                      {attr}
+                    </Badge>
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
         <div className="w-full">
           {product.hasVariant ? (
             <Link href={`/products/${product.slug}`}>
