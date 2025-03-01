@@ -25,7 +25,7 @@ export function UserQuotation() {
 
       <div className="mt-auto space-y-4">
         <Separator />
-        <div className="space-y-2">
+        <div className="pb-4">
           <div className="flex justify-between text-sm">
             <span>Subtotal</span>
             <span className="font-medium">

@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -85,9 +85,11 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <Link href={`/admin/quotations/view/${row.original.id}`}>
-              <DropdownMenuItem>View</DropdownMenuItem>
+              <DropdownMenuItem>
+                <SquareArrowOutUpRight />
+                View
+              </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem>Print</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
