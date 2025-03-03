@@ -13,7 +13,7 @@ export default async function LoginPage() {
                     <div className="flex flex-col gap-2">
                         <div className="flex flex-col items-center gap-4">
                             <div className="flex items-center justify-center">
-                                <Image src={Logo} alt="Logo" height={250} width={250} />
+                                <Image src={Logo} alt="Logo" height={250} width={250} priority loading="eager" />
                             </div>
                         </div>
                         <LoginForm type="ADMIN" />

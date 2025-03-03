@@ -19,8 +19,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-// Static generation
-
 export async function generateMetadata({
   params,
 }: {
@@ -100,6 +98,7 @@ export default async function ProductPage({
             width={600}
             height={400}
             className="w-full h-full object-contain"
+            loading="eager"
           />
         </div>
         <ProductPageCard product={product} />

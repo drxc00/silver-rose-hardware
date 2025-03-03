@@ -33,6 +33,7 @@ export const ImageWithSkeleton = ({
         alt={alt}
         height={height}
         width={width}
+        loading="eager"
         className={cn(
           className,
           "transition-opacity duration-100",
