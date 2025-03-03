@@ -29,6 +29,7 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
                 src={product.image || ""}
                 alt="Product Card Image"
                 fill
+                loading="eager"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain" // or object-cover, depending on your preference
               />

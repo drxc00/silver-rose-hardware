@@ -76,7 +76,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
     startTransition(async () => {
       try {
         await createQuotationRequest(values);
-        router.refresh();
+        // router.refresh();
         setIsRequestSuccess(true);
       } catch (error) {
         toast({

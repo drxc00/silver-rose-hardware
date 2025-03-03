@@ -7,7 +7,7 @@ import {
   quotationRequestSchema,
 } from "@/lib/form-schema";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 export async function addAdditionalQuotationCharge({
@@ -125,6 +125,7 @@ export async function createQuotationRequest(
   });
 
   revalidatePath("/admin/quotations");
+  revalidateTag("userQuotation");
 }
 
 export async function updateQuotationQuantity(
@@ -142,6 +143,7 @@ export async function updateQuotationQuantity(
       quantity: quantity,
     },
   });
+  revalidateTag("userQuotation");
 }
 
 export async function removeQuotationItem(quotationItemId: string) {
@@ -173,6 +175,7 @@ export async function removeQuotationItem(quotationItemId: string) {
       id: quotationItem.id,
     },
   });
+  revalidateTag("userQuotation");
 }
 
 export async function addQuotationItem(payload: {
@@ -239,4 +242,5 @@ export async function addQuotationItem(payload: {
       priceAtQuotation: variant.price,
     },
   });
+  revalidateTag("userQuotation");
 }

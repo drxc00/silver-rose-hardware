@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/sheet";
 import { UserQuotation } from "./user-quotation";
 import { useQuotation } from "../providers/quotation-provider";
-import { motion, useAnimation } from "motion/react";
+import { Button } from "../ui/button";
 
 interface NavBarProps {
   session?: Session;
@@ -38,7 +38,6 @@ export function NavBar({ session }: NavBarProps) {
   const { name, setParams, removeParams } = useUrlFilters();
   const [localSearch, setLocalSearch] = useState<string>(name || "");
   const { quotation: optimisticQuotation } = useQuotation();
-  const controls = useAnimation(); // Animation controls
   const debouncedSearch = useDebounce(localSearch);
 
   // Update the search params when the debounced search value changes
@@ -53,11 +52,6 @@ export function NavBar({ session }: NavBarProps) {
     }
   }, [debouncedSearch, setParams, removeParams]);
 
-  // Use effect for the quotation animation
-  useEffect(() => {
-    controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
-  }, [optimisticQuotation, controls]); // Re-run effect when itemCount changes
-
   return (
     <div>
       <div className="flex justify-between p-3 items-center border-b px-32">
@@ -70,6 +64,7 @@ export function NavBar({ session }: NavBarProps) {
               height={150}
               priority
               style={{ objectFit: "contain" }}
+              loading="eager"
             />
           </Link>
         </div>
@@ -82,22 +77,14 @@ export function NavBar({ session }: NavBarProps) {
           />
           <Sheet>
             <SheetTrigger asChild>
-              <motion.button
-                className="relative rounded-full border bg-sidebar p-2 hover:bg-sidebar/90"
-                animate={controls}
-              >
+              <button className="relative rounded-full border bg-sidebar p-2 hover:bg-sidebar/90">
                 <Quote className="h-5 w-5 text-muted-foreground" />
                 {optimisticQuotation?.quotation?.QuotationItem?.length > 0 && (
-                  <motion.span
-                    className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
+                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
                     {optimisticQuotation?.quotation?.QuotationItem?.length}
-                  </motion.span>
+                  </span>
                 )}
-              </motion.button>
+              </button>
             </SheetTrigger>
             <SheetContent>
               <SheetHeader className="space-y-4">

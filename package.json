@@ -37,7 +37,6 @@
     "cmdk": "^1.0.0",
     "embla-carousel-react": "^8.5.2",
     "lucide-react": "^0.473.0",
-    "motion": "^12.4.3",
     "next": "15.1.5",
     "next-auth": "^5.0.0-beta.25",
     "radix-ui": "^1.1.3",

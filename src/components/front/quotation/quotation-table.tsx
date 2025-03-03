@@ -44,7 +44,7 @@ export function QuotationTable() {
     try {
       removeToQuotation(itemId);
       await removeQuotationItem(itemId);
-      router.refresh();
+      // router.refresh();
     } catch (error) {
       toast({
         title: "Error",
@@ -176,7 +176,7 @@ function EditQuantityButton({
             ? Number(item.quantity) + 1
             : Number(item.quantity) - 1
         );
-        router.refresh();
+        // router.refresh();
       }}
     >
       <Button type="submit" className={className}>

@@ -38,7 +38,7 @@ const QuantityButton = ({
             ? Number(item.quantity) + 1
             : Number(item.quantity) - 1
         );
-        router.refresh();
+        // router.refresh();
       }}
     >
       <Button

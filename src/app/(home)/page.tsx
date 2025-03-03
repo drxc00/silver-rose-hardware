@@ -1,55 +1,21 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { ProductCard } from "@/components/front/product-card";
-import { CategoryTree, ProductWithRelatedData } from "../types";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-import { fetchCategories } from "@/lib/data-fetch";
-import { CategoryCard } from "@/components/front/category-card";
 import { UnderPricesCard } from "@/components/front/under-prices-card";
 import { Sparkles } from "lucide-react";
-import { unstable_cache as cache } from "next/cache";
+import { Suspense } from "react";
+import {
+  FeaturedProducts,
+  FeaturedProductsLoading,
+} from "@/components/front/home/featured-products";
+import {
+  Categories,
+  CategoriesLoading,
+} from "@/components/front/home/categories";
 
 export const revalidate = 3600; // Revalidate every hour
 
-const getHomePageData = cache(async () => {
-  const [featuredProducts, allCategories] = await Promise.all([
-    prisma.product.findMany({
-      where: {
-        isFeatured: true,
-      },
-      include: {
-        category: true,
-        variants: {
-          include: {
-            attributes: {
-              include: {
-                attribute: true,
-              },
-            },
-          },
-        },
-      },
-    }),
-    fetchCategories(),
-  ]);
-
-  return {
-    featuredProducts,
-    allCategories,
-  };
-});
-
 export default async function Home() {
-  const { featuredProducts, allCategories } = await getHomePageData();
   return (
     <main className="flex flex-col bg-background mb-auto">
       <section className="relative w-full h-svh max-h-[500px] flex items-center justify-center">
@@ -59,6 +25,7 @@ export default async function Home() {
           fill
           priority
           className="object-cover"
+          loading="eager"
         />
         <div className="absolute inset-0 bg-black bg-opacity-50" />
         <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8">
@@ -80,66 +47,16 @@ export default async function Home() {
             View all products
           </Link>
         </div>
-        <Carousel
-          opts={{
-            align: "start",
-            slidesToScroll: {
-              desktop: 5,
-              tablet: 3,
-              mobile: 1,
-            } as any,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="h-full">
-            {(featuredProducts).map((product) => (
-              <CarouselItem
-                key={product.id}
-                className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
-              >
-                <div className="h-full">
-                  <ProductCard product={JSON.parse(JSON.stringify(product)) as ProductWithRelatedData} />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <Suspense fallback={<FeaturedProductsLoading />}>
+          <FeaturedProducts />
+        </Suspense>
       </section>
       <section className="px-40 py-10 bg-background">
         <h1 className="text-3xl font-bold text-star mb-4">Categories</h1>
         <div className="w-full">
-          <Carousel
-            opts={{
-              align: "start",
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="">
-              <CarouselItem className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                <Link href="/categories">
-                  <Card className="h-full bg-gradient-to-b from-red-600 to-red-800 rounded-2xl">
-                    <CardContent className="p-0 flex items-center justify-center h-full">
-                      <h1 className="font-bold text-2xl max-w-xs text-primary-foreground">
-                        All Categories
-                      </h1>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </CarouselItem>
-              {allCategories.map((category) => (
-                <CarouselItem
-                  key={category.id}
-                  className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
-                >
-                  <CategoryCard category={category as CategoryTree} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
+          <Suspense fallback={<CategoriesLoading />}>
+            <Categories />
+          </Suspense>
         </div>
         <div className="flex gap-4 pt-28">
           <UnderPricesCard
