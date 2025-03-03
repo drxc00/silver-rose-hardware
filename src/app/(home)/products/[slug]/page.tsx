@@ -1,7 +1,7 @@
 import {
-  ProductWithRelatedData,
-} from "@/app/types";
-import { ProductCard } from "@/components/front/product-card";
+  RelatedProducts,
+  RelatedProductsSkeleton,
+} from "@/components/front/products/related-products";
 import { ProductPageCard } from "@/components/front/product-page-card";
 import {
   Breadcrumb,
@@ -11,13 +11,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  fetchAllProducts,
-  fetchProductUsingSlug,
-  fetchRelatedProducts,
-} from "@/lib/data-fetch";
+import { fetchAllProducts, fetchProductUsingSlug } from "@/lib/data-fetch";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import { unstable_cache as cache } from "next/cache";
+
+const cachedFetchProductUsingSlug = cache(fetchProductUsingSlug);
 
 export async function generateMetadata({
   params,
@@ -48,11 +48,8 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const productSlug = (await params).slug;
-  const productData = await fetchProductUsingSlug(productSlug);
+  const productData = await cachedFetchProductUsingSlug(productSlug);
   const product = JSON.parse(JSON.stringify(productData));
-  const relatedProducts = await fetchRelatedProducts(
-    product?.category.id || ""
-  );
   return (
     <main className="p-10 lg:px-32 xl:px-48 flex min-h-screen flex-col justify-start bg-muted">
       <Breadcrumb className="pb-8">
@@ -123,18 +120,9 @@ export default async function ProductPage({
               <p className="text-primary underline">View All</p>
             </Link>
           </div>
-          <div className="grid grid-cols-4 gap-4">
-            {relatedProducts.slice(0, 4).map(
-              (relatedProduct) =>
-                // This ensures that the current product is not displayed
-                relatedProduct.id !== product?.id && (
-                  <ProductCard
-                    key={relatedProduct.id}
-                    product={relatedProduct as ProductWithRelatedData}
-                  />
-                )
-            )}
-          </div>
+          <Suspense fallback={<RelatedProductsSkeleton />}>
+            <RelatedProducts productId={product?.id} />
+          </Suspense>
         </div>
       </section>
     </main>
