@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 import { loginFormSchema } from "@/lib/form-schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,16 +13,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { clientLogin } from "@/app/(server)/actions/auth-actions";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2Icon } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
   const [isPending, setIsPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -35,19 +36,40 @@ export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
   const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
     setIsPending(true);
     try {
-      await clientLogin(data, type);
+      const result = await signIn("credentials", {
+        username: data.username,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast({
+          title: "Login Error",
+          description:
+            result.error == "CredentialsSignin"
+              ? "Invalid credentials"
+              : result.error,
+          variant: "destructive",
+        });
+        setIsPending(false);
+        return;
+      }
+      if (result?.ok) {
+        if (type === "ADMIN") {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
+      }
     } catch (error) {
-      // So based on the documentation, NextJs perform redirects through errors
-      // So we need to throw the error if it is a redirect error since we are catching credentials errors only
-      // Weird approach but ok.
-      if (isRedirectError(error)) throw error;
       toast({
-        title: "Login Error!",
-        description: (error as Error).message,
+        title: "Login Error",
+        description: "Something went wrong. Please try again later.",
         variant: "destructive",
       });
+      console.error("Login error:", error);
+      setIsPending(false);
     }
-    setIsPending(false);
   };
 
   return (

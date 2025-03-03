@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     if (error instanceof InvalidLoginError) throw error;
                     throw new Error("Authentication failed. Something went wrong.");
                 }
-            }
+            },
         })
     ],
     session: {
@@ -79,7 +79,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.id = token.id as string;
             }
             return session;
-        }
+        },
     },
     logger: {
         // Clean the logs

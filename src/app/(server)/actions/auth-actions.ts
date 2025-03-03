@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/lib/constants";
 import authCache from "@/lib/auth-cache";
 import { revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function clientLogout(redirectTo: string) {
   // Validate first if a session exists
@@ -16,30 +17,6 @@ export async function clientLogout(redirectTo: string) {
 
   // For any revalidation iguess
   revalidateTag("userQuotation");
-}
-
-export async function clientLogin(
-  {
-    username,
-    password,
-  }: {
-    username: string;
-    password: string;
-  },
-  type: UserRole
-): Promise<void> {
-  // First we check if the clientLogin method is called from the admin login page or the customer login page
-  // Here we get the role of the user
-  // If the resource being accessed is admin and the user is not an admin, throw an error
-  const userRole = await getUserRole(username);
-  if (type === UserRole.ADMIN && userRole !== UserRole.ADMIN)
-    throw new Error("You are not an admin user.");
-  // Initialize the Auth SignIn function
-  await signIn("credentials", {
-    username: username,
-    password: password,
-    redirectTo: type === UserRole.ADMIN ? "/admin" : "/",
-  });
 }
 
 export async function createFirstAdminUser({
