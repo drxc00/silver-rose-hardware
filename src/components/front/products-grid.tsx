@@ -170,70 +170,66 @@ export function ProductsGrid({
 
   return (
     <div className="space-y-6 w-full">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <div className="flex gap-2 items-center">
+      {/* Filters & Sorting */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          {/* Sort by */}
+          <div className="flex flex-col md:flex-row gap-2 md:items-center">
             <span className="text-sm text-muted-foreground">Sort by</span>
             <Select
               value={sort || "all"}
-              onValueChange={(e) => {
-                setParams("sort", e);
-              }}
+              onValueChange={(e) => setParams("sort", e)}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select sort option" />
+              <SelectTrigger className="w-[160px] sm:w-[180px]">
+                <SelectValue placeholder="Sort option" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Products</SelectItem>
-                <SelectItem value="alphabetical-a-z">
-                  Alphabetically, A-Z
-                </SelectItem>
-                <SelectItem value="alphabetical-z-a">
-                  Alphabetically, Z-A
-                </SelectItem>
+                <SelectItem value="alphabetical-a-z">A-Z</SelectItem>
+                <SelectItem value="alphabetical-z-a">Z-A</SelectItem>
                 <SelectItem value="price-low-to-high">
-                  Price, low to high
+                  Price: Low to High
                 </SelectItem>
                 <SelectItem value="price-high-to-low">
-                  Price, high to low
+                  Price: High to Low
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
+
+          {/* Category Filter */}
           {categories && (
-            <div className="flex gap-2 items-center">
+            <div className="flex flex-col md:flex-row  gap-2 md:items-center">
+              <span className="text-sm text-muted-foreground">Category</span>
               <Select
                 value={category || "all"}
-                onValueChange={(e) => {
-                  setParams("category", e);
-                }}
+                onValueChange={(e) => setParams("category", e)}
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select category" />
+                <SelectTrigger className="w-[140px] sm:w-[180px]">
+                  <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  {categories?.map((category) => (
-                    <SelectItem
-                      key={category.id}
-                      value={category.slug as string}
-                    >
-                      {category.name}
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.slug as string}>
+                      {cat.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           )}
-          <div className="flex gap-2 items-center">
+
+          {/* Price Filter */}
+          <div className="flex flex-col w-full sm:flex-row gap-2 sm:items-center">
             <span className="text-sm text-muted-foreground">Price</span>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full items-center gap-2">
               <Input
                 value={localMinPrice}
                 onChange={(e) => setLocalMinPrice(e.target.value)}
                 type="number"
-                placeholder="Min Price"
-                className="w-28"
+                placeholder="Min"
+                className="w-full md:w-20 sm:w-28"
                 min="0"
               />
               <span className="text-muted-foreground text-sm">to</span>
@@ -241,64 +237,47 @@ export function ProductsGrid({
                 value={localMaxPrice}
                 onChange={(e) => setLocalMaxPrice(e.target.value)}
                 type="number"
-                placeholder="Max Price"
-                className="w-28"
+                placeholder="Max"
+                className="w-full md:w-20 sm:w-28"
                 min="0"
               />
             </div>
           </div>
         </div>
-        <div className="flex gap-2 items-center">
+
+        {/* View Toggle */}
+        <div className="flex flex-col md:flex-row gap-2 md:items-center">
           <span className="text-sm text-muted-foreground">View</span>
-          <Button variant="ghost" onClick={() => setParams("view", "grid")}>
+          <Button variant="outline" onClick={() => setParams("view", "grid")}>
             <LayoutGridIcon className="w-5 h-5" />
           </Button>
-          <Button variant="ghost" onClick={() => setParams("view", "list")}>
+          <Button variant="outline" onClick={() => setParams("view", "list")}>
             <StretchHorizontal className="w-5 h-5" />
           </Button>
         </div>
       </div>
 
+      {/* Product Grid / List View */}
       {isLoading ? (
         <ProductsSkeleton />
       ) : filteredProducts.length > 0 ? (
-        <>
-          <div
-            className={cn(
-              "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
-              view === "list" && "hidden"
-            )}
-          >
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product as unknown as ProductWithRelatedData}
-              />
-            ))}
-          </div>
-          <div
-            className={cn(
-              "grid-cols-1 gap-6 hidden w-full",
-              view === "list" && "grid"
-            )}
-          >
-            {filteredProducts.map((product) => (
-              <ProductCardStack
-                key={product.id}
-                product={product as unknown as ProductWithRelatedData}
-              />
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20">
-          <h1 className="text-4xl font-extrabold text-primary">
-            No Products Found
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Try adjusting your filters or search again.
-          </p>
+        <div
+          className={cn(
+            "grid gap-6",
+            view !== "list"
+              ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+              : "grid-cols-1"
+          )}
+        >
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product as unknown as ProductWithRelatedData}
+            />
+          ))}
         </div>
+      ) : (
+        <p className="text-center text-muted-foreground">No products found.</p>
       )}
     </div>
   );

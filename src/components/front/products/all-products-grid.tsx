@@ -60,7 +60,7 @@ export async function ProductsContent({
   const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
   return (
-    <>
+    <div className="px-6">
       <ProductsGrid
         products={JSON.parse(JSON.stringify(products))}
         categories={categories}
@@ -68,6 +68,6 @@ export async function ProductsContent({
       <div className="mt-8 flex justify-center">
         <Pagination currentPage={currentPage} totalPages={totalPages} />
       </div>
-    </>
+    </div>
   );
 }

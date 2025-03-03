@@ -19,11 +19,12 @@ export async function Categories() {
   return (
     <Carousel
       opts={{
-        align: "start",
+        align: "center",
+        dragFree: true,
       }}
       className="w-full"
     >
-      <CarouselContent className="">
+      <CarouselContent>
         <CarouselItem className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
           <Link href="/categories">
             <Card className="h-full bg-gradient-to-b from-red-600 to-red-800 rounded-2xl">
@@ -44,8 +45,8 @@ export async function Categories() {
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className="hidden md:block" />
+      <CarouselNext className="hidden md:block" />
     </Carousel>
   );
 }

@@ -5,10 +5,13 @@ import { DataTable } from "@/components/admin/categories/data-table";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { unstable_cache as cache } from "next/cache";
+
+const cachedFetchCategories = cache(fetchCategories);
 
 export default async function CategoriesPage() {
   // Fetch the category tree
-  const categoryTree = await fetchCategories();
+  const categoryTree = await cachedFetchCategories();
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader currentPage="Cateogries" />

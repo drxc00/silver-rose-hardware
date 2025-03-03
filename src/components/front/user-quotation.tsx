@@ -4,6 +4,7 @@ import { Separator } from "../ui/separator";
 import { useQuotation } from "../providers/quotation-provider";
 import { QuotationItemCard } from "./quotation-item-card-sheet";
 import Link from "next/link";
+import { SheetClose } from "../ui/sheet";
 
 export function UserQuotation() {
   const { quotation: optimisticQuotation } = useQuotation();
@@ -33,9 +34,11 @@ export function UserQuotation() {
             </span>
           </div>
         </div>
-        <Link href="/quotation">
-          <Button className="w-full">View Quotation</Button>
-        </Link>
+        <SheetClose asChild>
+          <Link href="/quotation">
+            <Button className="w-full">View Quotation</Button>
+          </Link>
+        </SheetClose>
       </div>
     </div>
   );
