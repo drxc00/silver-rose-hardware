@@ -220,6 +220,8 @@ export async function addQuotationItem(payload: {
         quantity: Number(quotationItem.quantity) + payload.quantity,
       },
     });
+    // Since the quantity has changed, we need to revalidate the tag
+    revalidateTag("userQuotation");
     return;
   }
 
