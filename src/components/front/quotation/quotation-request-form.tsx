@@ -129,7 +129,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card>
             <CardContent className="p-6">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -187,7 +187,9 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
               />
               <div>
                 <h3 className="pt-4 pb-2 font-semibold">Quotation Summary</h3>
-                <QuotationSummaryTable quotation={quotation} />
+                <div className="overflow-x-auto">
+                  <QuotationSummaryTable quotation={quotation} />
+                </div>
                 <div className="flex flex-row gap-4 justify-end text-xl pt-8">
                   <h3 className="font-semibold text-muted-foreground">
                     Total Cost

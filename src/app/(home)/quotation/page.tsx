@@ -40,9 +40,9 @@ export default async function QuotationPage() {
         <div>
           <QuotationTable />
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-center md:justify-end">
           <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-bold">Need a Custom Quote?</h2>
+            <h2 className="text-xl text-center font-bold">Need a Custom Quote?</h2>
             <Link href="/quotation/request">
               <Button size="lg">
                 <Send />

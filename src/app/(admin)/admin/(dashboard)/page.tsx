@@ -39,7 +39,7 @@ export default async function AdminPage() {
         </Suspense>
         <div>
           <h1 className="text-3xl font-bold py-6">Quick Navigations</h1>
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <QuickNavigationCard
               icon={<PackagePlus className="w-8 h-8" />}
               title="Add New Product"

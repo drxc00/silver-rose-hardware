@@ -30,7 +30,7 @@ import { UserQuotation } from "./user-quotation";
 import { useQuotation } from "../providers/quotation-provider";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-
+import { usePathname } from "next/navigation";
 interface NavBarProps {
   session?: Session;
   userQuotation?: QuotationWithRelations;
@@ -38,6 +38,7 @@ interface NavBarProps {
 
 export function NavBar({ session }: NavBarProps) {
   const { name, setParams, removeParams } = useUrlFilters();
+  const pathname = usePathname();
   const [localSearch, setLocalSearch] = useState<string>(name || "");
   const { quotation: optimisticQuotation } = useQuotation();
   const debouncedSearch = useDebounce(localSearch);
@@ -280,18 +281,46 @@ export function NavBar({ session }: NavBarProps) {
         </div>
       </div>
       <div className="flex md:justify-start justify-center bg-sidebar p-4 items-center border-b px-10 md:16 lg:px-32">
-        <ul className="flex flex-row gap-4 text-sm font-medium">
+        <ul className="flex flex-row gap-2 text-sm font-medium">
           <li>
-            <Link href="/">Home</Link>
+            <Link href="/">
+              <Button
+                size="sm"
+                variant={pathname === "/" ? "default" : "ghost"}
+              >
+                Home
+              </Button>
+            </Link>
           </li>
           <li>
-            <Link href="/categories">Categories</Link>
+            <Link href="/categories">
+              <Button
+                size="sm"
+                variant={pathname.includes("categories") ? "default" : "ghost"}
+              >
+                Categories
+              </Button>
+            </Link>
           </li>
           <li>
-            <Link href="/products">Products</Link>
+            <Link href="/products">
+              <Button
+                size="sm"
+                variant={pathname === "/products" ? "default" : "ghost"}
+              >
+                Products
+              </Button>
+            </Link>
           </li>
           <li>
-            <Link href="/about-us">About Us</Link>
+            <Link href="/about-us">
+              <Button
+                size="sm"
+                variant={pathname === "/about-us" ? "default" : "ghost"}
+              >
+                About Us
+              </Button>
+            </Link>
           </li>
         </ul>
       </div>

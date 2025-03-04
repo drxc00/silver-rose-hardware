@@ -91,11 +91,11 @@ export function DataTable<TData extends CategoryTree, TValue>({
               onChange={(event) =>
                 table.getColumn("category")?.setFilterValue(event.target.value)
               }
-              className="w-[400px]"
+              className="max-w-[400px]"
             />
           </div>
         </div>
-        <div className="bg-background border-b">
+        <div className="bg-background border-b overflow-x-auto">
           <Table>
             <TableHeader className="bg-muted border-none">
               {table.getHeaderGroups().map((headerGroup) => (

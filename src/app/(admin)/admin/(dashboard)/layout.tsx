@@ -17,11 +17,6 @@ export default async function Layout({
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <header className="sticky top-0 z-40 border-b bg-background w-screen block md:hidden">
-        <div className="container flex h-16 items-center">
-          <SidebarTrigger className="ml-2" />
-        </div>
-      </header>
       <main className="w-full">{children}</main>
     </SidebarProvider>
   );

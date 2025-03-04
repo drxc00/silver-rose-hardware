@@ -122,7 +122,7 @@ export function ProductDataTable<TData, TValue>({
             </SelectContent>
           </Select>
         </div>
-        <div className="">
+        <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-sidebar">
               {table.getHeaderGroups().map((headerGroup) => (

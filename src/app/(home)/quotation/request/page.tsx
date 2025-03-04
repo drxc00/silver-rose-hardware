@@ -7,7 +7,7 @@ export default async function QuotationRequestPage() {
 
   return (
     <div className="w-full">
-      <main className="px-32 py-8 flex flex-col gap-6">
+      <main className="px-4 sm:px-8 md:px-16 lg:px-32 py-8 flex flex-col gap-6">
         <div>
           <QuotationRequestForm user={session?.user as User} />
         </div>

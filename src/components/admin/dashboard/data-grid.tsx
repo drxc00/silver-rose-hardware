@@ -13,7 +13,7 @@ import { Quote } from "lucide-react";
 export async function DashboardDataGrid() {
   const dashboardData: DashboardData = await fetchDashboardData();
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <DataCard
         title="Total Quotations"
         value={dashboardData.quotations.total.toString()}
@@ -54,7 +54,7 @@ export async function DashboardDataGrid() {
 
 export function DashboardDataGridSkeleton() {
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <DataCardSkeleton />
       <DataCardSkeleton />
       <DataCardSkeleton />
