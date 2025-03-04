@@ -48,8 +48,12 @@ export function useUrlFilters() {
       const params = new URLSearchParams(searchParams.toString());
 
       params.set(key, value);
-      if (key === "name") router.push(`/products?${params.toString()}`);
-      else router.push(`?${params.toString()}`);
+      // Consolidate the router.push logic
+      const path =
+        key === "name"
+          ? `/products?${params.toString()}`
+          : `?${params.toString()}`;
+      router.push(path);
     },
     [router, searchParams]
   );
