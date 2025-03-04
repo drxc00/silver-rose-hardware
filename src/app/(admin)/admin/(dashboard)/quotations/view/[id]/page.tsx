@@ -4,10 +4,14 @@ import { QuotationInformation } from "@/components/admin/quotations/quotation-in
 import { RemarksForm } from "@/components/admin/quotations/remarks-form";
 import PrintQuotation from "@/components/quotation-print";
 import { Button } from "@/components/ui/button";
+import { QuotationInformationSkeleton } from "@/components/admin/quotations/quotation-information-skeleton";
 import { generateHTMLPDF } from "@/lib/pdf";
 import { prisma } from "@/lib/prisma";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { unstable_cache as cache } from "next/cache";
 
 export async function generateStaticParams() {
   /*
@@ -19,39 +23,43 @@ export async function generateStaticParams() {
   }));
 }
 
-const getQuotation = async (id: string) => {
-  return prisma.quotationRequest.findFirst({
-    where: {
-      id: id,
-    },
-    include: {
-      quotation: {
-        include: {
-          QuotationItem: {
-            include: {
-              variant: {
-                include: {
-                  attributes: {
-                    include: {
-                      attribute: true,
+const getQuotation = cache(
+  async (id: string) => {
+    return prisma.quotationRequest.findFirst({
+      where: {
+        id: id,
+      },
+      include: {
+        quotation: {
+          include: {
+            QuotationItem: {
+              include: {
+                variant: {
+                  include: {
+                    attributes: {
+                      include: {
+                        attribute: true,
+                      },
                     },
+                    product: true,
                   },
-                  product: true,
                 },
               },
             },
+            AdditionalCharge: true,
           },
-          AdditionalCharge: true,
+        },
+        user: {
+          include: {
+            accounts: true,
+          },
         },
       },
-      user: {
-        include: {
-          accounts: true,
-        },
-      },
-    },
-  });
-};
+    });
+  },
+  ["quotationRequest"],
+  { tags: ["quotationRequest"] }
+);
 
 export default async function QuotationPage({
   params,
@@ -60,6 +68,21 @@ export default async function QuotationPage({
 }) {
   // Quotation Id
   const id = (await params).id || "";
+
+  return (
+    <div className="min-h-screen bg-muted w-vh">
+      <AdminHeader
+        currentPage="View Quotation"
+        crumbItems={[{ name: "Quotations", href: "/admin/quotations" }]}
+      />
+      <Suspense fallback={<QuotationSkeleton />}>
+        <QuotationViewContent id={id} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function QuotationViewContent({ id }: { id: string }) {
   const quotationData = await getQuotation(id);
   const rawQuotationData = await prisma.quotation.findUnique({
     where: { id: quotationData?.quotationId || "" },
@@ -84,47 +107,54 @@ export default async function QuotationPage({
     },
   });
   const status = quotationData?.status || "Pending";
-  return (
-    <div className="min-h-screen bg-muted w-vh">
-      <AdminHeader
-        currentPage="View Quotation"
-        crumbItems={[{ name: "Quotations", href: "/admin/quotations" }]}
-      />
-      <section className="p-4 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between pb-4">
-          <Link href="/admin/quotations">
-            <Button variant="ghost">
-              <ChevronLeft />
-              <span>Back to Quotations</span>
-            </Button>
-          </Link>
-          <div className="flex gap-4">
-            <PrintQuotation
-              htmlContent={generateHTMLPDF(
-                JSON.parse(JSON.stringify(rawQuotationData))
-              )}
-            />
-            {status === "Pending" && (
-              <MailQuotation quotationRequestId={quotationData?.id as string} />
-            )}
-          </div>
-        </div>
-        {/* <Invoice
-          htmlContent={generateHTMLPDF(
-            JSON.parse(JSON.stringify(rawQuotationData))
-          )}
-        />
 
-        <MailQuotation quotationRequestId={quotationData?.id as string} /> */}
-        <QuotationInformation
-          quotationRequest={JSON.parse(JSON.stringify(quotationData))}
-          readOnly={status !== "Pending"}
-        />
-        <RemarksForm
-          quotationRequest={JSON.parse(JSON.stringify(quotationData))}
-          readOnly={status !== "Pending"}
-        />
-      </section>
-    </div>
+  return (
+    <section className="p-4 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between pb-4">
+        <Link href="/admin/quotations">
+          <Button variant="ghost">
+            <ChevronLeft />
+            <span>Back to Quotations</span>
+          </Button>
+        </Link>
+        <div className="flex gap-4">
+          <PrintQuotation
+            htmlContent={generateHTMLPDF(
+              JSON.parse(JSON.stringify(rawQuotationData))
+            )}
+          />
+          {status === "Pending" && (
+            <MailQuotation quotationRequestId={quotationData?.id as string} />
+          )}
+        </div>
+      </div>
+      <QuotationInformation
+        quotationRequest={JSON.parse(JSON.stringify(quotationData))}
+        readOnly={status !== "Pending"}
+      />
+      <RemarksForm
+        quotationRequest={JSON.parse(JSON.stringify(quotationData))}
+        readOnly={status !== "Pending"}
+      />
+    </section>
+  );
+}
+
+function QuotationSkeleton() {
+  return (
+    <section className="p-4 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between pb-4">
+        <Link href="/admin/quotations">
+          <Button variant="ghost">
+            <ChevronLeft />
+            <span>Back to Quotations</span>
+          </Button>
+        </Link>
+        <div className="flex gap-4">
+          <Skeleton className="h-8 w-8" />
+        </div>
+      </div>
+      <QuotationInformationSkeleton />
+    </section>
   );
 }

@@ -32,6 +32,8 @@ export async function addAdditionalQuotationCharge({
       quotationId: payload.quotationId,
     },
   });
+
+  revalidateTag("quotationRequest");
 }
 
 export async function addQuotationRequestRemark({
@@ -58,6 +60,7 @@ export async function addQuotationRequestRemark({
     },
   });
   revalidatePath(`/admin/quotations/view/${quotationRequestId}`);
+  
 }
 
 export async function removeAdditionalQuotationCharge(
@@ -71,6 +74,7 @@ export async function removeAdditionalQuotationCharge(
     },
   });
   revalidatePath(`/admin/quotations/view/${quotationRequestId}`);
+  revalidateTag("quotationRequest");
 }
 
 export async function createQuotationRequest(
