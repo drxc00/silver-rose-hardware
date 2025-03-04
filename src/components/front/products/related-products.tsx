@@ -3,14 +3,14 @@ import { ProductCard } from "../product-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export async function RelatedProducts({ productId }: { productId: string }) {
-  const relatedProducts = await fetchRelatedProducts(productId);
+export async function RelatedProducts({ categoryId }: { categoryId: string }) {
+  const relatedProducts = await fetchRelatedProducts(categoryId);
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {relatedProducts.slice(0, 4).map(
         (relatedProduct) =>
           // This ensures that the current product is not displayed
-          relatedProduct.id !== productId && (
+          relatedProduct.id !== categoryId && (
             <ProductCard
               key={relatedProduct.id}
               product={JSON.parse(JSON.stringify(relatedProduct))}
@@ -23,7 +23,7 @@ export async function RelatedProducts({ productId }: { productId: string }) {
 
 export function RelatedProductsSkeleton() {
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {Array.from({ length: 4 }).map((_, index) => (
         <Card key={index}>
           <CardContent className="p-4">

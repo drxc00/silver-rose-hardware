@@ -51,14 +51,14 @@ export default async function ProductPage({
   const productData = await cachedFetchProductUsingSlug(productSlug);
   const product = JSON.parse(JSON.stringify(productData));
   return (
-    <main className="p-10 lg:px-32 xl:px-48 flex min-h-screen flex-col justify-start bg-muted">
+    <main className="p-6 md:px-20 lg:px-32 flex min-h-screen flex-col justify-start bg-muted">
       <Breadcrumb className="pb-8">
         <BreadcrumbList>
           {product?.category && product.category.parent ? (
             <>
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href={`/category/${product.category.parent.slug}`}
+                  href={`/categories/${product.category.parent.slug}`}
                 >
                   {product.category.parent.name}
                 </BreadcrumbLink>
@@ -66,7 +66,7 @@ export default async function ProductPage({
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href={`/category/${product.category.parent.slug}/${product.category.slug}`}
+                  href={`/categories/${product.category.parent.slug}/${product.category.slug}`}
                 >
                   {product.category.parent.name}
                 </BreadcrumbLink>
@@ -87,7 +87,7 @@ export default async function ProductPage({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <section className="grid grid-cols-2 gap-6 w-full">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         <div className="w-full h-[400px] rounded-lg border mx-auto bg-white p-2 items-center">
           <Image
             src={product?.image || ""}
@@ -121,7 +121,7 @@ export default async function ProductPage({
             </Link>
           </div>
           <Suspense fallback={<RelatedProductsSkeleton />}>
-            <RelatedProducts productId={product?.id} />
+            <RelatedProducts categoryId={product?.category?.id} />
           </Suspense>
         </div>
       </section>

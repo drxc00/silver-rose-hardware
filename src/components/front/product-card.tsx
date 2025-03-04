@@ -19,10 +19,10 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
   ];
   return (
     <Card className="h-full">
-      <CardContent className="p-6 flex flex-col justify-between gap-2 h-full">
+      <CardContent className="p-4 flex flex-col justify-between gap-2 h-full">
         <Link href={`/products/${product.slug}`}>
           <div>
-            <div className="relative w-full h-48 mb-4">
+            <div className="relative w-full h-48 mb-4 border">
               {" "}
               {/* Fixed height container */}
               <Image
@@ -50,8 +50,8 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
                   productAttributes.map((attr) => (
                     <Badge
                       key={attr}
-                      variant="secondary"
-                      className="rounded-sm px-2 py-1"
+                      variant="outline"
+                      className="rounded-full px-2 py-1"
                     >
                       {attr}
                     </Badge>

@@ -40,7 +40,7 @@ export default async function CategoryPage({
 
 function CategoryPageLoading() {
   return (
-    <div className="px-8 w-full h-full">
+    <div className="px-0 md:px-8 w-full h-full">
       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
         <Link href="/" className="hover:text-gray-900">
           Categories
@@ -131,7 +131,7 @@ async function CategoryContent({
   const totalPages = Math.ceil(productsCount / itemsPerPage);
 
   return (
-    <div className="px-8 w-full h-full">
+    <div className="px-0 md:px-8 w-full h-full">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
         <Link href="/" className="hover:text-gray-900">

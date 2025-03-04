@@ -35,13 +35,15 @@ export default async function Home() {
             Hardware Needs
           </h1>
           <Link href="/products">
-            <Button size="lg" className="mt-2 sm:mt-4">Shop Now</Button>
+            <Button size="lg" className="mt-2 sm:mt-4">
+              Shop Now
+            </Button>
           </Link>
         </div>
       </section>
 
       {/* Featured Products Section - Better padding for small screens */}
-      <section className="px-4 sm:px-8 md:px-16 lg:px-40 py-6 sm:py-10">
+      <section className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-6 sm:py-10">
         <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-2 sm:gap-0 mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-star">
             Featured Products
@@ -56,8 +58,10 @@ export default async function Home() {
       </section>
 
       {/* Categories Section - Improved spacing */}
-      <section className="px-4 sm:px-8 md:px-16 lg:px-40 py-6 sm:py-10 bg-background">
-        <h1 className="text-2xl sm:text-3xl font-bold text-star mb-4">Categories</h1>
+      <section className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 sm:py-10 bg-background">
+        <h1 className="text-2xl sm:text-3xl font-bold text-star mb-4">
+          Categories
+        </h1>
         <div className="w-full">
           <Suspense fallback={<CategoriesLoading />}>
             <Categories />
@@ -94,10 +98,12 @@ export default async function Home() {
             Describe what you are looking for and our AI will recommend the best
             product
           </p>
-          <Button className="mx-auto">
-            <Sparkles className="mr-2 h-4 w-4" />
-            <span>Ask AI</span>
-          </Button>
+          <Link href="/ask">
+            <Button className="mx-auto">
+              <Sparkles className="mr-2 h-4 w-4" />
+              <span>Ask AI</span>
+            </Button>
+          </Link>
         </div>
       </section>
     </main>

@@ -1,5 +1,6 @@
 import { ProductsGrid } from "@/components/front/products-grid";
 import { ProductsContent } from "@/components/front/products/all-products-grid";
+import { Divide } from "lucide-react";
 import { Suspense } from "react";
 
 export function generateMetadata() {
@@ -21,7 +22,11 @@ export default async function ProductsPage({
         <h1 className="text-3xl font-bold text-center pb-10">All Products</h1>
         <div className="w-screen max-w-7xl">
           <Suspense
-            fallback={<ProductsGrid products={[]} categories={[]} isLoading />}
+            fallback={
+              <div className="px-6">
+                <ProductsGrid products={[]} categories={[]} isLoading />
+              </div>
+            }
           >
             <ProductsContent
               currentPage={currentPage}

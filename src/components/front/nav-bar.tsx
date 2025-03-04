@@ -29,6 +29,7 @@ import {
 import { UserQuotation } from "./user-quotation";
 import { useQuotation } from "../providers/quotation-provider";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 
 interface NavBarProps {
   session?: Session;
@@ -156,7 +157,6 @@ export function NavBar({ session }: NavBarProps) {
                   Silver Rose Hardware
                 </SheetTitle>
               </SheetHeader>
-
               <div className="flex flex-col space-y-6">
                 <div className="space-y-4">
                   <h3 className="text-sm font-medium text-muted-foreground">
@@ -193,6 +193,22 @@ export function NavBar({ session }: NavBarProps) {
                         className="flex items-center py-2 text-base font-medium"
                       >
                         About Us
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
+                        href="/quotation"
+                        className="flex items-center py-2 text-base font-medium"
+                      >
+                        <div className="flex items-center justify-between w-full gap-4">
+                          <span>Quotation</span>
+                          <Badge>
+                            {
+                              optimisticQuotation?.quotation?.QuotationItem
+                                ?.length
+                            }
+                          </Badge>
+                        </div>
                       </Link>
                     </SheetClose>
                   </nav>

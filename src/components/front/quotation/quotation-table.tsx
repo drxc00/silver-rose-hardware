@@ -26,11 +26,9 @@ import {
 } from "@/app/(server)/actions/quotation-mutations";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import Link from "next/link";
 
 export function QuotationTable() {
   const { quotation, removeToQuotation, updateQuantity } = useQuotation();
-  const router = useRouter();
   const { toast } = useToast();
 
   const calculateSubtotal = () => {
@@ -44,7 +42,6 @@ export function QuotationTable() {
     try {
       removeToQuotation(itemId);
       await removeQuotationItem(itemId);
-      // router.refresh();
     } catch (error) {
       toast({
         title: "Error",
@@ -65,7 +62,7 @@ export function QuotationTable() {
           </h1>
         </div>
       </CardHeader>
-      <CardContent className="py-2">
+      <CardContent className="py-2 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

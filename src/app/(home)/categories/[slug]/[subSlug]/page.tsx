@@ -38,7 +38,7 @@ export default async function Page({
 
 function SubcategoryPageLoading() {
   return (
-    <div className="px-8 w-full h-full">
+    <div className="px-0 md:px-8 w-full h-full">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
         <Link href="/" className="hover:text-gray-900">
@@ -110,7 +110,7 @@ async function SubcategoryContent({
   const totalPages = Math.ceil(productsCount / itemsPerPage);
 
   return (
-    <div className="px-8 w-full h-full">
+    <div className="px-0 md:px-8 w-full h-full">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
         <Link href="/" className="hover:text-gray-900">
