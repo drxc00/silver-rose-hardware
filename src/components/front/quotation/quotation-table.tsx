@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Minus, Plus, Printer, Trash2, History } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -54,7 +54,7 @@ export function QuotationTable() {
   };
 
   return (
-    <Card className="w-full border-t-0 border-b-0">
+    <Card className="w-full border-t-0 border-b-0 rounded-sm">
       <CardHeader className="bg-sidebar p-6 rounded border-t">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">
@@ -79,7 +79,7 @@ export function QuotationTable() {
               <TableRow key={item?.id}>
                 <TableCell>
                   <form action={() => handleRemoveItem(item?.id as string)}>
-                    <Button>
+                    <Button className="rounded-sm" size="sm">
                       <Trash2 />
                     </Button>
                   </form>
@@ -173,10 +173,9 @@ function EditQuantityButton({
             ? Number(item.quantity) + 1
             : Number(item.quantity) - 1
         );
-        // router.refresh();
       }}
     >
-      <Button type="submit" className={className}>
+      <Button type="submit" size="sm" className={className + " rounded-sm"}>
         {type === "increment" ? (
           <Plus className="h-4 w-4" />
         ) : (

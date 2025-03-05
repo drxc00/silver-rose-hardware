@@ -1,9 +1,7 @@
 import { RegistrationForm } from "@/components/forms/registration-form";
-import { Card, CardContent } from "@/components/ui/card";
 import { createNewUser, isAlreadyAuthenticated } from "@/lib/auth-functions";
 import { UserRole } from "@/lib/constants";
 import { registrationFormSchema } from "@/lib/form-schema";
-import Image from "next/image";
 import { z } from "zod";
 
 export default async function RegisterPage() {
@@ -25,7 +23,8 @@ export default async function RegisterPage() {
         <div className="px-6">
           <div className="p-6 md:p-8">
             <div className="text-center py-4">
-              <h1 className="text-2xl font-bold">Register an account</h1>
+              <h1 className="text-3xl font-bold pb-2"><span className="text-primary">Silver Rose</span> Hardware</h1>
+              <h2 className="text-xl font-bold">Register an account</h2>
               <p className="text-sm text-muted-foreground">
                 Create your Silver Rose Hardware account
               </p>

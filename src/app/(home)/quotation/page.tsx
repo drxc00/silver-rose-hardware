@@ -27,7 +27,7 @@ export default async function QuotationPage() {
           <h1 className="text-3xl font-bold">My Quotation</h1>
           <div className="flex items-center gap-4">
             <Link href="/quotation/history">
-              <Button variant="outline">
+              <Button variant="outline" className="rounded-sm">
                 <History />
                 <span>History</span>
               </Button>
@@ -44,7 +44,7 @@ export default async function QuotationPage() {
           <div className="flex flex-col gap-2">
             <h2 className="text-xl text-center font-bold">Need a Custom Quote?</h2>
             <Link href="/quotation/request">
-              <Button size="lg">
+              <Button size="lg" className="rounded-sm">
                 <Send />
                 <span>Send a Quotation Request</span>
               </Button>
@@ -93,7 +93,7 @@ async function PrintQuotationButton({ userId }: { userId: string }) {
 
 function PrintQuotationButtonSkeleton() {
   return (
-    <Button variant="outline" disabled>
+    <Button variant="outline" disabled className="rounded-sm">
       <Printer className="h-4 w-4" />
       <span>Print Quotation</span>
     </Button>

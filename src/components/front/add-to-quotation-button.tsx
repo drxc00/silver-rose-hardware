@@ -47,7 +47,7 @@ export function AddToQuotationButton({
         handleAddToQuotation();
       }}
     >
-      <Button className="w-full" size="lg">
+      <Button className="w-full rounded-sm" size="lg">
         Add to Quotation
       </Button>
     </form>

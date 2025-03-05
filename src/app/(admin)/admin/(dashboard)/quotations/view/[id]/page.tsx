@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { unstable_cache as cache } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 export async function generateStaticParams() {
   /*
@@ -83,7 +84,7 @@ export default async function QuotationPage({
 }
 
 async function QuotationViewContent({ id }: { id: string }) {
-  const quotationData = await getQuotation(id);
+  const quotationData = JSON.parse(JSON.stringify(await getQuotation(id)));
   const rawQuotationData = await prisma.quotation.findUnique({
     where: { id: quotationData?.quotationId || "" },
     include: {
@@ -106,11 +107,20 @@ async function QuotationViewContent({ id }: { id: string }) {
       QuotationRequest: true,
     },
   });
-  const status = quotationData?.status || "Pending";
+
+  const serializedQuotationData = JSON.parse(
+    JSON.stringify(rawQuotationData, (key, value) => {
+      if (value instanceof Prisma.Decimal) {
+        return value.toNumber(); // or value.toString() if you want string representation
+      }
+      return value;
+    })
+  );
+  const status = serializedQuotationData?.status || "Pending";
 
   return (
     <section className="p-4 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between pb-4">
+      <div className="flex items-center flex-col md:flex-row justify-between pb-4">
         <Link href="/admin/quotations">
           <Button variant="ghost">
             <ChevronLeft />
@@ -119,9 +129,7 @@ async function QuotationViewContent({ id }: { id: string }) {
         </Link>
         <div className="flex gap-4">
           <PrintQuotation
-            htmlContent={generateHTMLPDF(
-              JSON.parse(JSON.stringify(rawQuotationData))
-            )}
+            htmlContent={generateHTMLPDF(serializedQuotationData!)}
           />
           {status === "Pending" && (
             <MailQuotation quotationRequestId={quotationData?.id as string} />
@@ -129,11 +137,11 @@ async function QuotationViewContent({ id }: { id: string }) {
         </div>
       </div>
       <QuotationInformation
-        quotationRequest={JSON.parse(JSON.stringify(quotationData))}
+        quotationRequest={quotationData!}
         readOnly={status !== "Pending"}
       />
       <RemarksForm
-        quotationRequest={JSON.parse(JSON.stringify(quotationData))}
+        quotationRequest={quotationData!}
         readOnly={status !== "Pending"}
       />
     </section>

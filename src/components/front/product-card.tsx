@@ -18,7 +18,7 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
     ),
   ];
   return (
-    <Card className="h-full">
+    <Card className="h-full rounded-sm">
       <CardContent className="p-4 flex flex-col justify-between gap-2 h-full">
         <Link href={`/products/${product.slug}`}>
           <div>
@@ -63,7 +63,7 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
         <div className="w-full">
           {product.hasVariant ? (
             <Link href={`/products/${product.slug}`}>
-              <Button className="w-full" variant="secondary">
+              <Button className="w-full rounded-sm" variant="secondary">
                 View Options
               </Button>
             </Link>

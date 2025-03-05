@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { QuotationItemWithRelations } from "@/app/types";
 import { formatCurrency } from "@/lib/utils";
+import Link from "next/link";
 
 export const columns: ColumnDef<QuotationItemWithRelations>[] = [
   {
@@ -59,7 +60,7 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
     header: "Actions",
     // Accepts row as a parameter.
     // Removed here for linting reasons
-    cell: ({}) => {
+    cell: ({ row }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -70,10 +71,12 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
+            <Link href={`/quotation/history/${row.original.quotation.id}`}>
+              <DropdownMenuItem>
                 <SquareArrowOutUpRight />
                 View
               </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );

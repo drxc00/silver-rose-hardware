@@ -54,7 +54,6 @@ export function Footer() {
         <div className="flex flex-wrap justify-center sm:justify-end gap-4">
           <p>Privacy</p>
           <p>Terms and Conditions</p>
-          <p>Sitemap</p>
         </div>
       </div>
     </div>

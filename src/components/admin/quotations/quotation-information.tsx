@@ -15,12 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Calendar,
-  Mail,
-  Phone,
-  User,
-} from "lucide-react";
+import { Calendar, Mail, Phone, User } from "lucide-react";
 import { AdditionalChargesTable } from "./additional-charges-table";
 import { formatCurrency } from "@/lib/utils";
 
@@ -104,43 +99,46 @@ export function QuotationInformation({
           </div>
           <div className="py-4">
             <h1 className="font-semibold pb-2">Products</h1>
-            <Table className="border-b">
-              <TableHeader className="bg-muted">
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Specifciations</TableHead>
-                  <TableHead>Unit Price</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Subtotal</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {quotationRequest.quotation.QuotationItem.map((item) => (
-                  <TableRow key={item?.id}>
-                    <TableCell>{item?.variant.product.name}</TableCell>
-                    <TableCell>
-                      {item?.variant.attributes
-                        .map(
-                          (attribute) =>
-                            attribute.attribute.name + ": " + attribute.value
-                        )
-                        .join("; ")}
-                    </TableCell>
-                    <TableCell>
-                      ₱ {Number(item?.priceAtQuotation).toLocaleString()}
-                    </TableCell>
-                    <TableCell>{Number(item?.quantity)}</TableCell>
-                    <TableCell>
-                      {" "}
-                      ₱
-                      {(
-                        Number(item?.priceAtQuotation) * Number(item?.quantity)
-                      ).toLocaleString()}
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table className="border-b">
+                <TableHeader className="bg-muted">
+                  <TableRow>
+                    <TableHead>Product</TableHead>
+                    <TableHead>Specifciations</TableHead>
+                    <TableHead>Unit Price</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Subtotal</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {quotationRequest.quotation.QuotationItem.map((item) => (
+                    <TableRow key={item?.id}>
+                      <TableCell>{item?.variant.product.name}</TableCell>
+                      <TableCell>
+                        {item?.variant.attributes
+                          .map(
+                            (attribute) =>
+                              attribute.attribute.name + ": " + attribute.value
+                          )
+                          .join("; ")}
+                      </TableCell>
+                      <TableCell>
+                        ₱ {Number(item?.priceAtQuotation).toLocaleString()}
+                      </TableCell>
+                      <TableCell>{Number(item?.quantity)}</TableCell>
+                      <TableCell>
+                        {" "}
+                        ₱
+                        {(
+                          Number(item?.priceAtQuotation) *
+                          Number(item?.quantity)
+                        ).toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
           <div className="py-6">
             <AdditionalChargesTable

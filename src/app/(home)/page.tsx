@@ -35,7 +35,7 @@ export default async function Home() {
             Hardware Needs
           </h1>
           <Link href="/products">
-            <Button size="lg" className="mt-2 sm:mt-4">
+            <Button size="lg" className="mt-2 sm:mt-4 rounded-sm">
               Shop Now
             </Button>
           </Link>

@@ -52,11 +52,6 @@ const items = [
     baseUrl: "/admin/quotations",
     icon: Quote,
   },
-  {
-    title: "Users",
-    baseUrl: "/admin/users",
-    icon: Users,
-  },
 ];
 
 export function AdminSidebar() {

@@ -37,7 +37,7 @@ export default async function QuotationHistoryPage() {
           <h1 className="text-3xl font-bold">Quotation History</h1>
         </div>
         <div>
-          <Card className="w-full">
+          <Card className="w-full rounded-sm shadow-none ">
             <CardContent className="p-4">
               <Suspense
                 fallback={

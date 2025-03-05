@@ -56,9 +56,9 @@ export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
       }
       if (result?.ok) {
         if (type === "ADMIN") {
-          router.replace("/admin");
+          window.location.href = "/admin";
         } else {
-          router.replace("/");
+          window.location.href = "/";
         }
       }
     } catch (error) {

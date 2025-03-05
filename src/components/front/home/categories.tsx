@@ -27,7 +27,7 @@ export async function Categories() {
       <CarouselContent>
         <CarouselItem className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
           <Link href="/categories">
-            <Card className="h-full bg-gradient-to-b from-red-600 to-red-800 rounded-2xl">
+            <Card className="h-full bg-gradient-to-b from-red-600 to-red-800 rounded-md">
               <CardContent className="p-0 flex items-center justify-center h-full">
                 <h1 className="font-bold text-2xl max-w-xs text-primary-foreground">
                   All Categories

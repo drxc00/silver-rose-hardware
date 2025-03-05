@@ -28,10 +28,10 @@ export default async function QuotationsPage() {
   await routeProtection("/admin/login");
   const quotationRequests = await cachedFetchQuotationRequests();
   return (
-    <div className="min-h-screen bg-muted w-vh">
+    <div className="min-h-screen bg-muted">
       <AdminHeader currentPage="Quotations" />
       <main className="p-6 flex flex-col gap-6">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center">
           <h1 className="text-3xl font-bold">Quotations</h1>
         </div>
         <div>

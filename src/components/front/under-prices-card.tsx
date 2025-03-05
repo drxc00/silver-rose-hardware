@@ -14,7 +14,7 @@ export function UnderPricesCard({
   href,
 }: UnderPricesCardProps) {
   return (
-    <div className="h-72 w-full relative aspect-square overflow-hidden rounded-xl group">
+    <div className="h-72 w-full relative aspect-square overflow-hidden rounded-sm group">
       <Image
         src={image || "/placeholder-category.jpg"}
         alt={`${headerText}`}
@@ -27,7 +27,7 @@ export function UnderPricesCard({
       <div className="absolute top-10 left-6">
         <h2 className="text-3xl font-bold text-white mb-4">{headerText}</h2>
         <Link href={href}>
-          <Button size="lg">View All</Button>
+          <Button size="lg" className="rounded-sm">View All</Button>
         </Link>
       </div>
     </div>

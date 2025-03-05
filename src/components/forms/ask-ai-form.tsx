@@ -48,71 +48,60 @@ export default function AskForm() {
   };
 
   return (
-    <main className="mx-auto h-full py-10 px-4">
-      <div className="flex flex-col items-center max-w-6xl mx-auto space-y-8">
-        <div className="text-center max-w-2xl">
-          <h1 className="text-3xl font-bold text-center pb-2 flex items-center justify-center gap-2">
-            Ask <span className="text-primary">AI</span>
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Describe what you are looking for or what you want to build, and our
-            AI will recommend the best products for your project.
-          </p>
+    <>
+      <form className="w-full space-y-4" onSubmit={handleSubmit}>
+        <Card className="rounded-sm shadow-none ">
+          <CardContent className="p-6">
+            <Textarea
+              className="min-h-32 p-4 text-base"
+              placeholder="Example: I need to build a bookshelf for my living room. What materials should I get?"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          </CardContent>
+          <CardFooter className="items-end">
+            <div className="flex justify-center">
+              <Button
+                type="submit"
+                className="gap-2 text-sm rounded-sm"
+                disabled={isLoading || !prompt.trim()}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Getting recommendations
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    Get Recommendations
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </form>
+      {error && (
+        <div className="w-full max-w-2xl p-4 text-red-500 bg-red-50 rounded-md">
+          {error}
         </div>
-        <form className="w-full space-y-4" onSubmit={handleSubmit}>
-          <Card>
-            <CardContent className="p-6">
-              <Textarea
-                className="min-h-32 p-4 text-base"
-                placeholder="Example: I need to build a bookshelf for my living room. What materials should I get?"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              />
-            </CardContent>
-            <CardFooter className="items-end">
-              <div className="flex justify-center">
-                <Button
-                  type="submit"
-                  className="gap-2 text-sm"
-                  disabled={isLoading || !prompt.trim()}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Getting recommendations...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      Get Recommendations
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardFooter>
-          </Card>
-        </form>
-        {error && (
-          <div className="w-full max-w-2xl p-4 text-red-500 bg-red-50 rounded-md">
-            {error}
-          </div>
-        )}
-        {explanation && recommendations && (
-          <Card className="bg-muted/50">
-            <CardContent className="p-6 space-y-4">
-              <div>
-                <h2 className="text-md font-bold mb-2">Recommendation:</h2>
-                <p className="text-sm text-muted-foreground">{explanation}</p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {recommendations.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    </main>
+      )}
+      {explanation && recommendations && (
+        <Card className="bg-muted/50">
+          <CardContent className="p-6 space-y-4">
+            <div>
+              <h2 className="text-md font-bold mb-2">Recommendation:</h2>
+              <p className="text-sm text-muted-foreground">{explanation}</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {recommendations.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </>
   );
 }

@@ -150,7 +150,7 @@ const PrintQuotation = ({ htmlContent }: { htmlContent: string }) => {
 
   return (
     <div>
-      <Button variant="outline" onClick={handlePrint}>
+      <Button variant="outline" className="rounded-sm" onClick={handlePrint}>
         <Printer />
         <span>Print Quotation</span>
       </Button>

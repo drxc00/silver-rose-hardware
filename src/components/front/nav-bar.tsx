@@ -76,11 +76,11 @@ export function NavBar({ session }: NavBarProps) {
             value={(localSearch as string) || ""}
             onChange={(e) => setLocalSearch(e.target.value || "")}
             placeholder="Search..."
-            className="rounded-full w-96"
+            className="rounded-lg w-96"
           />
           <Sheet>
             <SheetTrigger asChild>
-              <button className="relative rounded-full border bg-sidebar p-2 hover:bg-sidebar/90">
+              <button className="relative rounded-lg border bg-sidebar p-2 hover:bg-sidebar/90">
                 <Quote className="h-5 w-5 text-muted-foreground" />
                 {optimisticQuotation?.quotation?.QuotationItem?.length > 0 && (
                   <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
@@ -105,7 +105,7 @@ export function NavBar({ session }: NavBarProps) {
           </Sheet>
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="cursor-pointer">
-              <div className="p-2 border bg-sidebar rounded-full">
+              <div className="p-2 border bg-sidebar rounded-lg">
                 <User className="h-5 w-5 text-muted-foreground" />
               </div>
             </DropdownMenuTrigger>
@@ -285,6 +285,7 @@ export function NavBar({ session }: NavBarProps) {
           <li>
             <Link href="/">
               <Button
+                className="rounded-sm"
                 size="sm"
                 variant={pathname === "/" ? "default" : "ghost"}
               >
@@ -295,6 +296,7 @@ export function NavBar({ session }: NavBarProps) {
           <li>
             <Link href="/categories">
               <Button
+                className="rounded-sm"
                 size="sm"
                 variant={pathname.includes("categories") ? "default" : "ghost"}
               >
@@ -305,6 +307,7 @@ export function NavBar({ session }: NavBarProps) {
           <li>
             <Link href="/products">
               <Button
+                className="rounded-sm"
                 size="sm"
                 variant={pathname === "/products" ? "default" : "ghost"}
               >
@@ -315,6 +318,7 @@ export function NavBar({ session }: NavBarProps) {
           <li>
             <Link href="/about-us">
               <Button
+                className="rounded-sm"
                 size="sm"
                 variant={pathname === "/about-us" ? "default" : "ghost"}
               >
