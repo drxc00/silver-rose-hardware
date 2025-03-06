@@ -2,7 +2,6 @@ import { AccountForm } from "@/components/forms/account-form";
 import { Card, CardContent } from "@/components/ui/card";
 import authCache from "@/lib/auth-cache";
 import { prisma } from "@/lib/prisma";
-import { User } from "@prisma/client";
 
 export default async function AccountPage() {
   const session = await authCache();

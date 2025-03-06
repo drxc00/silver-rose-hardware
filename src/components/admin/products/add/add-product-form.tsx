@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ArrowLeft, CirclePlus, LoaderIcon } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ImageUpload } from "@/components/admin/image-upload";
@@ -37,6 +37,7 @@ import { addProduct } from "@/app/(server)/actions/product-mutations";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAction } from "next-safe-action/hooks";
 
 interface ProductFormProps {
   categories: CategoryTree[];
@@ -44,7 +45,7 @@ interface ProductFormProps {
 }
 
 export function AddProductForm({ categories, attributes }: ProductFormProps) {
-  const [isPending, startTransition] = useTransition();
+  // const [isPending, startTransition] = useTransition();
   const [hasVariant, setHasVariant] = useState(false);
   const [variants, setVariants] = useState<z.infer<typeof variantSchema>[]>([]);
   const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
@@ -52,6 +53,9 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
   const router = useRouter();
   // For products without variants, we create a controlled input
   const [variantPrice, setVariantPrice] = useState<number>();
+
+  // Action handler hook
+  const { executeAsync, isPending } = useAction(addProduct);
 
   const form = useForm<z.infer<typeof productFormSchema>>({
     defaultValues: {
@@ -87,30 +91,35 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
   };
 
   const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
-    startTransition(async () => {
-      try {
-        // Validate some fields: image, category
-        if (!data.image || !data.category) {
-          throw new Error("Invalid product details. Please try again.");
-        }
-        const productPayload = {
-          ...data,
-          hasVariant,
-          variants: hasVariant
-            ? variants
-            : [{ price: variantPrice as number, attributes: [] }],
-        };
-        await addProduct(productPayload);
-        // If no error thrown, redirect to products page
-        router.push("/admin/products");
-      } catch (error) {
-        toast({
-          title: "Error adding product",
-          description: (error as Error).message, // This typecasting is so dumb bruh
-          variant: "destructive",
-        });
+    try {
+      // Validate some fields: image, category
+      if (!data.image || !data.category) {
+        throw new Error("Invalid product details. Please try again.");
       }
-    });
+      const productPayload = {
+        ...data,
+        hasVariant,
+        variants: hasVariant
+          ? variants
+          : [{ price: variantPrice as number, attributes: [] }],
+      };
+      const result = await executeAsync(productPayload);
+      if (!result?.data?.success) {
+        throw new Error(result?.data?.message);
+      }
+      // If no error thrown, redirect to products page
+      toast({
+        title: "Product added successfully",
+        variant: "default",
+      });
+      router.push("/admin/products");
+    } catch (error) {
+      toast({
+        title: "Error adding product",
+        description: (error as Error).message, // This typecasting is so dumb bruh
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -209,7 +218,7 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
                         <SelectContent>
                           <SelectItem value="0">None</SelectItem>
                           <SelectItem value="visible">Visible</SelectItem>
-                          <SelectItem value="hidden">Hidden</SelectItem>
+                          <SelectItem value="archived">Archived</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -278,7 +287,11 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
                   isOpen={isVariantDialogOpen}
                   setIsOpen={setIsVariantDialogOpen}
                 />
-                <Button variant="outline" type="button" onClick={() => setIsVariantDialogOpen(true)}>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => setIsVariantDialogOpen(true)}
+                >
                   <CirclePlus className="mr-2" />
                   Add Variant
                 </Button>

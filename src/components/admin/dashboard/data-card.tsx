@@ -10,7 +10,7 @@ interface DataCardProps {
 
 export function DataCard({ title, value, description, icon }: DataCardProps) {
   return (
-    <Card>
+    <Card className="rounded-sm shadow-none">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-sm font-medium">{title}</h1>
@@ -29,7 +29,7 @@ export function DataCard({ title, value, description, icon }: DataCardProps) {
 
 export function DataCardSkeleton() {
   return (
-    <Card>
+    <Card className="rounded-sm shadow-none">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-[100px]" />

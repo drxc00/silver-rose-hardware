@@ -3,14 +3,14 @@ import { ProductCard } from "../product-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export async function RelatedProducts({ categoryId }: { categoryId: string }) {
+export async function RelatedProducts({ categoryId, productId }: { categoryId: string, productId: string }) {
   const relatedProducts = await fetchRelatedProducts(categoryId);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {relatedProducts.slice(0, 4).map(
         (relatedProduct) =>
           // This ensures that the current product is not displayed
-          relatedProduct.id !== categoryId && (
+          relatedProduct.id !== productId && (
             <ProductCard
               key={relatedProduct.id}
               product={JSON.parse(JSON.stringify(relatedProduct))}

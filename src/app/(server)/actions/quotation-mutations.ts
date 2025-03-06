@@ -7,6 +7,7 @@ import {
   quotationRequestSchema,
 } from "@/lib/form-schema";
 import { prisma } from "@/lib/prisma";
+import { actionClient } from "@/lib/safe-action";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
@@ -60,7 +61,6 @@ export async function addQuotationRequestRemark({
     },
   });
   revalidatePath(`/admin/quotations/view/${quotationRequestId}`);
-  
 }
 
 export async function removeAdditionalQuotationCharge(
@@ -182,71 +182,161 @@ export async function removeQuotationItem(quotationItemId: string) {
   revalidateTag("userQuotation");
 }
 
-export async function addQuotationItem(payload: {
-  variantId: string;
-  quantity: number;
-}) {
-  const session = await authCache();
-  if (!session) throw new Error("You are not logged in.");
-  const user = session?.user;
-  // Fetch the quotation connected to the user
-  const userQuotation = await prisma.userQuotation.findFirst({
-    where: {
-      userId: user?.id as string,
-    },
-    include: {
-      quotation: {
+export const addQuotationItem = actionClient
+  .schema(
+    z.object({
+      variantId: z.string(),
+      quantity: z.number(),
+    })
+  )
+  .action(async ({ parsedInput: { variantId, quantity } }) => {
+    try {
+      const session = await authCache();
+      if (!session) throw new Error("You are not logged in.");
+      const user = session?.user;
+      // Fetch the quotation connected to the user
+      const userQuotation = await prisma.userQuotation.findFirst({
+        where: {
+          userId: user?.id as string,
+        },
         include: {
-          QuotationItem: {
+          quotation: {
             include: {
-              variant: {
+              QuotationItem: {
                 include: {
-                  product: true,
+                  variant: {
+                    include: {
+                      product: true,
+                    },
+                  },
                 },
               },
             },
           },
         },
-      },
-    },
-  });
+      });
 
-  // Check first if the variant exist in the quotation
-  const quotationItem = userQuotation?.quotation?.QuotationItem.find(
-    (item) => item.variantId === payload.variantId
-  );
-  if (quotationItem) {
-    await prisma.quotationItem.update({
-      where: {
-        id: quotationItem.id,
-      },
-      data: {
-        quantity: Number(quotationItem.quantity) + payload.quantity,
-      },
-    });
-    // Since the quantity has changed, we need to revalidate the tag
+      // Check first if the variant exist in the quotation
+      const quotationItem = userQuotation?.quotation?.QuotationItem.find(
+        (item) => item.variantId === variantId
+      );
+      if (quotationItem) {
+        await prisma.quotationItem.update({
+          where: {
+            id: quotationItem.id,
+          },
+          data: {
+            quantity: Number(quotationItem.quantity) + quantity,
+          },
+        });
+        // Since the quantity has changed, we need to revalidate the tag
+        revalidateTag("userQuotation");
+        return {
+          success: true,
+          message: "Item added to quotation successfully",
+        };
+      }
+
+      // Perform mutation atomically
+      await prisma.$transaction(async (tx) => {
+        // Fetch the variant price
+        const variant = await tx.variant.findUnique({
+          where: { id: variantId },
+          select: { price: true },
+        });
+
+        if (!variant) {
+          throw new Error("Variant not found.");
+        }
+
+        // Add the quotation item to the quotation
+        await tx.quotationItem.create({
+          data: {
+            variantId: variantId,
+            quantity: quantity,
+            quotationId: userQuotation?.quotationId as string,
+            priceAtQuotation: variant.price,
+          },
+        });
+      });
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to add item to quotation: " + (error as Error).message,
+      };
+    }
     revalidateTag("userQuotation");
-    return;
-  }
-
-  // Fetch the variant price
-  const variant = await prisma.variant.findUnique({
-    where: { id: payload.variantId },
-    select: { price: true },
+    return {
+      success: true,
+      message: "Item added to quotation successfully",
+    };
   });
 
-  if (!variant) {
-    throw new Error("Variant not found.");
-  }
+// export async function addQuotationItem(payload: {
+//   variantId: string;
+//   quantity: number;
+// }) {
+//   const session = await authCache();
+//   if (!session) throw new Error("You are not logged in.");
+//   const user = session?.user;
+//   // Fetch the quotation connected to the user
+//   const userQuotation = await prisma.userQuotation.findFirst({
+//     where: {
+//       userId: user?.id as string,
+//     },
+//     include: {
+//       quotation: {
+//         include: {
+//           QuotationItem: {
+//             include: {
+//               variant: {
+//                 include: {
+//                   product: true,
+//                 },
+//               },
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
 
-  // Add the quotation item to the quotation
-  await prisma.quotationItem.create({
-    data: {
-      variantId: payload.variantId,
-      quantity: payload.quantity,
-      quotationId: userQuotation?.quotationId as string,
-      priceAtQuotation: variant.price,
-    },
-  });
-  revalidateTag("userQuotation");
-}
+//   // Check first if the variant exist in the quotation
+//   const quotationItem = userQuotation?.quotation?.QuotationItem.find(
+//     (item) => item.variantId === payload.variantId
+//   );
+//   if (quotationItem) {
+//     await prisma.quotationItem.update({
+//       where: {
+//         id: quotationItem.id,
+//       },
+//       data: {
+//         quantity: Number(quotationItem.quantity) + payload.quantity,
+//       },
+//     });
+//     // Since the quantity has changed, we need to revalidate the tag
+//     revalidateTag("userQuotation");
+//     return;
+//   }
+
+//   // Fetch the variant price
+//   const variant = await prisma.variant.findUnique({
+//     where: { id: payload.variantId },
+//     select: { price: true },
+//   });
+
+//   if (!variant) {
+//     throw new Error("Variant not found.");
+//   }
+
+//   // Add the quotation item to the quotation
+//   await prisma.quotationItem.create({
+//     data: {
+//       variantId: payload.variantId,
+//       quantity: payload.quantity,
+//       quotationId: userQuotation?.quotationId as string,
+//       priceAtQuotation: variant.price,
+//     },
+//   });
+//   revalidateTag("userQuotation");
+// }

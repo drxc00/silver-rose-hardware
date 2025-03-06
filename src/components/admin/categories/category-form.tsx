@@ -67,20 +67,32 @@ export function CategoryForm({ category, categories }: AddCategoryFormProps) {
     startTransition(async () => {
       try {
         if (category) {
-          await updateCategory({
+          const result = await updateCategory({
             id: category!.id,
-            name: values.categoryName,
+            categoryName: values.categoryName,
             slug: values.slug,
             image: values.image as string,
             parentCategory: values.parentCategory,
+          });
+          // Check the result
+          if (!result?.data?.success) {
+            throw new Error(result?.data?.message);
+          }
+          toast({
+            title: "Category updated successfully",
+            variant: "default",
           });
         } else {
-          await addCategory({
-            name: values.categoryName,
+          const result = await addCategory({
+            categoryName: values.categoryName,
             slug: values.slug,
             image: values.image as string,
             parentCategory: values.parentCategory,
           });
+
+          if (!result?.data?.success) {
+            throw new Error(result?.data?.message);
+          }
           router.push("/admin/categories");
           toast({
             title: "Category added successfully",
@@ -121,7 +133,7 @@ export function CategoryForm({ category, categories }: AddCategoryFormProps) {
               )}
             </Button>
           </div>
-          <Card className="w-full">
+          <Card className="w-full rounded-sm shadow-none">
             <CardHeader>
               <CardTitle className="text-xl">Category Details</CardTitle>
             </CardHeader>

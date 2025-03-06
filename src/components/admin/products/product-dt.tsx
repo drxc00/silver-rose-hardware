@@ -86,7 +86,7 @@ export function ProductDataTable<TData, TValue>({
   }, [selectedCategory, table]);
 
   return (
-    <Card>
+    <Card className="rounded-sm shadow-none">
       <CardContent className="p-4">
         <div className="flex items-center pb-4 gap-4">
           <SearchInput

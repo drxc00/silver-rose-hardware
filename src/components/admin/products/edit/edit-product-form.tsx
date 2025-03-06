@@ -40,6 +40,8 @@ import { Attribute } from "@prisma/client";
 import { updateProduct } from "@/app/(server)/actions/product-mutations";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
 
 interface ProductFormProps {
   product: SerializedProductWithRelatedData;
@@ -52,8 +54,10 @@ export function EditProductForm({
   categories,
   attributes,
 }: ProductFormProps) {
-  const [isPending, startTransition] = useTransition();
+  // const [isPending, startTransition] = useTransition();
+  const { executeAsync, isPending } = useAction(updateProduct);
   const [hasVariant, setHasVariant] = useState(product.hasVariant || false);
+  const router = useRouter();
   const [variants, setVariants] = useState<z.infer<typeof variantSchema>[]>(
     // We map the variants to the form schema
     product.variants.map(
@@ -109,33 +113,42 @@ export function EditProductForm({
   };
 
   const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
-    startTransition(async () => {
-      try {
-        // Validate some fields: image, category
-        if (!data.image || !data.category) {
-          throw new Error("Invalid product details. Please try again.");
-        }
-        const productPayload = {
-          ...data,
-          slug: product.slug,
-          hasVariant,
-          variants: hasVariant
-            ? variants
-            : [{ price: variantPrice as number, attributes: [] }],
-        };
-        await updateProduct(
-          product.id,
-          productPayload as z.infer<typeof productFormSchema>
-        );
-      } catch (error) {
-        console.log(error);
-        toast({
-          title: "Error adding product",
-          description: (error as Error).message, // This typecasting is so dumb bruh
-          variant: "destructive",
-        });
+    try {
+      // Validate some fields: image, category
+      if (!data.image || !data.category) {
+        throw new Error("Invalid product details. Please try again.");
       }
-    });
+      const result = await executeAsync({
+        id: product.id,
+        name: data.name,
+        category: data.category,
+        description: data.description,
+        image: data.image,
+        slug: product.slug!,
+        status: data.status,
+        hasVariant: hasVariant,
+        variants: hasVariant
+          ? variants
+          : [{ price: variantPrice as number, attributes: [] }],
+      });
+
+      if (!result?.data?.success) {
+        throw new Error(result?.data?.message);
+      }
+      // If no error thrown, redirect to products page
+      toast({
+        title: "Product updated successfully",
+        variant: "default",
+      });
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error adding product",
+        description: (error as Error).message, // This typecasting is so dumb bruh
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -158,7 +171,7 @@ export function EditProductForm({
             </Button>
           </div>
           <ImageUpload image={product.image || ""} form={form} />
-          <Card>
+          <Card className="rounded-sm shadow-none">
             <CardHeader>
               <CardTitle>Product Details</CardTitle>
             </CardHeader>
@@ -234,7 +247,7 @@ export function EditProductForm({
                         <SelectContent>
                           <SelectItem value="0">None</SelectItem>
                           <SelectItem value="visible">Visible</SelectItem>
-                          <SelectItem value="hidden">Hidden</SelectItem>
+                          <SelectItem value="archived">Archived</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -279,7 +292,7 @@ export function EditProductForm({
             </CardContent>
           </Card>
           {!hasVariant ? (
-            <Card>
+            <Card className="rounded-sm shadow-none">
               <CardContent className="p-6">
                 <FormItem>
                   <Label>Price</Label>
@@ -293,7 +306,7 @@ export function EditProductForm({
               </CardContent>
             </Card>
           ) : (
-            <Card>
+            <Card className="rounded-sm shadow-none">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Variants</CardTitle>
                 <VariantDialog

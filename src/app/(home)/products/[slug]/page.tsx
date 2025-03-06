@@ -125,7 +125,7 @@ export default async function ProductPage({
             </Link>
           </div>
           <Suspense fallback={<RelatedProductsSkeleton />}>
-            <RelatedProducts categoryId={product?.category?.id} />
+            <RelatedProducts categoryId={product?.category?.id} productId={product?.id} />
           </Suspense>
         </div>
       </section>

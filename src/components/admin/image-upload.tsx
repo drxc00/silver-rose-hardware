@@ -37,20 +37,20 @@ export function ImageUpload({ image, form }: { image?: string; form: any }) {
   };
 
   return (
-    <Card>
+    <Card className="rounded-sm shadow-none">
       <CardHeader>
         <CardTitle className="text-xl">Media</CardTitle>
       </CardHeader>
       <CardContent>
         {imageData ? (
-          <div className="bg-sidebar border-2 border-dashed rounded-lg flex items-center justify-center h-64 relative">
+          <div className="bg-sidebar border-2 border-dashed rounded-sm flex items-center justify-center h-64 relative">
             <Image
               src={imageData.url}
               alt="Uploaded Image"
               width={500}
               height={256}
               priority
-              className={`object-cover rounded-lg h-full w-full ${
+              className={`object-cover rounded-sm h-full w-full ${
                 isDeleting ? "opacity-50" : ""
               }`}
             />

@@ -15,7 +15,7 @@ export function QuickNavigationCard({
 }: QuickNavigationCardProps) {
   return (
     <Link href={href}>
-      <Card className="cursor-pointer hover:scale-105 transition-all">
+      <Card className="cursor-pointer hover:scale-105 transition-all rounded-sm shadow-none">
         <CardContent className="p-8 py-10 flex justify-center">
           <div className="flex flex-col gap-2 items-center">
             <span className="text-primary">{icon}</span>

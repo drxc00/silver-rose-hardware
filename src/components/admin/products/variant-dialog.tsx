@@ -34,6 +34,7 @@ import { addAttribute } from "@/app/(server)/actions/product-mutations";
 import { z } from "zod";
 import { attributeSchema } from "@/lib/form-schema";
 import { useToast } from "@/hooks/use-toast";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export type FormAttributeValues = {
   attributeId?: string;
@@ -44,8 +45,8 @@ export type FormAttributeValues = {
 export function VariantDialog({
   isOpen,
   setIsOpen,
-  attributes,
-  attributeValues,
+  attributes, // All attributes in the database
+  attributeValues, // The attributes of the variant
   addVariant,
   updateVariant,
   dialogType = "add",
@@ -112,7 +113,8 @@ export function VariantDialog({
         toast({
           title: "Error",
           description:
-            "There was an error adding the attribute. Please try again: " + (err as Error).name,
+            "There was an error adding the attribute. Please try again: " +
+            (err as Error).name,
           variant: "destructive",
         });
       }
@@ -126,7 +128,7 @@ export function VariantDialog({
         });
         return;
       }
-
+      // Find the selected attribute in the attributes
       const selectedAttr = attributes.find(
         (attr) => attr.name === selectedAttribute
       );
@@ -155,15 +157,18 @@ export function VariantDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Variant</DialogTitle>
+          <DialogDescription className="sr-only">
+            Dialog for adding or updating a variant
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div>
-            <Label>Price</Label>
+            <Label className="font-bold">Price</Label>
             <Input
-              type="number"
               value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
               placeholder="₱ 0.00"
+              className="focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
             />
           </div>
           <div>
@@ -227,12 +232,24 @@ export function VariantDialog({
                   <SelectValue placeholder="Select Attribute" />
                 </SelectTrigger>
                 <SelectContent>
+                  {/**
+                   * We need to filter out the attributes that are already added
+                   * This prevents duplicates of attributes
+                   */}
                   {attributes &&
-                    attributes.map((attr) => (
-                      <SelectItem key={attr.id} value={attr.id}>
-                        {attr.name}
-                      </SelectItem>
-                    ))}
+                    attributes
+                      .filter((attr) => {
+                        const found = variantAttributes.find(
+                          (variantAttr) => variantAttr.id === attr.id
+                        );
+                        if (found) return false;
+                        return true;
+                      })
+                      .map((attr) => (
+                        <SelectItem key={attr.id} value={attr.id}>
+                          {attr.name}
+                        </SelectItem>
+                      ))}
                   <SelectItem value="New">
                     <div className="flex items-center gap-2">
                       <Plus className="h-4 w-4" />
@@ -264,7 +281,11 @@ export function VariantDialog({
                 value={attributeValue}
                 onChange={(e) => setAttributeValue(e.target.value)}
               />
-              <Button variant="outline" size="sm" onClick={addVariantAttribute}>
+              <Button
+                variant="outline"
+                onClick={addVariantAttribute}
+                disabled={selectedAttribute === null}
+              >
                 {attrLoading ? (
                   <LoaderIcon className="animate-spin" />
                 ) : (
@@ -279,6 +300,7 @@ export function VariantDialog({
             Cancel
           </Button>
           <Button
+            disabled={selectedAttribute === null}
             onClick={() => {
               if (dialogType === "add" && addVariant) {
                 addVariant(variantAttributes, price);

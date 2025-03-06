@@ -20,6 +20,7 @@ export async function ProductsContent({
         image: true,
         description: true,
         hasVariant: true,
+        status: true,
         category: {
           select: {
             id: true,
@@ -53,6 +54,9 @@ export async function ProductsContent({
       },
       skip: (currentPage - 1) * itemsPerPage,
       take: itemsPerPage,
+      where: {
+        status: "visible"
+      }
     }),
     prisma.product.count(), // Get total product count
   ]);

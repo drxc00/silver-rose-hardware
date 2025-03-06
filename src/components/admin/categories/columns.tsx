@@ -58,7 +58,7 @@ export const categoryColumns: ColumnDef<CategoryTree>[] = [
               alt={row.original.name}
               width={40}
               height={40}
-              className="rounded-md"
+              className="rounded-sm"
             />
             <span className="font-medium">{row.original.name}</span>
             {row.original.subcategories &&

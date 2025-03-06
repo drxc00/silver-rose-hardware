@@ -57,7 +57,7 @@ export function VariantDataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-sm border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -18,9 +18,12 @@ export default async function ProductsPage() {
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader currentPage="Products" />
-      <main className="p-6 flex flex-col gap-6">
+      <main className="p-6 flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Products</h1>
+          <div>
+            <h1 className="text-3xl font-bold">Products</h1>
+            <p className="text-sm text-muted-foreground">Manage your products</p>
+          </div>
           <Link href="/admin/products/add">
             <Button>
               <Plus />
@@ -29,7 +32,11 @@ export default async function ProductsPage() {
           </Link>
         </div>
         <div>
-          <ProductDataTable columns={productsColumns as any} data={products} categories={categories} />
+          <ProductDataTable
+            columns={productsColumns as any}
+            data={products}
+            categories={categories}
+          />
         </div>
       </main>
     </div>

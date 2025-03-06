@@ -50,7 +50,7 @@ function CategoryPageLoading() {
       </div>
 
       <div className="w-64 h-9 bg-muted animate-pulse rounded mb-6"></div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i} className="relative h-48 overflow-hidden border-none">
@@ -64,11 +64,11 @@ function CategoryPageLoading() {
   );
 }
 
-async function CategoryContent({ 
-  slug, 
-  currentPage 
-}: { 
-  slug: string; 
+async function CategoryContent({
+  slug,
+  currentPage,
+}: {
+  slug: string;
   currentPage: number;
 }) {
   const itemsPerPage = 20;
@@ -116,6 +116,9 @@ async function CategoryContent({
       ...args,
       skip: (currentPage - 1) * itemsPerPage,
       take: itemsPerPage,
+      where: {
+        status: "visible",
+      },
     }),
     prisma.product.count({
       where: {
@@ -124,6 +127,7 @@ async function CategoryContent({
             in: allCategoryIds,
           },
         },
+        status: "visible",
       },
     }),
   ]);

@@ -162,32 +162,49 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
         <div>
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 p-0 focus-visible:ring-offset-1"
+              >
                 <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-[200px]">
+              <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+                Actions
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <Link href={`/admin/products/edit/${row.original.id}`}>
-                <DropdownMenuItem>
-                  <PencilLine className="mr-2 h-4 w-4" />
-                  <span>Edit</span>
+
+              {id && (
+                <Link href={`/admin/products/edit/${id}`} className="w-full">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <PencilLine className="mr-2 h-4 w-4" />
+                    <span>Edit</span>
+                  </DropdownMenuItem>
+                </Link>
+              )}
+
+              {typeof updateIsFeatured === "function" && (
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await updateIsFeatured(id, !isFeatured);
+                  }}
+                  className="cursor-pointer"
+                >
+                  {isFeatured ? (
+                    <CheckCircle className="text-green-500 mr-2 h-4 w-4" />
+                  ) : (
+                    <CircleX className="text-muted-foreground mr-2 h-4 w-4" />
+                  )}
+                  <span>Toggle Featured</span>
                 </DropdownMenuItem>
-              </Link>
-              <DropdownMenuItem
-                onClick={async () => {
-                  await updateIsFeatured(id, !isFeatured);
-                }}
-              >
-                {isFeatured ? (
-                  <CheckCircle className="text-green-500 mr-2 h-4 w-4" />
-                ) : (
-                  <CircleX className="text-muted-foreground mr-2 h-4 w-4" />
-                )}
-                <span>Toggle Featured</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
+              )}
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer">
                 <Trash className="mr-2 h-4 w-4" />
                 <span>Delete</span>
               </DropdownMenuItem>

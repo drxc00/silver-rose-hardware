@@ -79,7 +79,7 @@ export function DataTable<TData extends CategoryTree, TValue>({
     },
   });
   return (
-    <Card>
+    <Card className="rounded-sm shadow-none">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="pb-4">

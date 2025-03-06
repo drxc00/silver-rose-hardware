@@ -15,12 +15,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { updateAccountDetails } from "@/app/(server)/actions/account-actions";
 import { useToast } from "@/hooks/use-toast";
+import { useAction } from "next-safe-action/hooks";
+import { updateAccountDetails } from "@/app/(server)/actions/account-actions";
+import { Loader2 } from "lucide-react";
 
 export function AccountForm({ user }: { user: User }) {
   const router = useRouter();
   const { toast } = useToast();
+
+  // Use Action
+  const { executeAsync, isPending } = useAction(updateAccountDetails);
+
   const form = useForm<z.infer<typeof accountFormSchema>>({
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
@@ -35,11 +41,23 @@ export function AccountForm({ user }: { user: User }) {
   const onSubmit = async (data: z.infer<typeof accountFormSchema>) => {
     try {
       // Invoke the server actions
-      await updateAccountDetails(data);
-      toast({
-        title: "Success",
-        description: "Account details updated successfully.",
-      });
+      const result = await executeAsync(data);
+
+      if (!result?.data?.success) {
+        toast({
+          title: "Error",
+          description: result?.data?.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (result.data.success) {
+        toast({
+          title: "Success",
+          description: "Account details updated successfully.",
+        });
+      }
       router.refresh();
     } catch (error) {
       toast({
@@ -111,7 +129,9 @@ export function AccountForm({ user }: { user: User }) {
           <Button variant="secondary" type="button">
             Cancel
           </Button>
-          <Button type="submit">Save</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+          </Button>
         </div>
       </form>
     </Form>

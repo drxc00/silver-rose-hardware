@@ -15,6 +15,7 @@ const getFeaturedProducts = cache(() =>
   prisma.product.findMany({
     where: {
       isFeatured: true,
+      status: "visible",
     },
     include: {
       category: true,

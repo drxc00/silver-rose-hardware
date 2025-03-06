@@ -15,9 +15,12 @@ export default async function CategoriesPage() {
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader currentPage="Cateogries" />
-      <main className="p-6 flex flex-col gap-6">
+      <main className="p-6 flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Categories</h1>
+          <div>
+            <h1 className="text-3xl font-bold">Categories</h1>
+            <p className="text-sm text-muted-foreground">Manage your product categories</p>
+          </div>
           <Link href="/admin/categories/add">
             <Button>
               <Plus />

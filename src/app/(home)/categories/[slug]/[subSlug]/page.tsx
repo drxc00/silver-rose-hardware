@@ -82,6 +82,7 @@ async function SubcategoryContent({
         category: {
           slug: subSlug,
         },
+        status: "visible",
       },
       include: {
         category: true,

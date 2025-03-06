@@ -77,7 +77,7 @@ export function QuotationDataTable<TData, TValue>({
 
   return (
     <>
-      <Card>
+      <Card className="rounded-sm shadow-none">
         <CardContent className="p-4">
           <div className="pb-4 flex flex-col sm:flex-row items-center gap-4">
             <SearchInput
