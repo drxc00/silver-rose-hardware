@@ -85,84 +85,80 @@ export function ProductPageCard({ product }: ProductPageCardProps) {
   };
 
   return (
-    <Card className="w-full border-none shadow-none">
-      <CardContent className="space-y-6 p-8">
-        <div className="flex flex-col gap-6">
-          <h1 className="text-4xl font-bold">{product.name}</h1>
-          <p className="text-3xl font-semibold text-red-600">
-            ₱{" "}
-            {price > 0
-              ? price.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
-              : "--"}
-          </p>
-        </div>
+    <div>
+      <div className="flex flex-col gap-6">
+        <h1 className="text-4xl font-bold">{product.name}</h1>
+        <p className="text-3xl font-semibold text-red-600">
+          ₱{" "}
+          {price > 0
+            ? price.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            : "--"}
+        </p>
+      </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          {Object.entries(processedAttributes).map(
-            ([attributeName, values]) => (
-              <div key={attributeName} className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  {attributeName}
-                </label>
-                <Select
-                  value={selectedAttributes[attributeName] || ""}
-                  onValueChange={(value) => {
-                    setSelectedAttributes((prev) => ({
-                      ...prev,
-                      [attributeName]: value,
-                    }));
-                    setParams(attributeName, value);
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-white">
-                    <SelectValue placeholder={`Select ${attributeName}`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {values.map((value) => (
-                      <SelectItem key={value} value={value}>
-                        {value}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Quantity</label>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              onClick={() => handleQuantityChange(quantity - 1)}
-              disabled={quantity <= 1}
+      <div className="grid grid-cols-2 gap-4">
+        {Object.entries(processedAttributes).map(([attributeName, values]) => (
+          <div key={attributeName} className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              {attributeName}
+            </label>
+            <Select
+              value={selectedAttributes[attributeName] || ""}
+              onValueChange={(value) => {
+                setSelectedAttributes((prev) => ({
+                  ...prev,
+                  [attributeName]: value,
+                }));
+                setParams(attributeName, value);
+              }}
             >
-              <MinusIcon className="h-4 w-4" />
-            </Button>
-            <Input
-              type="number"
-              min="1"
-              value={quantity}
-              onChange={(e) => handleQuantityChange(Number(e.target.value))}
-              className="w-16 text-center"
-            />
-            <Button
-              variant="outline"
-              onClick={() => handleQuantityChange(quantity + 1)}
-            >
-              <PlusIcon className="h-4 w-4" />
-            </Button>
+              <SelectTrigger className="w-full bg-white">
+                <SelectValue placeholder={`Select ${attributeName}`} />
+              </SelectTrigger>
+              <SelectContent>
+                {values.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+        ))}
+      </div>
+
+      <div className="space-y-2 pb-6">
+        <label className="text-sm font-medium text-gray-700">Quantity</label>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            onClick={() => handleQuantityChange(quantity - 1)}
+            disabled={quantity <= 1}
+          >
+            <MinusIcon className="h-4 w-4" />
+          </Button>
+          <Input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => handleQuantityChange(Number(e.target.value))}
+            className="w-16 text-center"
+          />
+          <Button
+            variant="outline"
+            onClick={() => handleQuantityChange(quantity + 1)}
+          >
+            <PlusIcon className="h-4 w-4" />
+          </Button>
         </div>
-        <AddToQuotationButton
-          quantity={quantity}
-          selectedVariant={selectedVariant as SerializedProductVariant}
-        />
-      </CardContent>
-    </Card>
+      </div>
+      <AddToQuotationButton
+        quantity={quantity}
+        selectedVariant={selectedVariant as SerializedProductVariant}
+      />
+    </div>
   );
 }

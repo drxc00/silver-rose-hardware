@@ -16,6 +16,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { unstable_cache as cache } from "next/cache";
+import { Card, CardContent } from "@/components/ui/card";
 
 const cachedFetchProductUsingSlug = cache(fetchProductUsingSlug);
 
@@ -51,7 +52,7 @@ export default async function ProductPage({
   const productData = await cachedFetchProductUsingSlug(productSlug);
   const product = JSON.parse(JSON.stringify(productData));
   return (
-    <main className="p-6 md:px-20 lg:px-32 flex min-h-screen flex-col justify-start bg-muted">
+    <main className="p-6 md:px-10 lg:px-32 flex min-h-screen flex-col justify-start bg-muted">
       <Breadcrumb className="pb-8">
         <BreadcrumbList>
           {product?.category && product.category.parent ? (
@@ -71,7 +72,6 @@ export default async function ProductPage({
                   {product.category.parent.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              <BreadcrumbSeparator />
             </>
           ) : (
             <BreadcrumbItem>
@@ -87,18 +87,22 @@ export default async function ProductPage({
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-        <div className="w-full h-[400px] rounded-lg border mx-auto bg-white p-2 items-center">
-          <Image
-            src={product?.image || ""}
-            alt={product?.name || ""}
-            width={600}
-            height={400}
-            className="w-full h-full object-contain"
-            loading="eager"
-          />
-        </div>
-        <ProductPageCard product={product} />
+      <section className="w-full">
+        <Card className="rounded-sm shadow-none">
+          <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 items-center gap-6 w-full">
+            <div className="w-full h-[400px] rounded-lg mx-auto p-2 items-center">
+              <Image
+                src={product?.image || ""}
+                alt={product?.name || ""}
+                width={600}
+                height={400}
+                className="w-full h-full object-contain"
+                loading="eager"
+              />
+            </div>
+            <ProductPageCard product={product} />
+          </CardContent>
+        </Card>
       </section>
       <section className="pt-10">
         <div>
