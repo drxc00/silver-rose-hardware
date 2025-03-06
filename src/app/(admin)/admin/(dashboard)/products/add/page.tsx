@@ -13,7 +13,7 @@ export default async function AddProductPage() {
         currentPage="Add Product"
         crumbItems={[{ name: "Products", href: "/admin/products" }]}
       />
-      <section className="p-4 max-w-4xl mx-auto">
+      <section className="p-4 w-full mx-auto">
         <AddProductForm categories={categories} attributes={attributes} />
       </section>
     </div>

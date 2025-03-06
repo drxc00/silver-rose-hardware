@@ -13,8 +13,8 @@ export default async function AccountPage() {
   });
 
   return (
-    <main className="mx-auto h-full py-10 px-4">
-      <div className="flex flex-col items-center max-w-6xl mx-auto space-y-8 pb-8">
+    <main className="mx-auto h-full py-8 px-4">
+      <div className="flex flex-col items-center max-w-6xl mx-auto space-y-8 pb-6">
         <div className="text-center max-w-2xl">
           <h1 className="text-3xl font-bold text-center pb-2 flex items-center justify-center gap-2">
             Account Page
@@ -25,11 +25,7 @@ export default async function AccountPage() {
         </div>
       </div>
       <div className="px-6 md:px-12 lg:px-32">
-        <Card className="rounded-sm shadow-none">
-          <CardContent className="p-6">
-            <AccountForm user={databaseUser!} />
-          </CardContent>
-        </Card>
+        <AccountForm user={databaseUser!} />
       </div>
     </main>
   );

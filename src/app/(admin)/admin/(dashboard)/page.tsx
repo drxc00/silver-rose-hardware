@@ -1,6 +1,4 @@
-import { DashboardData } from "@/app/types";
 import { AdminHeader } from "@/components/admin/admin-header";
-import { DataCard } from "@/components/admin/dashboard/data-card";
 import { QuickNavigationCard } from "@/components/admin/dashboard/quick-navigation-card";
 import authCache from "@/lib/auth-cache";
 import { UserRole } from "@/lib/constants";
@@ -9,15 +7,9 @@ import {
   DashboardDataGridSkeleton,
 } from "@/components/admin/dashboard/data-grid";
 import {
-  ChartBarStacked,
   ChartBarStackedIcon,
-  MessageCircleQuestion,
-  MessageSquareQuoteIcon,
-  Package,
   PackagePlus,
   Quote,
-  UserPlus2,
-  Users2Icon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";

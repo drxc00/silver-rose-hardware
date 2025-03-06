@@ -7,6 +7,7 @@ import {
   Check,
   CheckCircle,
   CircleX,
+  IdCard,
   MoreHorizontal,
   PencilLine,
   Trash,
@@ -27,15 +28,7 @@ import Link from "next/link";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 
 export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => {
-      const id = row.original.id;
-      const truncatedId = id.length > 6 ? `${id.slice(0, 6)}...` : id;
-      return <span className="truncate w-20">{truncatedId}</span>;
-    },
-  },
+
   {
     accessorKey: "product",
     filterFn: "productFilter" as any, // Type assertion

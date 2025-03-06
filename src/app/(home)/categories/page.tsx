@@ -9,8 +9,6 @@ export const metadata: Metadata = {
   title: "Categories | Silver Rose Hardware",
 };
 
-export const revalidate = 3600; // Revalidate every hour
-
 export default async function CategoriesPage() {
   return (
     <main className="mx-auto h-full py-10">

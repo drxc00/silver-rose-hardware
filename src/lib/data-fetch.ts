@@ -304,6 +304,9 @@ export async function fetchAllProducts(options?: Prisma.ProductFindManyArgs): Pr
             }
           }
         }
+      },
+      orderBy: {
+        createdAt: "asc"
       }
     })
     .then((products) =>

@@ -34,7 +34,7 @@ export default async function EditCategoryPage({
         currentPage="Edit Category"
         crumbItems={[{ name: "Categories", href: "/admin/categories" }]}
       />
-      <section className="p-4 max-w-4xl mx-auto">
+      <section className="p-4 w-full mx-auto">
         <CategoryForm category={category} categories={categories} />
       </section>
     </div>

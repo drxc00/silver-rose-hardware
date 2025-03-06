@@ -300,7 +300,7 @@ export function VariantDialog({
             Cancel
           </Button>
           <Button
-            disabled={selectedAttribute === null}
+            disabled={selectedAttribute === null && !attributeValues}
             onClick={() => {
               if (dialogType === "add" && addVariant) {
                 addVariant(variantAttributes, price);

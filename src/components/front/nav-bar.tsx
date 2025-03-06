@@ -1,7 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { List, Quote, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  User,
+  List,
+  LogIn,
+  LogOut,
+  PackageOpen,
+  Quote,
+  Settings,
+  UserPlus,
+} from "lucide-react";
 import Link from "next/link";
 import { Session } from "next-auth";
 import {
@@ -9,7 +19,6 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 import { clientLogout } from "@/app/(server)/actions/auth-actions";
@@ -105,40 +114,66 @@ export function NavBar({ session }: NavBarProps) {
           </Sheet>
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="cursor-pointer">
-              <div className="p-2 border bg-sidebar rounded-lg">
+              <div className="flex items-center gap-2 p-2 border rounded-lg bg-sidebar hover:bg-accent transition-colors duration-200">
                 <User className="h-5 w-5 text-muted-foreground" />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="end" className="w-56">
               {session ? (
                 <>
-                  <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium">{session?.user?.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {session?.user?.email}
+                    </p>
+                  </div>
                   <DropdownMenuSeparator />
-                  {session && session?.user?.role == "ADMIN" && (
+                  {session?.user?.role === "ADMIN" && (
                     <>
-                      <DropdownMenuItem>
-                        <Link href="/admin">Admin Dashbaord</Link>
-                      </DropdownMenuItem>
+                      <Link href="/admin" className="w-full">
+                        <DropdownMenuItem className="cursor-pointer gap-2">
+                          <LayoutDashboard className="h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </DropdownMenuItem>
+                      </Link>
                       <DropdownMenuSeparator />
                     </>
                   )}
-                  <Link href="/account">
-                    <DropdownMenuItem>Account</DropdownMenuItem>
+                  <Link href="/account" className="w-full">
+                    <DropdownMenuItem className="cursor-pointer gap-2">
+                      <Settings className="h-4 w-4" />
+                      <span>Account Settings</span>
+                    </DropdownMenuItem>
                   </Link>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem
+                    className="cursor-pointer text-red-500 gap-2 focus:text-red-500"
                     onClick={async () => await clientLogout("/")}
                   >
-                    Logout
+                    <LogOut className="h-4 w-4" />
+                    <span>Logout</span>
                   </DropdownMenuItem>
                 </>
               ) : (
                 <>
-                  <Link href="/login">
-                    <DropdownMenuItem>Login</DropdownMenuItem>
-                  </Link>
+                  <div className="px-2 py-2 text-center">
+                    <p className="text-sm font-medium mb-1">Welcome</p>
+                    <p className="text-xs text-muted-foreground">
+                      Please login to continue
+                    </p>
+                  </div>
                   <DropdownMenuSeparator />
-                  <Link href="/register">
-                    <DropdownMenuItem>Register</DropdownMenuItem>
+                  <Link href="/login" className="w-full">
+                    <DropdownMenuItem className="cursor-pointer gap-2">
+                      <LogIn className="h-4 w-4" />
+                      <span>Login</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/register" className="w-full">
+                    <DropdownMenuItem className="cursor-pointer gap-2">
+                      <UserPlus className="h-4 w-4" />
+                      <span>Register</span>
+                    </DropdownMenuItem>
                   </Link>
                 </>
               )}

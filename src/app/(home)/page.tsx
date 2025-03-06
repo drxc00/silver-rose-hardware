@@ -13,8 +13,6 @@ import {
   CategoriesLoading,
 } from "@/components/front/home/categories";
 
-export const revalidate = 3600; // Revalidate every hour
-
 export default async function Home() {
   return (
     <main className="flex flex-col bg-background mb-auto">

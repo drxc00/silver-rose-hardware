@@ -11,7 +11,7 @@ export default async function AddCategoryPage() {
         currentPage="Add Category"
         crumbItems={[{ name: "Categories", href: "/admin/categories" }]}
       />
-      <section className="p-4 max-w-4xl mx-auto ">
+      <section className="p-4 mx-auto ">
         <CategoryForm categories={categories} />
       </section>
     </div>

@@ -6,24 +6,24 @@ export default async function AboutUsPage() {
   return (
     <div className="bg-gray-50 w-full">
       <main>
-        <section className="py-16 md:py-24 lg:py-32">
+        <section className="py-16">
           <div className="mx-auto grid gap-16 px-4 md:px-6">
             <div className="text-center">
-              <h1 className="text-4xl font-extrabold tracking-tight text-primary sm:text-5xl md:text-6xl">
+              <h1 className="text-4xl font-extrabold tracking-tight text-primary">
                 About Silver Rose Hardware
               </h1>
-              <p className="mt-4 text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="mt-4 text-muted-foreground max-w-3xl mx-auto">
                 A Trusted Provider of Comprehensive Hardware Solutions
               </p>
             </div>
 
-            <div className="mx-auto w-full max-w-4xl space-y-12">
+            <div className="mx-auto w-full max-w-4xl space-y-6">
               <div className="bg-card rounded-sm border p-8">
-                <h2 className="text-3xl font-bold text-foreground mb-6">
+                <h2 className="text-xl font-bold text-foreground mb-6">
                   Our Commitment to Excellence
                 </h2>
                 <div className="space-y-6">
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     Silver Rose Hardware stands as a premier provider of
                     sophisticated hardware solutions, serving discerning clients
                     including homeowners, professional contractors, and
@@ -44,7 +44,7 @@ export default async function AboutUsPage() {
               </div>
 
               <div className="space-y-6">
-                <h2 className="text-3xl font-bold">
+                <h2 className="text-xl font-bold text-center">
                   Distinguishing Characteristics
                 </h2>
                 <ul className="grid md:grid-cols-2 gap-6">
@@ -155,7 +155,7 @@ export default async function AboutUsPage() {
               </div>
 
               <div className="mt-6">
-                <Link href="/contact" passHref>
+                <Link href="mailto:buy@silverrosehardware.com" passHref>
                   <Button className="w-full gap-2">
                     <Mail className="h-5 w-5" />
                     Contact Our Business Solutions Team

@@ -9,6 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import {
   Select,
@@ -17,7 +18,13 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardTitle,
+  CardHeader,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
 import { useEffect, useTransition } from "react";
 import { SelectValue } from "@radix-ui/react-select";
 import { Category } from "@prisma/client";
@@ -29,7 +36,7 @@ import {
   updateCategory,
 } from "@/app/(server)/actions/category-mutations";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, CheckCheck, Loader2 } from "lucide-react";
+import { ArrowLeft, FolderPlus, LoaderIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -112,78 +119,113 @@ export function CategoryForm({ category, categories }: AddCategoryFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-        <div className="flex flex-col gap-4 w-full">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Link href="/admin/categories">
-                <Button variant="ghost">
-                  <ArrowLeft className="h-5 w-5" />
-                  <span>Back to Categories</span>
-                </Button>
-              </Link>
-            </div>
-            <Button type="submit" disabled={isPending} className="mt-4">
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center justify-between top-0 z-10 bg-background px-4 py-4 border rounded-sm">
+            <Link href="/admin/categories">
+              <Button
+                variant="outline"
+                type="button"
+                size="sm"
+                className="gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back to Categories</span>
+              </Button>
+            </Link>
+            <Button type="submit" className="px-6 gap-2" disabled={isPending}>
               {isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <>
+                  <LoaderIcon className="h-4 w-4 animate-spin" />
+                  <span>{category ? "Updating" : "Adding"} Category...</span>
+                </>
               ) : (
-                <div className="flex items-center gap-2">
-                  <CheckCheck />
-                  <span>{category ? "Edit" : "Add"} Category</span>
-                </div>
+                <span>{category ? "Update" : "Add"} Category</span>
               )}
             </Button>
           </div>
-          <Card className="w-full rounded-sm shadow-none">
-            <CardHeader>
-              <CardTitle className="text-xl">Category Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="categoryName"
-                render={({ field }) => (
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-1">
+              <div className="flex h-full flex-col gap-4 top-24">
+                <ImageUpload form={form} image={category?.image || ""} />
+              </div>
+            </div>
+
+            <div className="md:col-span-2 space-y-6">
+              <Card className="rounded-sm shadow-none">
+                <CardHeader>
+                  <CardTitle>Category Information</CardTitle>
+                  <CardDescription>
+                    Basic details about your category
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="categoryName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter category name"
+                            {...field}
+                            className="h-10"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="parentCategory"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Parent Category</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="h-10">
+                              <SelectValue placeholder="Select a parent category" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0">None</SelectItem>
+                            {categories.map((category) => (
+                              <SelectItem key={category.id} value={category.id}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription className="text-xs mt-1">
+                          Optional. Choose a parent category to create a
+                          hierarchy.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+              <Card className="rounded-sm shadow-none">
+                <CardContent className="p-6">
                   <FormItem>
-                    <FormLabel>Category Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="bg-sidebar focus-visible:ring-transparent"
-                        placeholder="Enter category name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
+                    <FormLabel>Slug</FormLabel>
+                    <div className="text-sm text-muted-foreground bg-muted px-3 py-2 rounded-md">
+                      {form.watch("slug") || "category-slug"}
+                    </div>
+                    <FormDescription className="text-xs mt-1">
+                      Automatically generated from the category name.
+                    </FormDescription>
                   </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="parentCategory"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Parent Category (Optional)</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="bg-sidebar focus-visible:ring-transparent">
-                          <SelectValue placeholder="Select a parent category" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0">None</SelectItem>
-                        {categories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-          <div>
-            <ImageUpload form={form} image={category?.image || ""} />
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </form>
