@@ -27,15 +27,10 @@ export function AddToQuotationButton({
         variantId: selectedVariant.id,
         quantity,
       });
-      // router.refresh();
     } catch (error) {
-      // Handle error (maybe implement a rollback of the optimistic update)
       toast({
         title: "Error adding to quotation",
-        description:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred",
+        description: "An error occured. Please make sure you are logged in.",
         variant: "destructive",
       });
     }

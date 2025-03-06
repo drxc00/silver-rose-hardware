@@ -45,25 +45,25 @@ function SubcategoryPageLoading() {
           Categories
         </Link>
         <ChevronRight className="h-4 w-4" />
-        <div className="w-24 h-5 bg-gray-200 animate-pulse rounded"></div>
+        <div className="w-24 h-5 bg-muted animate-pulse rounded"></div>
         <ChevronRight className="h-4 w-4" />
-        <div className="w-32 h-5 bg-gray-200 animate-pulse rounded"></div>
+        <div className="w-32 h-5 bg-muted animate-pulse rounded"></div>
       </div>
-      
+
       {/* Category Title */}
-      <div className="w-64 h-9 bg-gray-200 animate-pulse rounded mb-6"></div>
-      
+      <div className="w-64 h-9 bg-muted animate-pulse rounded mb-6"></div>
+
       {/* Products Grid */}
       <ProductsGrid products={[]} isLoading />
     </div>
   );
 }
 
-async function SubcategoryContent({ 
-  subSlug, 
-  currentPage 
-}: { 
-  subSlug: string; 
+async function SubcategoryContent({
+  subSlug,
+  currentPage,
+}: {
+  subSlug: string;
   currentPage: number;
 }) {
   const itemsPerPage = 20;
@@ -104,7 +104,7 @@ async function SubcategoryContent({
           slug: subSlug,
         },
       },
-    })
+    }),
   ]);
 
   const totalPages = Math.ceil(productsCount / itemsPerPage);
@@ -117,8 +117,8 @@ async function SubcategoryContent({
           Categories
         </Link>
         <ChevronRight className="h-4 w-4" />
-        <Link 
-          href={`/categories/${category?.parent?.slug}`} 
+        <Link
+          href={`/categories/${category?.parent?.slug}`}
           className="font-medium text-gray-900 hover:underline"
         >
           {category?.parent?.name}

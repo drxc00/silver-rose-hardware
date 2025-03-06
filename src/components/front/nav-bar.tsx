@@ -122,9 +122,9 @@ export function NavBar({ session }: NavBarProps) {
                       <DropdownMenuSeparator />
                     </>
                   )}
-                  <DropdownMenuItem>
-                    <Link href="/profile">Profile</Link>
-                  </DropdownMenuItem>
+                  <Link href="/account">
+                    <DropdownMenuItem>Account</DropdownMenuItem>
+                  </Link>
                   <DropdownMenuItem
                     onClick={async () => await clientLogout("/")}
                   >
@@ -237,10 +237,10 @@ export function NavBar({ session }: NavBarProps) {
                         )}
                         <SheetClose asChild>
                           <Link
-                            href="/profile"
+                            href="/account"
                             className="flex items-center py-2 text-base"
                           >
-                            Profile
+                            Account
                           </Link>
                         </SheetClose>
                         <SheetClose asChild>

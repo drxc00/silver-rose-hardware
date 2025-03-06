@@ -70,3 +70,11 @@ export const additionalChargeShcema = z.object({
   name: z.string().min(1),
   amount: z.number().min(1),
 });
+
+export const accountFormSchema = z.object({
+  userId: z.string().min(1),
+  name: z.string().min(1),
+  email: z.string().email().min(1),
+  username: z.string().min(1),
+  password: z.string(),
+});

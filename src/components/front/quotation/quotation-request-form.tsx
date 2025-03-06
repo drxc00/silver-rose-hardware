@@ -18,7 +18,6 @@ import { z } from "zod";
 import { QuotationSummaryTable } from "./quotation-summary-table";
 import { useToast } from "@/hooks/use-toast";
 import { createQuotationRequest } from "@/app/(server)/actions/quotation-mutations";
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Loader2, MailCheck } from "lucide-react";
 import Link from "next/link";
@@ -32,7 +31,6 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [isRequestSuccess, setIsRequestSuccess] = useState(false);
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof quotationRequestSchema>>({
     defaultValues: {
@@ -112,7 +110,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
           <p className="text-muted-foreground italic">
             You will receive an update on your quotation within 24-48 hours.
           </p>
-          <Link href="/quotations/history">
+          <Link href="/quotation/history">
             <Button className="mt-4">View All Requests</Button>
           </Link>
         </div>

@@ -22,7 +22,7 @@ export function ProductCard({ product }: { product: ProductWithRelatedData }) {
       <CardContent className="p-4 flex flex-col justify-between gap-2 h-full">
         <Link href={`/products/${product.slug}`}>
           <div>
-            <div className="relative w-full h-48 mb-4 border">
+            <div className="relative w-full h-48 mb-4c">
               {" "}
               {/* Fixed height container */}
               <Image
