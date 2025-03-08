@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import { ProductsGrid } from "@/components/front/products-grid";
 import { Pagination } from "@/components/front/products-pagination";
+import { unstable_cache as cache } from "next/cache";
 
 export async function generateMetadata({
   params,
@@ -64,6 +65,69 @@ function CategoryPageLoading() {
   );
 }
 
+const cachedCategoryChildren = cache(
+  async (slug: string) => {
+    return prisma.category.findUnique({
+      where: { slug },
+      include: {
+        children: true,
+      },
+    });
+  },
+  ["categoryPage"]
+);
+
+const cachedCategoryProducts = cache(
+  async (
+    currentPage: number,
+    itemsPerPage: number,
+    allCategoryIds: string[]
+  ) => {
+    const args = {
+      where: {
+        category: {
+          id: {
+            in: allCategoryIds,
+          },
+        },
+      },
+      include: {
+        category: true,
+        variants: {
+          include: {
+            attributes: {
+              include: {
+                attribute: true,
+              },
+            },
+          },
+        },
+      },
+    };
+    return Promise.all([
+      prisma.product.findMany({
+        ...args,
+        skip: (currentPage - 1) * itemsPerPage,
+        take: itemsPerPage,
+        where: {
+          status: "visible",
+        },
+      }),
+      prisma.product.count({
+        where: {
+          category: {
+            id: {
+              in: allCategoryIds,
+            },
+          },
+          status: "visible",
+        },
+      }),
+    ]);
+  },
+  ["categoryPage"]
+);
+
 async function CategoryContent({
   slug,
   currentPage,
@@ -73,12 +137,7 @@ async function CategoryContent({
 }) {
   const itemsPerPage = 20;
 
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    include: {
-      children: true,
-    },
-  });
+  const category = await cachedCategoryChildren(slug);
 
   if (!category) {
     throw new Error("Category not found");
@@ -89,48 +148,11 @@ async function CategoryContent({
     ...category.children.map((child) => child.id),
   ];
 
-  const args = {
-    where: {
-      category: {
-        id: {
-          in: allCategoryIds,
-        },
-      },
-    },
-    include: {
-      category: true,
-      variants: {
-        include: {
-          attributes: {
-            include: {
-              attribute: true,
-            },
-          },
-        },
-      },
-    },
-  };
-
-  const [products, productsCount] = await Promise.all([
-    prisma.product.findMany({
-      ...args,
-      skip: (currentPage - 1) * itemsPerPage,
-      take: itemsPerPage,
-      where: {
-        status: "visible",
-      },
-    }),
-    prisma.product.count({
-      where: {
-        category: {
-          id: {
-            in: allCategoryIds,
-          },
-        },
-        status: "visible",
-      },
-    }),
-  ]);
+  const [products, productsCount] = await cachedCategoryProducts(
+    currentPage,
+    itemsPerPage,
+    allCategoryIds
+  );
 
   const totalPages = Math.ceil(productsCount / itemsPerPage);
 

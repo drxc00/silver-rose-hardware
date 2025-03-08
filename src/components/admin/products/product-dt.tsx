@@ -122,14 +122,18 @@ export function ProductDataTable<TData, TValue>({
             </SelectContent>
           </Select>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto border rounded-sm">
           <Table>
             <TableHeader className="bg-sidebar">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id}>
+                      <TableHead 
+                        key={header.id}
+                        style={{ width: header.getSize() }}
+                        className="whitespace-nowrap"
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -150,7 +154,11 @@ export function ProductDataTable<TData, TValue>({
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell 
+                        key={cell.id}
+                        style={{ width: cell.column.getSize() }}
+                        className="whitespace-nowrap"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

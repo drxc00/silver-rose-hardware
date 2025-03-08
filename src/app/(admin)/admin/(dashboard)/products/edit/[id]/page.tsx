@@ -37,7 +37,7 @@ export default async function EditProductPage({
         currentPage="Edit Product"
         crumbItems={[{ name: "Products", href: "/admin/products" }]}
       />
-      <section className="p-4 max-w-4xl mx-auto">
+      <section className="p-4 mx-auto">
         <EditProductForm
           product={JSON.parse(JSON.stringify(product))}
           categories={categories as CategoryTree[]}

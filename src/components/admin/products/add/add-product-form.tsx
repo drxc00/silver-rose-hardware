@@ -134,7 +134,7 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full max-w-5xl mx-auto"
+        className="w-full mx-auto"
       >
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between top-0 z-10 bg-background px-4 py-4 border rounded-sm">

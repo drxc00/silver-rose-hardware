@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { unstable_cache as cache } from "next/cache";
+import { Card, CardContent } from "@/components/ui/card";
 
 export async function generateStaticParams() {
   /*
@@ -72,77 +73,57 @@ export default async function QuotationPage({
 }) {
   // Quotation Id
   const id = (await params).id || "";
-
+  const quotationData = JSON.parse(JSON.stringify(await getQuotation(id)));
+  const status = quotationData?.status || "Pending";
   return (
     <div className="min-h-screen bg-muted w-vh">
       <AdminHeader
         currentPage="View Quotation"
         crumbItems={[{ name: "Quotations", href: "/admin/quotations" }]}
       />
-      <Suspense fallback={<QuotationSkeleton />}>
-        <QuotationViewContent id={id} />
-      </Suspense>
-    </div>
-  );
-}
-
-async function QuotationViewContent({ id }: { id: string }) {
-  const quotationData = JSON.parse(JSON.stringify(await getQuotation(id)));
-  const status = quotationData?.status || "Pending";
-  return (
-    <section className="p-4 max-w-7xl mx-auto">
-      <div className="flex items-center flex-col md:flex-row justify-between pb-4">
-        <Link href="/admin/quotations">
-          <Button variant="ghost">
-            <ChevronLeft />
-            <span>Back to Quotations</span>
-          </Button>
-        </Link>
-        <div className="flex gap-4">
-          <PrintQuotation
-            htmlContent={generateHTMLPDF(
-              {
-                ...quotationData.quotation,
-                QuotationRequest: [
-                  {
-                    ...quotationData,
-                  },
-                ],
-              }!
-            )}
+      <section className="p-4 mx-auto flex flex-col gap-4">
+        <Card className="rounded-sm shadow-none">
+          <CardContent className="p-4">
+            <div className="flex items-center flex-col md:flex-row justify-between">
+              <Link href="/admin/quotations">
+                <Button variant="outline">
+                  <ChevronLeft />
+                  <span>Back to Quotations</span>
+                </Button>
+              </Link>
+              <div className="flex gap-4">
+                <PrintQuotation
+                  htmlContent={generateHTMLPDF(
+                    {
+                      ...quotationData.quotation,
+                      QuotationRequest: [
+                        {
+                          ...quotationData,
+                        },
+                      ],
+                    }!
+                  )}
+                />
+                {status === "Pending" && (
+                  <MailQuotation
+                    quotationRequestId={quotationData?.id as string}
+                  />
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <div className="flex flex-col gap-4">
+          <QuotationInformation
+            quotationRequest={quotationData!}
+            readOnly={status !== "Pending"}
           />
-          {status === "Pending" && (
-            <MailQuotation quotationRequestId={quotationData?.id as string} />
-          )}
+          <RemarksForm
+            quotationRequest={quotationData!}
+            readOnly={status !== "Pending"}
+          />
         </div>
-      </div>
-      <QuotationInformation
-        quotationRequest={quotationData!}
-        readOnly={status !== "Pending"}
-      />
-      <RemarksForm
-        quotationRequest={quotationData!}
-        readOnly={status !== "Pending"}
-      />
-    </section>
-  );
-}
-
-function QuotationSkeleton() {
-  return (
-    <section className="p-4 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between pb-4">
-        <Link href="/admin/quotations">
-          <Button variant="ghost">
-            <ChevronLeft />
-            <span>Back to Quotations</span>
-          </Button>
-        </Link>
-        <div className="flex gap-4">
-          <Skeleton className="h-8 w-8" />
-        </div>
-      </div>
-      <QuotationInformationSkeleton />
-    </section>
+      </section>
+    </div>
   );
 }

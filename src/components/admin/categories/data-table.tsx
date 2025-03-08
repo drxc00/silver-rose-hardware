@@ -95,7 +95,7 @@ export function DataTable<TData extends CategoryTree, TValue>({
             />
           </div>
         </div>
-        <div className="bg-background border-b overflow-x-auto">
+        <div className="bg-background  border rounded-sm overflow-x-auto">
           <Table>
             <TableHeader className="bg-muted border-none">
               {table.getHeaderGroups().map((headerGroup) => (

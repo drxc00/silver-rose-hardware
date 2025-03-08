@@ -29,7 +29,7 @@ const getFeaturedProducts = cache(() =>
         },
       },
     },
-  })
+  }), ["featuredProducts"],
 );
 
 export async function FeaturedProducts() {

@@ -45,28 +45,23 @@ export function QuotationDataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [globalFilter, setGlobalFilter] = useState<string>("");
 
   const table = useReactTable({
     data,
     columns,
+    state: {
+      globalFilter,
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
     filterFns: {
       statusFilter: (row, columnId, filterValue) => {
         if (filterValue === "all") return true;
-
         const status = row.original.status;
-
-        if (status === undefined) {
-          return false;
-        }
-
-        return (
-          String(status).toLowerCase() === String(filterValue).toLowerCase()
-        );
-      },
-      includeSubcategories: () => {
-        return true;
+        if (status === undefined) return false;
+        return String(status).toLowerCase() === String(filterValue).toLowerCase();
       },
     } as Record<string, FilterFn<any>>,
   });
@@ -82,20 +77,10 @@ export function QuotationDataTable<TData, TValue>({
           <div className="pb-4 flex flex-col sm:flex-row items-center gap-4">
             <SearchInput
               placeholder="Search..."
-              value=""
+              value={globalFilter}
               className="w-full sm:w-auto flex-grow"
-              onChange={() => {}}
+              onChange={(e) => setGlobalFilter(e.target.value)}
             />
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full sm:w-auto">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="responded">Responded</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
           <div className="overflow-x-auto ">
             <Table className="w-full">

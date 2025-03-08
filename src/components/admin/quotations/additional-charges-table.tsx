@@ -5,6 +5,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -115,12 +116,13 @@ export function AdditionalChargesTable({
           </Dialog>
         )}
       </div>
-      <Table className="border-b">
+      <div className="overflow-x-auto rounded-sm border">
+      <Table>
         <TableHeader className="bg-muted">
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell></TableCell>
+            <TableHead className="w-[50%]">Name</TableHead>
+            <TableHead className="w-[20%]">Amount</TableHead>
+            <TableHead className="w-[10%]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -161,6 +163,7 @@ export function AdditionalChargesTable({
           )}
         </TableBody>
       </Table>
+      </div>
     </div>
   );
 }

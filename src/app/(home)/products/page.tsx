@@ -1,6 +1,5 @@
 import { ProductsGrid } from "@/components/front/products-grid";
 import { ProductsContent } from "@/components/front/products/all-products-grid";
-import { Divide } from "lucide-react";
 import { Suspense } from "react";
 
 export function generateMetadata() {

@@ -7,10 +7,9 @@ import {
   Check,
   CheckCircle,
   CircleX,
-  IdCard,
   MoreHorizontal,
   PencilLine,
-  Trash,
+  Archive,
 } from "lucide-react";
 import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,7 +30,8 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
 
   {
     accessorKey: "product",
-    filterFn: "productFilter" as any, // Type assertion
+    size: 300,
+    filterFn: "productFilter" as any,
     header: ({ column }) => {
       return (
         <Button
@@ -45,14 +45,16 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
     },
     cell: ({ row }) => (
       <div className="flex items-center gap-4">
-        <ImageWithSkeleton
-          className="rounded-lg"
-          src={row.original.image as string}
-          alt={row.original.name}
-          width={40}
-          height={40}
-        />
-        <span>{row.original.name}</span>
+        <div className="w-10 h-10 rounded-lg overflow-hidden">
+          <ImageWithSkeleton
+            className="w-full h-full object-cover"
+            src={row.original.image as string}
+            alt={row.original.name}
+            width={40}
+            height={40}
+          />
+        </div>
+        <span className="font-semibold">{row.original.name}</span>
       </div>
     ),
     sortingFn: (rowA, rowB) => {
@@ -63,6 +65,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   },
   {
     accessorKey: "category",
+    size: 150,
     filterFn: "categoryFilter" as any,
     header: ({ column }) => {
       return (
@@ -75,15 +78,25 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => row.original.category.name,
+    cell: ({ row }) => (
+      <span className="text-sm">{row.original.category.name}</span>
+    ),
   },
   {
     accessorKey: "variants",
+    size: 100,
     header: "Variants",
-    cell: ({ row }) => row.original.variants.length.toString(),
+    cell: ({ row }) => (
+      <div className="text-center">
+        <Badge variant="secondary">
+          {row.original.variants.length}
+        </Badge>
+      </div>
+    ),
   },
   {
     accessorKey: "price",
+    size: 120,
     header: "Price",
     cell: ({ row }) => {
       const variants = row.original.variants;
@@ -113,6 +126,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   },
   {
     accessorKey: "status",
+    size: 100,
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status;
@@ -126,6 +140,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   },
   {
     accessorKey: "featured",
+    size: 100,
     header: "Featured",
     cell: ({ row }) => {
       const status = row.original.isFeatured;
@@ -147,6 +162,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
   },
   {
     accessorKey: "actions",
+    size: 100,
     header: "Actions",
     cell: ({ row }) => {
       const id = row.original.id;
@@ -198,8 +214,8 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
               <DropdownMenuSeparator />
 
               <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer">
-                <Trash className="mr-2 h-4 w-4" />
-                <span>Delete</span>
+                <Archive className="mr-2 h-4 w-4" />
+                <span>Archive</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

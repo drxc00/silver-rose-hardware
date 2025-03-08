@@ -2,7 +2,12 @@
 
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, SquareArrowOutUpRight } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  MoreHorizontal,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { QuotationItemWithRelations } from "@/app/types";
 import Link from "next/link";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 export const columns: ColumnDef<QuotationItemWithRelations>[] = [
   {
@@ -56,9 +61,19 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
     filterFn: "statusFilter" as any,
     cell: ({ row }) => (
       <Badge
-        className="rounded-sm"
-        variant={row.original.status === "Responded" ? "default" : "secondary"}
+        variant={row.original.status === "Responded" ? "default" : "outline"}
+        className={cn(
+          row.original.status === "Responded"
+            ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400"
+            : "bg-amber-100 text-amber-800 hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400"
+        )}
       >
+        {row.original.status === "Responded" && (
+          <CheckCircle2 className="mr-1 h-3 w-3" />
+        )}
+        {row.original.status === "Pending" && (
+          <Clock className="mr-1 h-3 w-3" />
+        )}
         {row.original.status}
       </Badge>
     ),

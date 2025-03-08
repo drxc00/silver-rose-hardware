@@ -12,7 +12,7 @@ import { CategoryCard } from "../category-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { unstable_cache as cache } from "next/cache";
 
-const getCategories = cache(() => fetchCategories());
+const getCategories = cache(() => fetchCategories(), ["categories"]);
 
 export async function Categories() {
   const allCategories = await getCategories();

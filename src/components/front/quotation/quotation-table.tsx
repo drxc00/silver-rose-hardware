@@ -54,8 +54,8 @@ export function QuotationTable() {
   };
 
   return (
-    <Card className="w-full border-t-0 border-b-0 rounded-sm">
-      <CardHeader className="bg-sidebar p-6 rounded border-t">
+    <Card className="w-full shadow-none rounded-sm">
+      <CardHeader className="rounded">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">
             Products ({quotation.quotation.QuotationItem.length})
@@ -63,9 +63,10 @@ export function QuotationTable() {
         </div>
       </CardHeader>
       <CardContent className="py-2 overflow-x-auto">
+        <div className="rounded-sm border shadow-none">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-muted/50">
               <TableHead></TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Specifications</TableHead>
@@ -137,8 +138,9 @@ export function QuotationTable() {
             ))}
           </TableBody>
         </Table>
+        </div>
       </CardContent>
-      <CardFooter className="flex justify-end bg-sidebar p-6 border-t rounded-b border-b">
+      <CardFooter className="flex justify-end p-6 ">
         <div>
           <h1 className="font-bold text-3xl text-primary">
             <span className="text-muted-foreground">Total Cost:</span> ₱

@@ -18,6 +18,8 @@ import {
 import { Calendar, Mail, Phone, User } from "lucide-react";
 import { AdditionalChargesTable } from "./additional-charges-table";
 import { formatCurrency } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 interface QuotationInformationProps {
   quotationRequest: QuotationItemWithRelations;
@@ -48,118 +50,113 @@ export function QuotationInformation({
   };
   return (
     <div className="flex flex-col gap-4">
-      <Card className="border-b-none">
-        <CardHeader className="flex flex-row items-center justify-between bg-sidebar border-b">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-2xl font-bold text-primary">
+      <Card className="border shadow-none rounded-sm">
+        <CardHeader className="flex flex-row items-center justify-between bg-card p-6">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-bold">
               Quotation{" "}
-              <span className="text-muted-foreground">
-                #
-                {quotationRequest.quotation.quotationNumber
-                  .toString()
-                  .padStart(4, "0")}
+              <span className="text-muted-foreground font-medium">
+                #{quotationRequest.quotation.quotationNumber.toString().padStart(4, "0")}
               </span>
             </h1>
-            <h2 className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
               <span>{quotationRequest.user.name}</span>
-            </h2>
-          </div>
-          <div>
-            <div className="flex gap-2 items-center justify-end">
-              <Calendar className="w-4 h-4 text-muted-foreground" />
-              <h1 className="text-muted-foreground">
-                {quotationRequest.createdAt.toLocaleString().split("T")[0]}
-              </h1>
-            </div>
-            <div className="flex flex-row">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-muted-foreground" />
-                <span className="text-muted-foreground">
-                  {quotationRequest.user.email}
-                </span>
-              </div>
+              <Separator orientation="vertical" className="h-4" />
+              <Mail className="w-4 h-4" />
+              <span>{quotationRequest.user.email}</span>
               {quotationRequest.phone && (
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">
-                    {quotationRequest.phone}
-                  </span>
-                </div>
+                <>
+                  <Separator orientation="vertical" className="h-4" />
+                  <Phone className="w-4 h-4" />
+                  <span>{quotationRequest.phone}</span>
+                </>
               )}
             </div>
           </div>
+          <Badge variant="outline" className="text-sm font-medium rounded-sm">
+            <Calendar className="w-4 h-4 mr-2" />
+            {quotationRequest.createdAt.toLocaleString().split("T")[0]}
+          </Badge>
         </CardHeader>
-        <CardContent>
-          <div className="py-4 border-b">
-            <h1 className="font-semibold">Customer Note</h1>
-            <p className="text-muted-foreground">
-              {quotationRequest.customerNote}
-            </p>
-          </div>
-          <div className="py-4">
-            <h1 className="font-semibold pb-2">Products</h1>
-            <div className="overflow-x-auto">
-              <Table className="border-b">
-                <TableHeader className="bg-muted">
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead>Specifciations</TableHead>
-                    <TableHead>Unit Price</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Subtotal</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {quotationRequest.quotation.QuotationItem.map((item) => (
-                    <TableRow key={item?.id}>
-                      <TableCell>{item?.variant.product.name}</TableCell>
-                      <TableCell>
-                        {item?.variant.attributes
-                          .map(
-                            (attribute) =>
-                              attribute.attribute.name + ": " + attribute.value
-                          )
-                          .join("; ")}
-                      </TableCell>
-                      <TableCell>
-                        ₱ {Number(item?.priceAtQuotation).toLocaleString()}
-                      </TableCell>
-                      <TableCell>{Number(item?.quantity)}</TableCell>
-                      <TableCell>
-                        {" "}
-                        ₱
-                        {(
-                          Number(item?.priceAtQuotation) *
-                          Number(item?.quantity)
-                        ).toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+        <CardContent className="p-6 pt-0">
+          {quotationRequest.customerNote && (
+            <div className="p-4 bg-muted rounded-sm mb-6">
+              <h2 className="text-sm font-medium mb-2">Customer Note</h2>
+              <p className="text-sm text-muted-foreground">
+                {quotationRequest.customerNote}
+              </p>
             </div>
-          </div>
-          <div className="py-6">
+          )}
+
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-lg font-semibold mb-4">Products</h2>
+              <div className="overflow-x-auto rounded-sm border">
+                <Table>
+                  <TableHeader className="bg-muted/50">
+                    <TableRow>
+                      <TableHead className="w-[30%]">Product</TableHead>
+                      <TableHead className="w-[30%]">Specifications</TableHead>
+                      <TableHead className="w-[15%] text-right">Unit Price</TableHead>
+                      <TableHead className="w-[10%] text-right">Qty</TableHead>
+                      <TableHead className="w-[15%] text-right">Subtotal</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {quotationRequest.quotation.QuotationItem.map((item) => (
+                      <TableRow key={item?.id} className="hover:bg-muted/50">
+                        <TableCell className="font-medium">
+                          {item?.variant.product.name}
+                        </TableCell>
+                        <TableCell>
+                          {item?.variant.attributes
+                            .map(
+                              (attribute) =>
+                                `${attribute.attribute.name}: ${attribute.value}`
+                            )
+                            .join(", ")}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(Number(item?.priceAtQuotation))}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {Number(item?.quantity)}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatCurrency(
+                            Number(item?.priceAtQuotation) *
+                            Number(item?.quantity)
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+
             <AdditionalChargesTable
               quotationRequest={quotationRequest}
               readOnly={readOnly}
             />
           </div>
         </CardContent>
-        <CardFooter className="bg-sidebar border-t flex justify-end">
-          <div className="w-full max-w-xs space-y-2  pt-4 font-medium">
-            <div className="flex justify-between">
+
+        <CardFooter className="bg-muted/50 p-6">
+          <div className="w-full max-w-sm space-y-3">
+            <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
               <span>{formatCurrency(calculateSubtotal())}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Add&apos;l Charges</span>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Additional Charges</span>
               <span>{formatCurrency(calculateAdditionalCharges())}</span>
             </div>
-            <div className="flex justify-between border-t pt-2">
-              <span className="font-semibold">Total</span>
-              <span className="font-semibold text-red-600">
+            <Separator />
+            <div className="flex justify-between font-semibold">
+              <span>Total</span>
+              <span className="text-primary">
                 {formatCurrency(calculateTotal())}
               </span>
             </div>

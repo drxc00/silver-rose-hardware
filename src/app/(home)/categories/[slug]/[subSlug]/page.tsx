@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Pagination } from "@/components/front/products-pagination";
-
+import { unstable_cache as cache } from "next/cache";
 export async function generateMetadata({
   params,
 }: {
@@ -59,6 +59,51 @@ function SubcategoryPageLoading() {
   );
 }
 
+const cachedData = cache(
+  async (subSlug: string, currentPage: number, itemsPerPage: number) => {
+    return Promise.all([
+      prisma.category.findUnique({
+        where: {
+          slug: subSlug,
+        },
+        include: {
+          parent: true,
+        },
+      }),
+      prisma.product.findMany({
+        where: {
+          category: {
+            slug: subSlug,
+          },
+          status: "visible",
+        },
+        include: {
+          category: true,
+          variants: {
+            include: {
+              attributes: {
+                include: {
+                  attribute: true,
+                },
+              },
+            },
+          },
+        },
+        skip: (currentPage - 1) * itemsPerPage,
+        take: itemsPerPage,
+      }),
+      prisma.product.count({
+        where: {
+          category: {
+            slug: subSlug,
+          },
+        },
+      }),
+    ]);
+  },
+  ["subcategoryPage"]
+);
+
 async function SubcategoryContent({
   subSlug,
   currentPage,
@@ -68,45 +113,11 @@ async function SubcategoryContent({
 }) {
   const itemsPerPage = 20;
 
-  const [category, products, productsCount] = await Promise.all([
-    prisma.category.findUnique({
-      where: {
-        slug: subSlug,
-      },
-      include: {
-        parent: true,
-      },
-    }),
-    prisma.product.findMany({
-      where: {
-        category: {
-          slug: subSlug,
-        },
-        status: "visible",
-      },
-      include: {
-        category: true,
-        variants: {
-          include: {
-            attributes: {
-              include: {
-                attribute: true,
-              },
-            },
-          },
-        },
-      },
-      skip: (currentPage - 1) * itemsPerPage,
-      take: itemsPerPage,
-    }),
-    prisma.product.count({
-      where: {
-        category: {
-          slug: subSlug,
-        },
-      },
-    }),
-  ]);
+  const [category, products, productsCount] = await cachedData(
+    subSlug,
+    currentPage,
+    itemsPerPage
+  );
 
   const totalPages = Math.ceil(productsCount / itemsPerPage);
 

@@ -18,7 +18,7 @@ import { Suspense } from "react";
 import { unstable_cache as cache } from "next/cache";
 import { Card, CardContent } from "@/components/ui/card";
 
-const cachedFetchProductUsingSlug = cache(fetchProductUsingSlug);
+const cachedFetchProductUsingSlug = cache(fetchProductUsingSlug, ["productPage"]);
 
 export async function generateMetadata({
   params,
