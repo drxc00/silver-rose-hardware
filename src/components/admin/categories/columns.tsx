@@ -50,23 +50,25 @@ export const categoryColumns: ColumnDef<CategoryTree>[] = [
       return <span>Category</span>;
     },
     cell: ({ row }) => {
+      const isSubcategory = row.depth > 0;
       return (
-        <div className="flex gap-2">
-          <div className="flex items-center gap-2">
-            <ImageWithSkeleton
-              src={row.original.image || ""}
-              alt={row.original.name}
-              width={40}
-              height={40}
-              className="rounded-sm"
-            />
-            <span className="font-medium">{row.original.name}</span>
-            {row.original.subcategories &&
-              row.original.subcategories.length > 0 && (
-                <span className="text-muted-foreground">
-                  ({row.original.subcategories.length})
-                </span>
-              )}
+        <div className="flex items-center h-full">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-sm overflow-hidden">
+              <ImageWithSkeleton
+                src={row.original.image || ""}
+                alt={row.original.name}
+                width={32}
+                height={32}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className={cn(
+              "text-sm",
+              isSubcategory ? "text-muted-foreground" : "font-medium"
+            )}>
+              {row.original.name}
+            </span>
           </div>
         </div>
       );

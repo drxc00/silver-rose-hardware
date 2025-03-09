@@ -171,19 +171,19 @@ export function ProductsGrid({
   return (
     <div className="space-y-6 w-full">
       {/* Filters & Sorting */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6 p-4 bg-background/50 backdrop-blur-sm rounded-sm border">
+        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
           {/* Sort by */}
           <div className="flex flex-col md:flex-row gap-2 md:items-center">
-            <span className="text-sm text-muted-foreground">Sort by</span>
+            <span className="text-sm font-medium text-foreground">Sort by</span>
             <Select
               value={sort || "all"}
               onValueChange={(e) => setParams("sort", e)}
             >
-              <SelectTrigger className="w-[160px] sm:w-[180px]">
+              <SelectTrigger className="w-[160px] sm:w-[180px] bg-background">
                 <SelectValue placeholder="Sort option" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background">
                 <SelectItem value="all">All Products</SelectItem>
                 <SelectItem value="alphabetical-a-z">A-Z</SelectItem>
                 <SelectItem value="alphabetical-z-a">Z-A</SelectItem>
@@ -199,16 +199,16 @@ export function ProductsGrid({
 
           {/* Category Filter */}
           {categories && (
-            <div className="flex flex-col md:flex-row  gap-2 md:items-center">
-              <span className="text-sm text-muted-foreground">Category</span>
+            <div className="flex flex-col md:flex-row gap-2 md:items-center">
+              <span className="text-sm font-medium text-foreground">Category</span>
               <Select
                 value={category || "all"}
                 onValueChange={(e) => setParams("category", e)}
               >
-                <SelectTrigger className="w-[140px] sm:w-[180px]">
+                <SelectTrigger className="w-[140px] sm:w-[180px] bg-background">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background">
                   <SelectItem value="all">All Categories</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.slug as string}>
@@ -222,14 +222,14 @@ export function ProductsGrid({
 
           {/* Price Filter */}
           <div className="flex flex-col w-full sm:flex-row gap-2 sm:items-center">
-            <span className="text-sm text-muted-foreground">Price</span>
+            <span className="text-sm font-medium text-foreground">Price</span>
             <div className="flex w-full items-center gap-2">
               <Input
                 value={localMinPrice}
                 onChange={(e) => setLocalMinPrice(e.target.value)}
                 type="number"
                 placeholder="Min"
-                className="w-full md:w-20 sm:w-28"
+                className="w-full md:w-24 sm:w-32 bg-background"
                 min="0"
               />
               <span className="text-muted-foreground text-sm">to</span>
@@ -238,7 +238,7 @@ export function ProductsGrid({
                 onChange={(e) => setLocalMaxPrice(e.target.value)}
                 type="number"
                 placeholder="Max"
-                className="w-full md:w-20 sm:w-28"
+                className="w-full md:w-24 sm:w-32 bg-background"
                 min="0"
               />
             </div>
@@ -247,13 +247,23 @@ export function ProductsGrid({
 
         {/* View Toggle */}
         <div className="flex flex-col md:flex-row gap-2 md:items-center">
-          <span className="text-sm text-muted-foreground">View</span>
-          <Button variant="outline" onClick={() => setParams("view", "grid")}>
-            <LayoutGridIcon className="w-5 h-5" />
-          </Button>
-          <Button variant="outline" onClick={() => setParams("view", "list")}>
-            <StretchHorizontal className="w-5 h-5" />
-          </Button>
+          <span className="text-sm font-medium text-foreground">View</span>
+          <div className="flex gap-2">
+            <Button 
+              variant={view === "grid" ? "default" : "outline"} 
+              size="sm"
+              onClick={() => setParams("view", "grid")}
+            >
+              <LayoutGridIcon className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant={view === "list" ? "default" : "outline"} 
+              size="sm"
+              onClick={() => setParams("view", "list")}
+            >
+              <StretchHorizontal className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -277,7 +287,12 @@ export function ProductsGrid({
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground">No products found.</p>
+        <div className="flex flex-col items-center justify-center p-8 space-y-4">
+          <p className="text-lg font-medium text-foreground">No products found</p>
+          <p className="text-sm text-muted-foreground text-center">
+            Try adjusting your filters or search terms
+          </p>
+        </div>
       )}
     </div>
   );

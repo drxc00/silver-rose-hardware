@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SearchInput } from "@/components/ui/search-input";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -95,18 +96,22 @@ export function DataTable<TData extends CategoryTree, TValue>({
             />
           </div>
         </div>
-        <div className="bg-background  border rounded-sm overflow-x-auto">
-          <Table>
+        <div className="bg-background border rounded-sm overflow-x-auto">
+          <Table className="table-fixed w-full">
             <TableHeader className="bg-muted border-none">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow key={headerGroup.id} className="h-12">
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead
                         key={header.id}
-                        style={{
-                          width: header.id === "dropdown" ? "1px" : "auto",
-                        }} // Add this line
+                        className={cn(
+                          "font-semibold text-sm",
+                          header.id === "dropdown" ? "w-12" : "",
+                          header.id === "category" ? "w-[60%]" : "",
+                          header.id === "products" ? "w-[20%]" : "",
+                          header.id === "actions" ? "w-[20%]" : ""
+                        )}
                       >
                         {header.isPlaceholder
                           ? null
@@ -124,15 +129,23 @@ export function DataTable<TData extends CategoryTree, TValue>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => {
                   const originalData = row.original || {};
-                  // Check if the row has subcategories
                   const hasSubcategories =
                     originalData.subcategories &&
                     originalData.subcategories.length > 0;
                   return (
                     <React.Fragment key={row.id}>
-                      <TableRow data-state={row.getIsSelected() && "selected"}>
+                      <TableRow 
+                        data-state={row.getIsSelected() && "selected"}
+                        className="h-12 hover:bg-muted/50 transition-colors"
+                      >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
+                          <TableCell 
+                            key={cell.id}
+                            className={cn(
+                              "py-2",
+                              cell.column.id === "category" ? "truncate" : ""
+                            )}
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
@@ -140,35 +153,38 @@ export function DataTable<TData extends CategoryTree, TValue>({
                           </TableCell>
                         ))}
                       </TableRow>
-                      {/* Display sub categories when triggered */}
                       {row.getIsExpanded() &&
                         hasSubcategories &&
                         originalData.subcategories.map((subcategory) => (
                           <TableRow
                             key={subcategory.id}
-                            className="bg-muted/50"
+                            className="bg-muted/20 hover:bg-muted/30"
                           >
                             {row.getVisibleCells().map((cell) => {
-                              // Skip the dropdown column for subcategories
                               if (cell.column.id === "dropdown") {
                                 return (
                                   <TableCell
                                     key={`empty-${cell.id}`}
-                                  ></TableCell>
+                                    className="relative"
+                                  >
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/50"></div>
+                                  </TableCell>
                                 );
                               }
                               return (
                                 <TableCell key={`sub-${cell.id}`}>
-                                  {flexRender(cell.column.columnDef.cell, {
-                                    ...cell.getContext(),
-                                    row: {
-                                      ...row,
-                                      original: subcategory as TData,
-                                      getValue: (columnId: string) => {
-                                        return (subcategory as any)[columnId];
+                                  <div className="flex items-center gap-2 relative">
+                                    {flexRender(cell.column.columnDef.cell, {
+                                      ...cell.getContext(),
+                                      row: {
+                                        ...row,
+                                        original: subcategory as TData,
+                                        getValue: (columnId: string) => {
+                                          return (subcategory as any)[columnId];
+                                        },
                                       },
-                                    },
-                                  })}
+                                    })}
+                                  </div>
                                 </TableCell>
                               );
                             })}

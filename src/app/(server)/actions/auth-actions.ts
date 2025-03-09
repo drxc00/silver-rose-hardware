@@ -1,12 +1,11 @@
 "use server";
 
-import { signIn, signOut } from "@/lib/auth";
-import { createNewUser, getUserRole } from "@/lib/auth-functions";
+import { signOut } from "@/lib/auth";
+import { createNewUser } from "@/lib/auth-functions";
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/lib/constants";
 import authCache from "@/lib/auth-cache";
 import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function clientLogout(redirectTo: string) {
   // Validate first if a session exists

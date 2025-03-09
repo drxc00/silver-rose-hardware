@@ -71,28 +71,3 @@ export const addCategory = actionClient
       }
     }
   );
-
-// export async function addCategory({
-//   name,
-//   slug,
-//   image,
-//   parentCategory,
-// }: {
-//   name: string;
-//   slug: string;
-//   image: string;
-//   parentCategory?: string;
-// }): Promise<void> {
-//   await prisma.category.create({
-//     data: {
-//       name,
-//       slug,
-//       image,
-//       // Only include parentCategory if it exists
-//       ...(parentCategory && { parentCategory }),
-//     },
-//   });
-//   revalidatePath("/"); // Revalidate the carousel in the home page
-//   revalidatePath("/categories"); // Categories page
-//   revalidatePath("/admin/categories");
-// }

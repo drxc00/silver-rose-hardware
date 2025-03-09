@@ -110,6 +110,11 @@ export function useQuotationOptimistic(
                   ? currentQuantity + 1
                   : Math.max(1, currentQuantity - 1);
 
+              // If quantity is 0, remove the item
+              if (newQuantity === 0) {
+                return null;
+              }
+
               return {
                 ...item,
                 quantity: new Prisma.Decimal(newQuantity),

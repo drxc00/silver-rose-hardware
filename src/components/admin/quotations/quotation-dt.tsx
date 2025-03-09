@@ -82,7 +82,7 @@ export function QuotationDataTable<TData, TValue>({
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
           </div>
-          <div className="overflow-x-auto ">
+          <div className="overflow-x-auto border rounded-sm">
             <Table className="w-full">
               <TableHeader className="bg-sidebar">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -110,7 +110,7 @@ export function QuotationDataTable<TData, TValue>({
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id} className="py-3">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

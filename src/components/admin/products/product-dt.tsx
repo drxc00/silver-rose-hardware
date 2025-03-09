@@ -152,12 +152,13 @@ export function ProductDataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className="h-12"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell 
                         key={cell.id}
                         style={{ width: cell.column.getSize() }}
-                        className="whitespace-nowrap"
+                        className="whitespace-nowrap py-2"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

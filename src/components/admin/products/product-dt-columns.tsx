@@ -22,12 +22,14 @@ import {
   DropdownMenu,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { updateIsFeatured } from "@/app/(server)/actions/product-mutations";
+import {
+  updateIsFeatured,
+  updateProductStatus,
+} from "@/app/(server)/actions/product-mutations";
 import Link from "next/link";
 import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 
 export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
-
   {
     accessorKey: "product",
     size: 300,
@@ -88,9 +90,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
     header: "Variants",
     cell: ({ row }) => (
       <div className="text-center">
-        <Badge variant="secondary">
-          {row.original.variants.length}
-        </Badge>
+        <Badge variant="secondary">{row.original.variants.length}</Badge>
       </div>
     ),
   },
@@ -167,6 +167,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
     cell: ({ row }) => {
       const id = row.original.id;
       const isFeatured = row.original.isFeatured;
+      const isArchived = row.original.status === "archived";
       return (
         <div>
           <DropdownMenu modal={false}>
@@ -203,19 +204,41 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
                   className="cursor-pointer"
                 >
                   {isFeatured ? (
-                    <CheckCircle className="text-green-500 mr-2 h-4 w-4" />
+                    <>
+                      <CircleX className="text-muted-foreground mr-2 h-4 w-4" />
+                      <span>Remove Featured</span>
+                    </>
                   ) : (
-                    <CircleX className="text-muted-foreground mr-2 h-4 w-4" />
+                    <>
+                      <CheckCircle className="text-green-500 mr-2 h-4 w-4" />
+                      <span>Add Featured</span>
+                    </>
                   )}
-                  <span>Toggle Featured</span>
                 </DropdownMenuItem>
               )}
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer">
-                <Archive className="mr-2 h-4 w-4" />
-                <span>Archive</span>
+              <DropdownMenuItem
+                className={cn(
+                  "text-destructive focus:text-destructive cursor-pointer",
+                  isArchived && "text-muted-foreground"
+                )}
+                onClick={async () => {
+                  await updateProductStatus(id, isArchived ? "visible" : "archived");
+                }}
+              >
+                {isArchived ? (
+                  <>
+                    <Archive className="mr-2 h-4 w-4" />
+                    <span>Unarchive</span>
+                  </>
+                ) : (
+                  <>
+                    <Archive className="mr-2 h-4 w-4" />
+                    <span>Archive</span>
+                  </>
+                )}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
