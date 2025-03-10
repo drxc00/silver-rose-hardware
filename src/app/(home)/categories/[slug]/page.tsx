@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -31,7 +31,8 @@ const cachedCategoryChildren = cache(
       },
     });
   },
-  ["categoryPage"]
+  ["categoryPage"],
+  { revalidate: 3600 }
 );
 
 const cachedCategoryProducts = cache(
@@ -68,6 +69,11 @@ const cachedCategoryProducts = cache(
         take: itemsPerPage,
         where: {
           status: "visible",
+          category: {
+            id: {
+              in: allCategoryIds,
+            },
+          },
         },
       }),
       prisma.product.count({
@@ -82,7 +88,8 @@ const cachedCategoryProducts = cache(
       }),
     ]);
   },
-  ["categoryPage"]
+  ["categoryPage"],
+  { revalidate: 3600 }
 );
 
 export default async function CategoryPage({
@@ -141,6 +148,7 @@ export default async function CategoryPage({
             <Link
               href={`/categories/${category.slug}/${subcategory.slug}`}
               key={subcategory.id}
+              prefetch={true}
             >
               <Card className="relative h-48 overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
                 {subcategory.image ? (

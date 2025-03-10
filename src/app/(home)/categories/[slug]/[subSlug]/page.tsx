@@ -1,4 +1,3 @@
-
 import { ProductsGrid } from "@/components/front/products-grid";
 import { prisma } from "@/lib/prisma";
 import { ChevronRight } from "lucide-react";
@@ -20,20 +19,20 @@ export async function generateMetadata({
 }
 
 const cachedData = cache(
-  async (subSlug: string, currentPage: number, itemsPerPage: number) => {
+  async (
+    subSlug: string,
+    currentPage: number,
+    itemsPerPage: number,
+    allCategoryIds: string[]
+  ) => {
     return Promise.all([
-      prisma.category.findUnique({
-        where: {
-          slug: subSlug,
-        },
-        include: {
-          parent: true,
-        },
-      }),
       prisma.product.findMany({
         where: {
           category: {
             slug: subSlug,
+            id: {
+              in: allCategoryIds,
+            },
           },
           status: "visible",
         },
@@ -61,7 +60,8 @@ const cachedData = cache(
       }),
     ]);
   },
-  ["subcategoryPage"]
+  ["subcategoryPage"],
+  { revalidate: 3600 }
 );
 
 export default async function Page({
@@ -80,10 +80,28 @@ export default async function Page({
   const currentPage = Number(pageSearchParams?.page) || 1;
   const itemsPerPage = 20;
 
-  const [category, products, productsCount] = await cachedData(
+  const category = await prisma.category.findUnique({
+    where: { slug: subSlug },
+    include: {
+      parent: true,
+      children: true,
+    },
+  });
+
+  if (!category) {
+    throw new Error("Category not found");
+  }
+
+  const allCategoryIds = [
+    category.id,
+    ...category.children.map((child) => child.id),
+  ];
+
+  const [products, productsCount] = await cachedData(
     subSlug,
     currentPage,
-    itemsPerPage
+    itemsPerPage,
+    allCategoryIds
   );
 
   const totalPages = Math.ceil(productsCount / itemsPerPage);
