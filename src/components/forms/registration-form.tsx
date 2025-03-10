@@ -17,21 +17,17 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { UserRole } from "@/lib/constants";
+import { useAction } from "next-safe-action/hooks";
+import { createNewUserAction } from "@/app/(server)/actions/auth-actions";
 
 interface RegistrationFormProps {
-  submissionHandler: (
-    data: z.infer<typeof registrationFormSchema>
-  ) => Promise<void>;
   registrationType: UserRole;
 }
 
-export function RegistrationForm({
-  submissionHandler,
-  registrationType,
-}: RegistrationFormProps) {
-  const [isPending, setIsPending] = useState(false);
+export function RegistrationForm({ registrationType }: RegistrationFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const { executeAsync, isPending } = useAction(createNewUserAction);
 
   const form = useForm<z.infer<typeof registrationFormSchema>>({
     resolver: zodResolver(registrationFormSchema),
@@ -45,8 +41,13 @@ export function RegistrationForm({
 
   const onSubmit = async (data: z.infer<typeof registrationFormSchema>) => {
     try {
-      setIsPending(true);
-      await submissionHandler(data);
+      const result = await executeAsync({
+        ...data,
+        role: registrationType,
+      });
+      if (!result?.data?.success) {
+        throw new Error(result?.data?.error as string);
+      }
       if (registrationType === UserRole.CUSTOMER) {
         router.replace("/login");
       } else {
@@ -59,9 +60,6 @@ export function RegistrationForm({
         description: (error as Error).message,
         variant: "destructive",
       });
-      throw error; // Re-throw to allow parent component to handle
-    } finally {
-      setIsPending(false);
     }
   };
 

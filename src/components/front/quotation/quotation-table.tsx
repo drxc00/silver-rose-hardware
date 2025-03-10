@@ -64,80 +64,84 @@ export function QuotationTable() {
       </CardHeader>
       <CardContent className="py-2 overflow-x-auto">
         <div className="rounded-sm border shadow-none">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableHead></TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Specifications</TableHead>
-              <TableHead>Unit Price</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Total Price</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {quotation.quotation.QuotationItem.map((item) => (
-              <TableRow key={item?.id}>
-                <TableCell>
-                  <form action={() => handleRemoveItem(item?.id as string)}>
-                    <Button className="rounded-sm" size="sm">
-                      <Trash2 />
-                    </Button>
-                  </form>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-4">
-                    <ImageWithSkeleton
-                      src={item?.variant.product.image || ""}
-                      height={40}
-                      width={40}
-                      alt={item?.variant.product.name || ""}
-                    />
-                    <span className="text-md">
-                      {item?.variant.product.name}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {item?.variant.attributes
-                    .map(
-                      (attribute) =>
-                        attribute.attribute.name + ": " + attribute.value
-                    )
-                    .join("; ")}
-                </TableCell>
-                <TableCell>
-                  ₱{Number(item?.variant.price).toLocaleString()}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <EditQuantityButton
-                      type="decrement"
-                      item={item as any}
-                      updateQuantity={updateQuantity}
-                    />
-                    <Input
-                      className="w-16"
-                      value={Number(item?.quantity).toLocaleString()}
-                      readOnly
-                    />
-                    <EditQuantityButton
-                      type="increment"
-                      item={item as any}
-                      updateQuantity={updateQuantity}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell className="font-bold">
-                  ₱
-                  {(
-                    Number(item?.variant.price) * Number(item?.quantity)
-                  ).toLocaleString()}
-                </TableCell>
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead></TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Specifications</TableHead>
+                <TableHead>Unit Price</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Total Price</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {quotation.quotation.QuotationItem.map((item) => (
+                <TableRow key={item?.id}>
+                  <TableCell>
+                    <form
+                      action={async () => {
+                        await handleRemoveItem(item?.id as string);
+                      }}
+                    >
+                      <Button className="rounded-sm" size="sm">
+                        <Trash2 />
+                      </Button>
+                    </form>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-4">
+                      <ImageWithSkeleton
+                        src={item?.variant.product.image || ""}
+                        height={40}
+                        width={40}
+                        alt={item?.variant.product.name || ""}
+                      />
+                      <span className="text-md">
+                        {item?.variant.product.name}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {item?.variant.attributes
+                      .map(
+                        (attribute) =>
+                          attribute.attribute.name + ": " + attribute.value
+                      )
+                      .join("; ")}
+                  </TableCell>
+                  <TableCell>
+                    ₱{Number(item?.variant.price).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <EditQuantityButton
+                        type="decrement"
+                        item={item as any}
+                        updateQuantity={updateQuantity}
+                      />
+                      <Input
+                        className="w-16"
+                        value={Number(item?.quantity).toLocaleString()}
+                        readOnly
+                      />
+                      <EditQuantityButton
+                        type="increment"
+                        item={item as any}
+                        updateQuantity={updateQuantity}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-bold">
+                    ₱
+                    {(
+                      Number(item?.variant.price) * Number(item?.quantity)
+                    ).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </CardContent>
       <CardFooter className="flex justify-end p-6 ">

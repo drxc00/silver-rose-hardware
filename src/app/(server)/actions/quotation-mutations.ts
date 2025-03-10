@@ -128,6 +128,7 @@ export async function createQuotationRequest(
     });
   });
 
+  revalidatePath("/quotation/history");
   revalidatePath("/admin/quotations");
   revalidateTag("userQuotation");
 }

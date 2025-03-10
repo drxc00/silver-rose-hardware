@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Loader2, Plus, Trash2 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -37,15 +37,46 @@ export function AdditionalChargesTable({
 }) {
   const [chargeName, setChargeName] = useState("");
   const [chargePrice, setChargePrice] = useState(0);
+  const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  useEffect(() => {
+    setChargeName("");
+    setChargePrice(0);
+  }, [open]);
+
+  const handleAddCharge = async (e: React.FormEvent) => {
+    e.preventDefault();
+    startTransition(async () => {
+      await addAdditionalQuotationCharge({
+        payload: {
+          name: chargeName,
+          amount: chargePrice,
+          quotationId: quotationRequest.quotation.id,
+        },
+      });
+      router.refresh();
+      setOpen(false);
+    });
+  };
+
+  const handleRemoveCharge = async (chargeId: string) => {
+    startTransition(async () => {
+      await removeAdditionalQuotationCharge(
+        chargeId,
+        quotationRequest.id
+      );
+      router.refresh();
+    });
+  };
 
   return (
     <div>
       <div className="flex items-center justify-between pb-2">
         <h1 className="font-semibold">Additional Charges</h1>
         {!readOnly && (
-          <Dialog>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
@@ -89,20 +120,7 @@ export function AdditionalChargesTable({
                 </div>
               </div>
               <DialogFooter>
-                <form
-                  action={async () => {
-                    startTransition(async () => {
-                      await addAdditionalQuotationCharge({
-                        payload: {
-                          name: chargeName,
-                          amount: chargePrice,
-                          quotationId: quotationRequest.quotation.id,
-                        },
-                      });
-                    });
-                    router.refresh();
-                  }}
-                >
+                <form onSubmit={handleAddCharge}>
                   <Button type="submit" disabled={isPending}>
                     {isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -133,25 +151,14 @@ export function AdditionalChargesTable({
                 <TableCell>{Number(charge.amount)}</TableCell>
                 <TableCell>
                   {!readOnly && (
-                    <form
-                      action={async () => {
-                        startTransition(async () => {
-                          await removeAdditionalQuotationCharge(
-                            charge.id,
-                            quotationRequest.id
-                          );
-                        });
-                      }}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveCharge(charge.id)}
+                      disabled={isPending}
                     >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        type="submit"
-                        disabled={isPending}
-                      >
-                        <Trash2 />
-                      </Button>
-                    </form>
+                      <Trash2 />
+                    </Button>
                   )}
                 </TableCell>
               </TableRow>

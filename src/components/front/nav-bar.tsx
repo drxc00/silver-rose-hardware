@@ -225,6 +225,14 @@ export function NavBar({ session }: NavBarProps) {
                     </SheetClose>
                     <SheetClose asChild>
                       <Link
+                        href="/ask"
+                        className="flex items-center py-2 text-base font-medium"
+                      >
+                        SilvieAI
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
                         href="/about-us"
                         className="flex items-center py-2 text-base font-medium"
                       >
@@ -315,8 +323,8 @@ export function NavBar({ session }: NavBarProps) {
           </Sheet>
         </div>
       </div>
-      <div className="flex md:justify-start justify-center bg-sidebar p-4 items-center border-b px-10 md:16 lg:px-32">
-        <ul className="flex flex-row gap-2 text-sm font-medium">
+      <div className="flex md:justify-start justify-center bg-sidebar p-4 items-center border-b px-10 md:px-16 lg:px-32">
+        <ul className="flex flex-wrap justify-center md:flex-row md:justify-start gap-2 text-sm font-medium">
           <li>
             <Link href="/">
               <Button
@@ -344,9 +352,20 @@ export function NavBar({ session }: NavBarProps) {
               <Button
                 className="rounded-sm"
                 size="sm"
-                variant={pathname === "/products" ? "default" : "ghost"}
+                variant={pathname.includes("/products") ? "default" : "ghost"}
               >
                 Products
+              </Button>
+            </Link>
+          </li>
+          <li>
+            <Link href="/ask">
+              <Button
+                className="rounded-sm"
+                size="sm"
+                variant={pathname.includes("ask") ? "default" : "ghost"}
+              >
+                SilvieAI
               </Button>
             </Link>
           </li>
@@ -355,7 +374,7 @@ export function NavBar({ session }: NavBarProps) {
               <Button
                 className="rounded-sm"
                 size="sm"
-                variant={pathname === "/about-us" ? "default" : "ghost"}
+                variant={pathname.includes("about-us") ? "default" : "ghost"}
               >
                 About Us
               </Button>

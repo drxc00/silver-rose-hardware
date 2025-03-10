@@ -13,25 +13,30 @@ export function MailQuotation({
 }) {
   const [isMailPending, startSendMailTransition] = useTransition();
   const { toast } = useToast();
+
+  const handleSubmit = async () => {
+    startSendMailTransition(async () => {
+      try {
+        await respondToQuotationRequest(quotationRequestId);
+        toast({
+          title: "Success",
+          description: "Successfully sent mail to customer",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: (error as Error).message,
+          variant: "destructive",
+        });
+      }
+    });
+  };
+
   return (
     <form
-      action={async () => {
-        startSendMailTransition(async () => {
-          try {
-            await respondToQuotationRequest(quotationRequestId);
-            // If successful show toast
-            toast({
-              title: "Success",
-              description: "Successfully sent mail to customer",
-            });
-          } catch (error) {
-            toast({
-              title: "Error",
-              description: (error as Error).message,
-              variant: "destructive",
-            });
-          }
-        });
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
       }}
     >
       <Button>

@@ -47,13 +47,14 @@ export function CategorySidebar({
                 )}
                 aria-expanded={category.slug === params.slug}
               >
-                <ChevronRight
-                  className={cn(
-                    "h-4 w-4 shrink-0 transition-transform duration-200",
-                    category.slug === params.slug && "rotate-90",
-                    !category.subcategories.length && "text-muted-foreground"
-                  )}
-                />
+                {category.subcategories.length > 0 && (
+                  <ChevronRight
+                    className={cn(
+                      "h-4 w-4 shrink-0 transition-transform duration-200",
+                      category.slug === params.slug && "rotate-90"
+                    )}
+                  />
+                )}
                 <span className="ml-2">{category.name}</span>
               </CollapsibleTrigger>
             </Link>

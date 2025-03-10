@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     ]);
 
     // First pass: Get relevant categories
-    const categoryPrompt = `You are a helpful assistant that recommends products based on user prompts. 
+    const categoryPrompt = `Your name is Silvie a helpful AI assistant that recommends products based on user prompts. 
       The user prompt is: "${prompt}". 
       The categories are: ${categoriesArray.join(
         ", "
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
       (product) => `${product.name}:${product.id}`
     );
 
-    const productPrompt = `You are a helpful assistant that recommends products based on user prompts.
+    const productPrompt = `Your name is Silvie a helpful AI assistant that recommends products based on user prompts.
       The user prompt is: "${prompt}".
       The available products are: ${productsArray.join(
         ", "
@@ -155,13 +155,12 @@ export async function POST(req: NextRequest) {
     );
 
     // Explain the recommendation
-    const explanationPrompt = `You are a helpful assistant for a hardware store.
+    const explanationPrompt = `Your name is Silvie a helpful AI assistant for a hardware store.
       A user asked: "${prompt}"
       Based on this, you recommended the following products: ${recommendedProducts
         .map((p) => p.name)
         .join(", ")}.
-      Please provide a brief explanation of why these products are recommended for this use case.
-      Keep your explanation under 150 words.`;
+      Please provide a brief explanation of why these products are recommended for this use case. Keep your explanation short and concise.`;
 
     const explanation = await explanationModel
       .generateContent(explanationPrompt)

@@ -6,6 +6,9 @@ import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/lib/constants";
 import authCache from "@/lib/auth-cache";
 import { revalidateTag } from "next/cache";
+import { z } from "zod";
+import { actionClient } from "@/lib/safe-action";
+import { registrationFormSchema } from "@/lib/form-schema";
 
 export async function clientLogout(redirectTo: string) {
   // Validate first if a session exists
@@ -45,3 +48,23 @@ export async function createFirstAdminUser({
     throw new Error("Failed to create admin user: " + (error as Error).name);
   }
 }
+
+export const createNewUserAction = actionClient
+  .schema(registrationFormSchema.extend({ role: z.string() }))
+  .action(
+    async ({ parsedInput: { name, username, email, password, role } }) => {
+      try {
+        await createNewUser({ name, username, email, password }, role as UserRole);
+        return {
+          success: true,
+          message: "User created successfully",
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: (error as Error).message,
+          message: "Failed to create user",
+        };
+      }
+    }
+  );

@@ -24,6 +24,23 @@ export function RemarksForm({
   const [remarks, setRemarks] = useState(quotationRequest.remarks || "");
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!remarks || remarks === "") {
+      toast({
+        title: "Error",
+        description: "Please enter remarks",
+      });
+      return;
+    }
+    startTransition(async () => {
+      await addQuotationRequestRemark({
+        quotationRequestId: quotationRequest.id,
+        remark: remarks,
+      });
+    });
+  };
   return (
     <Card className="rounded-sm shadow-none">
       <CardHeader className="flex flex-row items-center justify-between p-6">
@@ -34,26 +51,10 @@ export function RemarksForm({
           </p>
         </div>
         {!readOnly && (
-          <form
-            action={async () => {
-              if (!remarks || remarks === "") {
-                toast({
-                  title: "Error",
-                  description: "Please enter remarks",
-                });
-                return;
-              }
-              startTransition(async () => {
-                await addQuotationRequestRemark({
-                  quotationRequestId: quotationRequest.id,
-                  remark: remarks,
-                });
-              });
-            }}
-          >
-            <Button 
-              variant="outline" 
-              type="submit" 
+          <form onSubmit={handleSubmit}>
+            <Button
+              variant="outline"
+              type="submit"
               disabled={isPending}
               className="gap-2"
             >

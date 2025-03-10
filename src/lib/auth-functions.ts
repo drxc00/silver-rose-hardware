@@ -1,8 +1,8 @@
 import authCache from "@/lib/auth-cache";
-import { UserRole } from "./constants";
 import { prisma } from "./prisma";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import { UserRole } from "./constants";
 
 export async function routeProtection(route: string) {
   const session = await authCache();
@@ -13,6 +13,7 @@ export async function isAlreadyAuthenticated(redirectRoute: string) {
   const session = await authCache();
   if (session) redirect(redirectRoute);
 }
+
 
 export async function createNewUser(
   {

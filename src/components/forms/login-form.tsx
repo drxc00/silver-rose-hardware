@@ -135,7 +135,7 @@ export function LoginForm({ type }: { type: "ADMIN" | "CUSTOMER" }) {
           >
             {isPending ? (
               <>
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2Icon className="h-4 w-4 animate-spin" />
               </>
             ) : (
               "Login"

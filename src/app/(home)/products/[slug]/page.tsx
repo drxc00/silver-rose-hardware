@@ -75,7 +75,7 @@ export default async function ProductPage({
             </>
           ) : (
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/category/${product?.category.slug}`}>
+              <BreadcrumbLink href={`/categories/${product?.category.slug}`}>
                 {product?.category.name}
               </BreadcrumbLink>
             </BreadcrumbItem>

@@ -6,16 +6,6 @@ import { z } from "zod";
 
 export default async function RegisterPage() {
   await isAlreadyAuthenticated("/");
-  const createCustomerUser = async (
-    data: z.infer<typeof registrationFormSchema>
-  ) => {
-    "use server";
-    try {
-      await createNewUser(data, UserRole.CUSTOMER);
-    } catch (error) {
-      throw error;
-    }
-  };
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-4 bg-muted p-6 md:p-10">
@@ -23,14 +13,15 @@ export default async function RegisterPage() {
         <div className="px-6">
           <div className="p-6 md:p-8">
             <div className="text-center py-4">
-              <h1 className="text-3xl font-bold pb-2"><span className="text-primary">Silver Rose</span> Hardware</h1>
+              <h1 className="text-3xl font-bold pb-2">
+                <span className="text-primary">Silver Rose</span> Hardware
+              </h1>
               <h2 className="text-xl font-bold">Register an account</h2>
               <p className="text-sm text-muted-foreground">
                 Create your Silver Rose Hardware account
               </p>
             </div>
             <RegistrationForm
-              submissionHandler={createCustomerUser}
               registrationType={UserRole.CUSTOMER}
             />
             <div className="mt-4">

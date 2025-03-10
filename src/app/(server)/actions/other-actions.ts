@@ -39,5 +39,8 @@ export async function respondToQuotationRequest(quotationRequestId: string) {
     htmlbody: htmlContent,
   });
 
+  revalidatePath("/quotation/history");
+  revalidatePath(`/quotation/history/${quotationRequestId}`);
+  revalidatePath("/admin/quotations");
   revalidatePath(`/admin/quotations/view/${quotationRequestId}`);
 }
