@@ -22,7 +22,7 @@ export async function generateStaticParams() {
     id: quotationRequest.id || "",
   }));
 }
-export const getQuotation = cache(
+const getQuotation = cache(
   async (id: string) => {
     return prisma.quotationRequest.findFirst({
       where: {
