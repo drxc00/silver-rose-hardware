@@ -4,15 +4,14 @@ import { QuotationInformation } from "@/components/admin/quotations/quotation-in
 import { RemarksForm } from "@/components/admin/quotations/remarks-form";
 import PrintQuotation from "@/components/quotation-print";
 import { Button } from "@/components/ui/button";
-import { QuotationInformationSkeleton } from "@/components/admin/quotations/quotation-information-skeleton";
 import { generateHTMLPDF } from "@/lib/pdf";
 import { prisma } from "@/lib/prisma";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { unstable_cache as cache } from "next/cache";
 import { Card, CardContent } from "@/components/ui/card";
+
+export const revalidate = 0;
 
 export async function generateStaticParams() {
   /*
@@ -23,7 +22,7 @@ export async function generateStaticParams() {
     id: quotationRequest.id || "",
   }));
 }
-const getQuotation = cache(
+export const getQuotation = cache(
   async (id: string) => {
     return prisma.quotationRequest.findFirst({
       where: {
@@ -73,7 +72,7 @@ export default async function QuotationPage({
 }) {
   // Quotation Id
   const id = (await params).id || "";
-  const quotationData = JSON.parse(JSON.stringify(await getQuotation(id)));
+  const quotationData = await getQuotation(id);
   const status = quotationData?.status || "Pending";
   return (
     <div className="min-h-screen bg-muted w-vh">
@@ -95,13 +94,13 @@ export default async function QuotationPage({
                 <PrintQuotation
                   htmlContent={generateHTMLPDF(
                     {
-                      ...quotationData.quotation,
+                      ...quotationData?.quotation,
                       QuotationRequest: [
                         {
                           ...quotationData,
                         },
                       ],
-                    }!
+                    }! as any
                   )}
                 />
                 {status === "Pending" && (

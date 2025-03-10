@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, MailCheck } from "lucide-react";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 export function MailQuotation({
   quotationRequestId,
@@ -13,6 +14,7 @@ export function MailQuotation({
 }) {
   const [isMailPending, startSendMailTransition] = useTransition();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     startSendMailTransition(async () => {
@@ -22,6 +24,7 @@ export function MailQuotation({
           title: "Success",
           description: "Successfully sent mail to customer",
         });
+        router.refresh();
       } catch (error) {
         toast({
           title: "Error",
@@ -39,7 +42,7 @@ export function MailQuotation({
         handleSubmit();
       }}
     >
-      <Button>
+      <Button type="submit" disabled={isMailPending}>
         <MailCheck />
         <span>
           {isMailPending ? (
