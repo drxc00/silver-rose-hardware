@@ -196,6 +196,18 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
                 </Link>
               )}
 
+              {id && (
+                <Link
+                  href={`/admin/products/edit-unstable/${id}`}
+                  className="w-full"
+                >
+                  <DropdownMenuItem className="cursor-pointer">
+                    <PencilLine className="mr-2 h-4 w-4" />
+                    <span>Edit (Unstable)</span>
+                  </DropdownMenuItem>
+                </Link>
+              )}
+
               {typeof updateIsFeatured === "function" && (
                 <DropdownMenuItem
                   onClick={async () => {

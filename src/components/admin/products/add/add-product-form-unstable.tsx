@@ -57,20 +57,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ProductVariantTable from "../product-variant-table-unstable";
 
 interface ProductFormProps {
   categories: CategoryTree[];
   attributes: Attribute[];
 }
 
-export function AddProductForm({ categories, attributes }: ProductFormProps) {
+export function AddProductFormUnstable({
+  categories,
+  attributes,
+}: ProductFormProps) {
   const [hasVariant, setHasVariant] = useState(false);
   const [variants, setVariants] = useState<z.infer<typeof variantSchema>[]>([]);
   const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-
-  console.log(variants);
   const [variantPrice, setVariantPrice] = useState<number>();
 
   const { executeAsync, isPending } = useAction(addProduct);
@@ -103,6 +105,8 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
   };
 
   const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
+    console.log(variants);
+    console.log(data);
     try {
       if (!data.image || !data.category) {
         throw new Error("Invalid product details. Please try again.");
@@ -115,6 +119,9 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
           : [{ price: variantPrice as number, attributes: [] }],
       };
       const result = await executeAsync(productPayload);
+
+      console.log(productPayload);
+      console.log(result);
       if (!result?.data?.success) {
         throw new Error(result?.data?.message);
       }
@@ -134,10 +141,7 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full mx-auto"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full mx-auto">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between top-0 z-10 bg-background px-4 py-4 border rounded-sm">
             <Link href="/admin/products">
@@ -301,8 +305,9 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
                   />
                 </CardContent>
               </Card>
-
-              <Card className="rounded-sm">
+            </div>
+          </div>
+          <Card className="rounded-sm">
                 <CardHeader>
                   <CardTitle>Pricing & Variants</CardTitle>
                   <CardDescription>
@@ -374,50 +379,14 @@ export function AddProductForm({ categories, attributes }: ProductFormProps) {
                       </FormItem>
                     </div>
                   ) : (
-                    <div className="border rounded-md overflow-hidden">
-                      <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900">
-                        <h3 className="text-sm font-medium">
-                          Product Variants
-                        </h3>
-                        <VariantDialog
-                          attributes={attributes}
-                          addVariant={addVariant}
-                          dialogType="add"
-                          isOpen={isVariantDialogOpen}
-                          setIsOpen={setIsVariantDialogOpen}
-                        />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          type="button"
-                          onClick={() => setIsVariantDialogOpen(true)}
-                          className="gap-1"
-                        >
-                          <CirclePlus className="h-4 w-4" />
-                          Add Variant
-                        </Button>
-                      </div>
-                      <div className="p-1">
-                        <VariantDataTable
-                          columns={getVariantDTColumns({
-                            removeVariant,
-                            addVariant,
-                            updateVariant,
-                            attributes: attributes,
-                          })}
-                          data={variants as unknown as FormProductVariant[]}
-                          removeVariant={removeVariant}
-                          addVariant={addVariant}
-                          updateVariant={updateVariant}
-                          attributes={attributes}
-                        />
+                    <div className="border rounded-md">
+                      <div className="flex w-full justify-between p-4 bg-gray-50 dark:bg-gray-900">
+                        <ProductVariantTable attributeList={attributes as any} setVariants={setVariants as any} variants={variants as any} />
                       </div>
                     </div>
                   )}
                 </CardContent>
               </Card>
-            </div>
-          </div>
         </div>
       </form>
     </Form>

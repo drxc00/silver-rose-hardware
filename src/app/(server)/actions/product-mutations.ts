@@ -33,15 +33,29 @@ export const hardDeleteProduct = actionClient
     }
   });
 
-export async function addAttribute(
-  attributeName: string
-): Promise<{ id: string; name: string }> {
-  const attribute = await prisma.attribute.create({
-    data: { name: attributeName },
+export const addAttribute = actionClient
+  .schema(z.object({ name: z.string() }))
+  .action(async ({ parsedInput: { name } }) => {
+    try {
+      const attribute = await prisma.attribute.create({
+        data: { name },
+      });
+      revalidatePath("/admin/products/add-unstable");
+      revalidatePath("/admin/products/add");
+      revalidateTag("attributes");
+      return {
+        success: true,
+        message: "Attribute added successfully",
+        attribute,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to add attribute: " + (error as Error).message,
+      };
+    }
   });
-  revalidatePath("/admin/products/add");
-  return attribute;
-}
+
 
 export async function updateProductStatus(
   id: string,

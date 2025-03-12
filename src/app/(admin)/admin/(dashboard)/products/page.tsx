@@ -22,14 +22,24 @@ export default async function ProductsPage() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">Products</h1>
-            <p className="text-sm text-muted-foreground">Manage your products</p>
+            <p className="text-sm text-muted-foreground">
+              Manage your products
+            </p>
           </div>
-          <Link href="/admin/products/add">
-            <Button>
-              <Plus />
-              <span>Add Product</span>
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/admin/products/add">
+              <Button>
+                <Plus />
+                <span>Add Product</span>
+              </Button>
+            </Link>
+            <Link href="/admin/products/add-unstable">
+              <Button>
+                <Plus />
+                <span>Add Product (Unstable test)</span>
+              </Button>
+            </Link>
+          </div>
         </div>
         <div>
           <ProductDataTable

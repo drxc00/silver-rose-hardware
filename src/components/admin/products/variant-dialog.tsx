@@ -98,12 +98,12 @@ export function VariantDialog({
 
         // Invoke the server action to add the attribute
         setAttrLoading(true);
-        const newlyAddedAttribute = await addAttribute(newAttribute);
+        const newlyAddedAttribute = await addAttribute({ name: newAttribute });
         setAttrLoading(false);
         setVariantAttributes([
           ...variantAttributes,
           {
-            id: newlyAddedAttribute.id as string,
+            id: newlyAddedAttribute?.data?.attribute?.id as string,
             name: newAttribute,
             value: attributeValue,
           },
