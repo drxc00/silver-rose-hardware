@@ -2,7 +2,16 @@ import { CategorySidebar } from "@/components/front/category-sidebar";
 import { fetchCategories } from "@/lib/data-fetch";
 import { unstable_cache as cache } from "next/cache";
 
-const cachedFetchCategories = cache(fetchCategories, ["categories"]);
+const cachedFetchCategories = cache(fetchCategories, ["categories"], {
+  tags: [
+    "categories",
+    "products",
+    "productsPage",
+    "categoryPage",
+    "subcategoryPage",
+  ],
+  revalidate: 3600, // 1 hour
+});
 
 export default async function Layout({
   children,
