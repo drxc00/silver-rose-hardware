@@ -47,7 +47,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
   // Calculate
   const calculateSubtotal = () => {
     return quotation.quotation.QuotationItem.reduce(
-      (acc, item) => acc + Number(item?.variant.price) * Number(item?.quantity),
+      (acc, item) => acc + Number(item?.variant?.price) * Number(item?.quantity),
       0
     );
   };
@@ -125,8 +125,8 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card>
-            <CardContent className="p-6">
+          <Card className="rounded-sm shadow-none">
+            <CardContent className="p-6 space-y-4">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
@@ -157,7 +157,9 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number (Optional)</FormLabel>
+                      <FormLabel>
+                        Phone Number <span className="text-muted-foreground">(Optional)</span>
+                      </FormLabel>
                       <FormControl>
                         <Input placeholder="+639123456789" {...field} />
                       </FormControl>
@@ -185,7 +187,7 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
               />
               <div>
                 <h3 className="pt-4 pb-2 font-semibold">Quotation Summary</h3>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-sm border">
                   <QuotationSummaryTable quotation={quotation} />
                 </div>
                 <div className="flex flex-row gap-4 justify-end text-xl pt-8">
@@ -201,11 +203,23 @@ export function QuotationRequestForm({ user }: QuotationRequestFormProps) {
           </Card>
           <div className="text-center space-y-4">
             <p className="text-muted-foreground">
-              &quot;Tap on &apos;Request Quotation, &apos; and we &apos;ll
+              Tap on &apos;Request Quotation, &apos; and we &apos;ll
               provide our best price, including any applicable service charges
-              for custom requests.&quot;
+              for custom requests.
             </p>
-            <Button size="lg">Request Quotation</Button>
+            <Button size="lg" disabled={isPending}>
+              {isPending ? (
+                <>
+                  <Loader2 className="animate-spin w-4 h-4" />
+                  <span>Sending</span>
+                </>
+              ) : (
+                <>
+                  <MailCheck className="w-4 h-4" />
+                  <span>Request Quotation</span>
+                </>
+              )}
+            </Button>
           </div>
         </form>
       </Form>

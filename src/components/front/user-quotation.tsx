@@ -13,7 +13,7 @@ export function UserQuotation() {
 
   const calculateSubtotal = () => {
     return optimisticQuotation.quotation.QuotationItem.reduce(
-      (acc, item) => acc + Number(item?.variant.price) * Number(item?.quantity),
+      (acc, item) => acc + Number(item?.variant?.price) * Number(item?.quantity),
       0
     );
   };

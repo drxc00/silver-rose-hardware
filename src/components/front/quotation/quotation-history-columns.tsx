@@ -37,7 +37,7 @@ export const columns: ColumnDef<QuotationItemWithRelations>[] = [
       const quotationItems = row.original.quotation.QuotationItem;
       const totalPrice = quotationItems.reduce(
         (acc, item) =>
-          acc + Number(item?.variant.price) * Number(item?.quantity),
+          acc + Number(item?.variant?.price) * Number(item?.quantity),
         0
       );
       return <span>{formatCurrency(totalPrice)}</span>;

@@ -5,6 +5,34 @@ import { productFormSchema } from "@/lib/form-schema";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { actionClient } from "@/lib/safe-action";
 
+export const hardDeleteProduct = actionClient
+  .schema(z.object({ id: z.string() }))
+  .action(async ({ parsedInput: { id } }) => {
+    try {
+      await prisma.product.delete({
+        where: { id },
+      });
+      revalidatePath("/admin/products");
+      revalidatePath("/");
+      revalidatePath("/categories");
+      revalidatePath("/products");
+      revalidateTag("products");
+      revalidateTag("productsPage");
+      revalidateTag("quotation");
+      revalidateTag("quotationPage");
+      revalidateTag("userQuotation");
+      return {
+        success: true,
+        message: "Product deleted successfully",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to delete product: " + (error as Error).message,
+      };
+    }
+  });
+
 export async function addAttribute(
   attributeName: string
 ): Promise<{ id: string; name: string }> {
@@ -201,6 +229,10 @@ export const addProduct = actionClient
       });
       revalidatePath("/products/" + slug);
       revalidatePath("/admin/products");
+      revalidateTag("products");
+      revalidateTag("productsPage");
+      revalidateTag("categoryPage");
+      revalidateTag("subcategoryPage");
       return {
         success: true,
         message: "Product added successfully",

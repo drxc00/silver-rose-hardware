@@ -1,5 +1,6 @@
 import { CategoryTree } from "@/app/types";
 import { AdminHeader } from "@/components/admin/admin-header";
+import { DeleteProductDialog } from "@/components/admin/products/edit/delete-product-dialog";
 import { EditProductForm } from "@/components/admin/products/edit/edit-product-form";
 import {
   fetchAllProducts,
@@ -43,6 +44,7 @@ export default async function EditProductPage({
           categories={categories as CategoryTree[]}
           attributes={attributes}
         />
+        <DeleteProductDialog productId={product.id} />
       </section>
     </div>
   );

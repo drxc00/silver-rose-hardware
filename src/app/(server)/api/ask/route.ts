@@ -18,6 +18,29 @@ const getCachedCategories = cache(
   }
 );
 
+const getCachedProducts = cache(
+  async (recommendedCategories: string[]) => {
+    return prisma.product.findMany({
+      where: {
+        categoryId: {
+          in: recommendedCategories,
+        },
+      },
+      include: {
+        variants: {
+          include: {
+            attributes: {
+              include: {
+                attribute: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
+  ["products"]
+);
 export async function POST(req: NextRequest) {
   /**
    * This API route is for recommending products based on user prompts.
@@ -99,24 +122,26 @@ export async function POST(req: NextRequest) {
     }
 
     // Query the database for products from the recommended categories
-    const products = await prisma.product.findMany({
-      where: {
-        categoryId: {
-          in: recommendedCategories,
-        },
-      },
-      include: {
-        variants: {
-          include: {
-            attributes: {
-              include: {
-                attribute: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    // const products = await prisma.product.findMany({
+    //   where: {
+    //     categoryId: {
+    //       in: recommendedCategories,
+    //     },
+    //   },
+    //   include: {
+    //     variants: {
+    //       include: {
+    //         attributes: {
+    //           include: {
+    //             attribute: true,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
+
+    const products = await getCachedProducts(recommendedCategories);
 
     if (products.length === 0) {
       return NextResponse.json(

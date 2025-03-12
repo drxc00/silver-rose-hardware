@@ -74,7 +74,7 @@ model Category {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  parent   Category?  @relation("CategoryHierarchy", fields: [parentCategory], references: [id])
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentCategory], references: [id], onDelete: Cascade)
   children Category[] @relation("CategoryHierarchy")
   Product  Product[]
 
@@ -83,6 +83,7 @@ model Category {
 
 model Product {
   id          String    @id @default(cuid())
+  deletedAt   DateTime? @map("deleted_at")
   categoryId  String
   image       String?
   name        String
@@ -94,7 +95,7 @@ model Product {
   createdAt   DateTime  @default(now())
   variants    Variant[]
 
-  category Category @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@map("products")
 }
@@ -125,6 +126,7 @@ model AttributeValue {
 
 model Variant {
   id         String           @id @default(cuid())
+  deletedAt  DateTime?        @map("deleted_at")
   attributes AttributeValue[]
   price      Decimal
   createdAt  DateTime         @default(now())
@@ -184,14 +186,14 @@ model QuotationRequest {
 model QuotationItem {
   id               String   @id @default(cuid())
   quotationId      String
-  variantId        String
+  variantId        String?
   quantity         Decimal
   priceAtQuotation Decimal // Store price snapshot
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
-  variant   Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  variant   Variant?  @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
   @@map("quotation_items")
 }

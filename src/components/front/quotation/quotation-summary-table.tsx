@@ -30,20 +30,20 @@ export function QuotationSummaryTable({
       <TableBody>
         {quotation.quotation.QuotationItem.map((item) => (
           <TableRow key={item?.id}>
-            <TableCell>{item?.variant.product.name}</TableCell>
+            <TableCell>{item?.variant?.product.name}</TableCell>
             <TableCell>
-              {item?.variant.attributes
+              {item?.variant?.attributes
                 .map(
                   (attribute) =>
                     attribute.attribute.name + ": " + attribute.value
                 )
                 .join("; ")}
             </TableCell>
-            <TableCell>{formatCurrency(Number(item?.variant.price))}</TableCell>
+            <TableCell>{formatCurrency(Number(item?.variant?.price))}</TableCell>
             <TableCell>{Number(item?.quantity)}</TableCell>
             <TableCell>
               {formatCurrency(
-                Number(item?.variant.price) * Number(item?.quantity)
+                Number(item?.variant?.price) * Number(item?.quantity)
               )}
             </TableCell>
           </TableRow>

@@ -61,7 +61,7 @@ export default async function QuotationRecordPage({
   }
 
   const subtotal = quotationData.QuotationItem.reduce(
-    (total, item) => total + Number(item.variant.price) * Number(item.quantity),
+    (total, item) => total + Number(item.variant?.price) * Number(item.quantity),
     0
   );
   const additionalChargesTotal = quotationData.AdditionalCharge.reduce(
@@ -106,9 +106,9 @@ export default async function QuotationRecordPage({
                 <TableBody>
                   {quotationData.QuotationItem.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>{item.variant.product.name}</TableCell>
+                      <TableCell>{item.variant?.product.name}</TableCell>
                       <TableCell>
-                        {item.variant.attributes
+                        {item.variant?.attributes
                           .map(
                             (attribute) =>
                               `${attribute.attribute.name}: ${attribute.value}`
@@ -116,14 +116,14 @@ export default async function QuotationRecordPage({
                           .join("; ")}
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatCurrency(Number(item.variant.price))}
+                        {formatCurrency(Number(item.variant?.price))}
                       </TableCell>
                       <TableCell className="text-right">
                         {Number(item.quantity)}
                       </TableCell>
                       <TableCell className="text-right">
                         {formatCurrency(
-                          Number(item.variant.price) * Number(item.quantity)
+                          Number(item.variant?.price) * Number(item.quantity)
                         )}
                       </TableCell>
                     </TableRow>

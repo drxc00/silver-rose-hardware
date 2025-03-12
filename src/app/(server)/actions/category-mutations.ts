@@ -3,7 +3,7 @@
 import { addCategoryFormSchema } from "@/lib/form-schema";
 import { prisma } from "@/lib/prisma";
 import { actionClient } from "@/lib/safe-action";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 export const updateCategory = actionClient
@@ -71,3 +71,30 @@ export const addCategory = actionClient
       }
     }
   );
+
+export const deleteCategory = actionClient
+  .schema(z.object({ id: z.string() }))
+  .action(async ({ parsedInput: { id } }) => {
+    try {
+      await prisma.category.delete({ where: { id } });
+      revalidatePath("/");
+      revalidatePath("/products");
+      revalidatePath("/categories");
+      revalidatePath("/admin/categories");
+      revalidatePath("/admin/products");
+      revalidateTag("categories");
+      revalidateTag("products");
+      revalidateTag("productsPage");
+      revalidateTag("categoryPage");
+      revalidateTag("subcategoryPage");
+      return {
+        success: true,
+        message: "Category deleted successfully",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Failed to delete category: " + (error as Error).message,
+      };
+    }
+  });

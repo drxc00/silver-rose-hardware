@@ -107,10 +107,10 @@ export function QuotationInformation({
                     {quotationRequest.quotation.QuotationItem.map((item) => (
                       <TableRow key={item?.id} className="hover:bg-muted/50">
                         <TableCell className="font-medium">
-                          {item?.variant.product.name}
+                          {item?.variant?.product.name}
                         </TableCell>
                         <TableCell>
-                          {item?.variant.attributes
+                          {item?.variant?.attributes
                             .map(
                               (attribute) =>
                                 `${attribute.attribute.name}: ${attribute.value}`

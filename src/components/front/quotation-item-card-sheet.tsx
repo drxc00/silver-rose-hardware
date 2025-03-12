@@ -101,8 +101,8 @@ export const QuotationItemCard = ({
       {/* Product Image */}
       <div className="h-16 w-16 shrink-0">
         <ImageWithSkeleton
-          src={item.variant.product.image || ""}
-          alt={item.variant.product.name}
+          src={item.variant?.product.image || ""}
+          alt={item.variant?.product.name || ""}
           width={64}
           height={64}
           className="rounded-md object-cover"
@@ -112,17 +112,17 @@ export const QuotationItemCard = ({
       {/* Product Details */}
       <div className="flex flex-1 flex-col">
         <h3 className="text-sm font-medium text-gray-900">
-          {item.variant.product.name}
+          {item.variant?.product.name}
         </h3>
         <p className="text-xs text-gray-500">
-          {item.variant.attributes.map((attr) => attr.value).join(" / ")}
+          {item.variant?.attributes.map((attr) => attr.value).join(" / ")}
         </p>
 
         {/* Price */}
         <p className="mt-1 text-sm font-medium">
           ₱
           {(
-            Number(item.variant.price) * Number(item.quantity)
+            Number(item.variant?.price) * Number(item.quantity)
           ).toLocaleString()}
         </p>
       </div>

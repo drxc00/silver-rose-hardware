@@ -192,7 +192,7 @@ export function useQuotationOptimistic(
             },
           } as any,
           attributes: [],
-        },
+        } as any,
       };
 
       updateOptimisticQuotation({ type: "add", item: optimisticItem });

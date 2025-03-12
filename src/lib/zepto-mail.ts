@@ -12,7 +12,7 @@ export const generateEmailHTML = (
   quotationData: QuotationItemWithRelations
 ) => {
   const quotationSubTotal = quotationData?.quotation?.QuotationItem.reduce(
-    (total, item) => total + Number(item.quantity) * Number(item.variant.price),
+    (total, item) => total + Number(item.quantity) * Number(item.variant?.price),
     0
   );
 
@@ -136,10 +136,10 @@ export const generateEmailHTML = (
               ${quotationData.quotation.QuotationItem.map(
                 (item) => `
                 <tr>
-                  <td>${item.variant.product.name}</td>
+                  <td>${item.variant?.product.name}</td>
                   <td>
                     <ul style="margin: 0; padding-left: 20px;">
-                      ${item.variant.attributes
+                      ${item.variant?.attributes
                         .map(
                           (attribute) => `
                         <li>${attribute.attribute.name}: ${attribute.value}</li>
@@ -149,9 +149,9 @@ export const generateEmailHTML = (
                     </ul>
                   </td>
                   <td>${Number(item.quantity)}</td>
-                  <td>${formatCurrency(Number(item.variant.price))}</td>
+                  <td>${formatCurrency(Number(item.variant?.price))}</td>
                   <td class="text-right">${formatCurrency(
-                    Number(item.variant.price) * Number(item.quantity)
+                    Number(item.variant?.price) * Number(item.quantity)
                   )}</td>
                 </tr>
               `

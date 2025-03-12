@@ -89,7 +89,7 @@ const cachedCategoryProducts = cache(
     ]);
   },
   ["categoryPage"],
-  { revalidate: 3600 }
+  { revalidate: 3600, tags: ["products"] }
 );
 
 export default async function CategoryPage({

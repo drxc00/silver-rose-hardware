@@ -61,7 +61,7 @@ const cachedData = cache(
     ]);
   },
   ["subcategoryPage"],
-  { revalidate: 3600 }
+  { revalidate: 3600, tags: ["products"] }
 );
 
 export default async function Page({

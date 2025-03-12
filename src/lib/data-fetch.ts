@@ -92,11 +92,11 @@ export async function fetchUserQuotation(userId: string) {
               quantity: Number(item.quantity),
               variant: {
                 ...item.variant,
-                attributes: item.variant.attributes.map((attribute) => ({
+                attributes: item.variant?.attributes.map((attribute) => ({
                   ...attribute,
                   value: attribute.value as string,
-                })),
-                price: Number(item.variant.price),
+                })) ?? [],
+                price: Number(item.variant?.price),
               },
             })) ?? [],
       },

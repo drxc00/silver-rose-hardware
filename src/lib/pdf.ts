@@ -91,10 +91,10 @@ export const generateHTMLPDF = (
               ${quotationData.QuotationItem.map(
                 (item) => `
                 <tr>
-                  <td>${item.variant.product.name}</td>
+                  <td>${item.variant?.product.name}</td>
                   <td class="specifications">
                     <ul>
-                      ${item.variant.attributes
+                      ${item.variant?.attributes
                         .map(
                           (attribute) => `
                         <li>${attribute.attribute.name}: ${attribute.value}</li>
@@ -104,9 +104,9 @@ export const generateHTMLPDF = (
                     </ul>
                   </td>
                   <td>${Number(item.quantity)}</td>
-                  <td>${formatCurrency(Number(item.variant.price))}</td>
+                  <td>${formatCurrency(Number(item.variant?.price))}</td>
                   <td class="text-right">${formatCurrency(
-                    Number(item.variant.price) * Number(item.quantity)
+                    Number(item.variant?.price) * Number(item.quantity)
                   )}</td>
                 </tr>
               `

@@ -69,7 +69,7 @@ export default async function ProductPage({
                 <BreadcrumbLink
                   href={`/categories/${product.category.parent.slug}/${product.category.slug}`}
                 >
-                  {product.category.parent.name}
+                  {product.category.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </>

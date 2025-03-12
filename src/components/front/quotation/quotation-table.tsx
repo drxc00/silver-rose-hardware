@@ -33,7 +33,7 @@ export function QuotationTable() {
 
   const calculateSubtotal = () => {
     return quotation.quotation.QuotationItem.reduce(
-      (acc, item) => acc + Number(item?.variant.price) * Number(item?.quantity),
+      (acc, item) => acc + Number(item?.variant?.price) * Number(item?.quantity),
       0
     );
   };
@@ -92,18 +92,18 @@ export function QuotationTable() {
                   <TableCell>
                     <div className="flex items-center gap-4">
                       <ImageWithSkeleton
-                        src={item?.variant.product.image || ""}
+                        src={item?.variant?.product.image || ""}
                         height={40}
                         width={40}
-                        alt={item?.variant.product.name || ""}
+                        alt={item?.variant?.product.name || ""}
                       />
                       <span className="text-md">
-                        {item?.variant.product.name}
+                        {item?.variant?.product.name}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    {item?.variant.attributes
+                    {item?.variant?.attributes
                       .map(
                         (attribute) =>
                           attribute.attribute.name + ": " + attribute.value
@@ -111,7 +111,7 @@ export function QuotationTable() {
                       .join("; ")}
                   </TableCell>
                   <TableCell>
-                    ₱{Number(item?.variant.price).toLocaleString()}
+                    ₱{Number(item?.variant?.price).toLocaleString()}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -135,7 +135,7 @@ export function QuotationTable() {
                   <TableCell className="font-bold">
                     ₱
                     {(
-                      Number(item?.variant.price) * Number(item?.quantity)
+                      Number(item?.variant?.price) * Number(item?.quantity)
                     ).toLocaleString()}
                   </TableCell>
                 </TableRow>

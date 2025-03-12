@@ -31,6 +31,7 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -40,6 +41,7 @@ import { useQuotation } from "../providers/quotation-provider";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { usePathname } from "next/navigation";
+import { Separator } from "../ui/separator";
 interface NavBarProps {
   session?: Session;
   userQuotation?: QuotationWithRelations;
@@ -109,6 +111,9 @@ export function NavBar({ session }: NavBarProps) {
                   )
                 </SheetTitle>
               </SheetHeader>
+              <SheetDescription>
+                View and manage your quotation items
+              </SheetDescription>
               {optimisticQuotation && <UserQuotation />}
             </SheetContent>
           </Sheet>
@@ -188,13 +193,17 @@ export function NavBar({ session }: NavBarProps) {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
-              <SheetHeader className="mb-6">
+              <SheetHeader>
                 <SheetTitle className="text-xl font-bold">
                   Silver Rose Hardware
                 </SheetTitle>
               </SheetHeader>
+              <SheetDescription className="text-center">
+                Get the Best Price for your Hardware Needs
+              </SheetDescription>
+              <Separator className="my-4" />
               <div className="flex flex-col space-y-6">
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <h3 className="text-sm font-medium text-muted-foreground">
                     Navigation
                   </h3>

@@ -13,7 +13,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeft, CirclePlus, DollarSign, Info, LoaderIcon } from "lucide-react";
+import {
+  ArrowLeft,
+  CirclePlus,
+  DollarSign,
+  Info,
+  LoaderIcon,
+  Trash,
+} from "lucide-react";
 import { useState, useTransition } from "react";
 import {
   Tooltip,
@@ -24,7 +31,13 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ImageUpload } from "@/components/admin/image-upload";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -44,11 +57,25 @@ import { getVariantDTColumns } from "../variant-dt-columns";
 import React from "react";
 import { VariantDialog } from "../variant-dialog";
 import { Attribute } from "@prisma/client";
-import { updateProduct } from "@/app/(server)/actions/product-mutations";
+import {
+  hardDeleteProduct,
+  updateProduct,
+} from "@/app/(server)/actions/product-mutations";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DeleteProductDialog } from "./delete-product-dialog";
 
 interface ProductFormProps {
   product: SerializedProductWithRelatedData;
@@ -161,7 +188,7 @@ export function EditProductForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between top-0 z-10 bg-background px-4 py-4 border rounded-sm">
             <Link href="/admin/products">
               <Button

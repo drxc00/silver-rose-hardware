@@ -72,7 +72,7 @@ export default async function QuotationPage({
 }) {
   // Quotation Id
   const id = (await params).id || "";
-  const quotationData = await getQuotation(id);
+  const quotationData = JSON.parse(JSON.stringify(await getQuotation(id)));
   const status = quotationData?.status || "Pending";
   return (
     <div className="min-h-screen bg-muted w-vh">
