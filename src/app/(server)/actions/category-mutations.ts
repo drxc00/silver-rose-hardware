@@ -59,6 +59,12 @@ export const addCategory = actionClient
         revalidatePath("/"); // Revalidate the carousel in the home page
         revalidatePath("/categories"); // Categories page
         revalidatePath("/admin/categories");
+        revalidatePath("/admin/products");
+        revalidateTag("categories");
+        revalidateTag("products");
+        revalidateTag("productsPage");
+        revalidateTag("categoryPage");
+        revalidateTag("subcategoryPage");
         return {
           success: true,
           message: "Category added successfully",
