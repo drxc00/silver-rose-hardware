@@ -284,7 +284,11 @@ export function VariantDialog({
               <Button
                 variant="outline"
                 onClick={addVariantAttribute}
-                disabled={selectedAttribute === null}
+                disabled={
+                  selectedAttribute === null &&
+                  !createNewAttribute &&
+                  !newAttribute
+                }
               >
                 {attrLoading ? (
                   <LoaderIcon className="animate-spin" />
