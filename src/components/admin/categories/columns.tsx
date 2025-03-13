@@ -29,7 +29,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogDescription,
   DialogFooter,
   DialogClose,
@@ -72,7 +71,7 @@ export const categoryColumns: ColumnDef<CategoryTree>[] = [
       return <span>Category</span>;
     },
     cell: ({ row }) => {
-      const isSubcategory = row.depth > 0;
+      const isParentCategory = row.original.subcategories && row.original.subcategories.length > 0;
       return (
         <div className="flex items-center h-full">
           <div className="flex items-center gap-3">
@@ -85,13 +84,13 @@ export const categoryColumns: ColumnDef<CategoryTree>[] = [
                 className="w-full h-full object-cover"
               />
             </div>
-            <span
-              className={cn(
-                "text-sm",
-                isSubcategory ? "text-muted-foreground" : "font-medium"
+            <span className="text-sm font-medium">
+              {row.original.name}{" "}
+              {isParentCategory && (
+                <span className="text-xs text-muted-foreground">
+                  ({row.original.subcategories.length} subcategories)
+                </span>
               )}
-            >
-              {row.original.name}
             </span>
           </div>
         </div>
@@ -137,7 +136,7 @@ function CategoryActions({ id }: { id: string }) {
           </DialogHeader>
           <DialogDescription>
             Are you sure you want to delete this category? Deleting a category
-            will also delete all its subcategories and products. 
+            will also delete all its subcategories and products.
             <span className="text-destructive">
               This action cannot be undone.
             </span>
@@ -218,6 +217,5 @@ function CategoryActions({ id }: { id: string }) {
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-
   );
 }
