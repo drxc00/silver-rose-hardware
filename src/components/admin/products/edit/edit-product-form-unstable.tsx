@@ -13,13 +13,7 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
-import {
-  ArrowLeft,
-  CirclePlus,
-  LoaderIcon,
-  Info,
-  DollarSign,
-} from "lucide-react";
+import { ArrowLeft, LoaderIcon, Info, DollarSign } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -40,20 +34,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  CategoryTree,
-  FormProductVariant,
-  SerializedProductWithRelatedData,
-} from "@/app/types";
-import { VariantDataTable } from "../variant-dt";
-import { getVariantDTColumns } from "../variant-dt-columns";
+import { CategoryTree, SerializedProductWithRelatedData } from "@/app/types";
 import React from "react";
-import { VariantDialog } from "../variant-dialog";
 import { Attribute } from "@prisma/client";
-import {
-  addProduct,
-  updateProduct,
-} from "@/app/(server)/actions/product-mutations";
+import { updateProduct } from "@/app/(server)/actions/product-mutations";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -89,7 +73,6 @@ export function EditProductFormUnstable({
       })),
     }))
   );
-  const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
   const [variantPrice, setVariantPrice] = useState<number>(
     Number(product.variants[0].price) || 0
   );
@@ -129,21 +112,17 @@ export function EditProductFormUnstable({
           : [{ price: variantPrice as number, attributes: [] }],
       });
 
-      console.log(data);
-      console.log(variants);
-      console.log(result);
-
       if (!result?.data?.success) {
         throw new Error(result?.data?.message);
       }
       toast({
-        title: "Product added successfully",
+        title: "Product updated successfully",
         variant: "default",
       });
       router.refresh();
     } catch (error) {
       toast({
-        title: "Error adding product",
+        title: "Error updating product",
         description: (error as Error).message,
         variant: "destructive",
       });
@@ -224,7 +203,7 @@ export function EditProductFormUnstable({
             </div>
 
             <div className="md:col-span-2 space-y-6">
-              <Card className="rounded-sm">
+              <Card className="rounded-sm h-full">
                 <CardHeader>
                   <CardTitle>Product Information</CardTitle>
                   <CardDescription>
@@ -306,7 +285,7 @@ export function EditProductFormUnstable({
                         <FormControl>
                           <Textarea
                             placeholder="Describe your product"
-                            className="min-h-32 resize-y"
+                            className="min-h-44 resize-y"
                             {...field}
                           />
                         </FormControl>
@@ -318,7 +297,7 @@ export function EditProductFormUnstable({
               </Card>
             </div>
           </div>
-          <Card className="rounded-sm">
+          <Card className="rounded-sm h-full">
             <CardHeader>
               <CardTitle>Pricing & Variants</CardTitle>
               <CardDescription>

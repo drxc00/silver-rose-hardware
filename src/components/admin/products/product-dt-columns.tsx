@@ -191,7 +191,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
                 <Link href={`/admin/products/edit/${id}`} className="w-full">
                   <DropdownMenuItem className="cursor-pointer">
                     <PencilLine className="mr-2 h-4 w-4" />
-                    <span>Edit</span>
+                    <span>Edit (V1)</span>
                   </DropdownMenuItem>
                 </Link>
               )}
@@ -203,7 +203,7 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
                 >
                   <DropdownMenuItem className="cursor-pointer">
                     <PencilLine className="mr-2 h-4 w-4" />
-                    <span>Edit (Unstable)</span>
+                    <span>Edit (V2)</span>
                   </DropdownMenuItem>
                 </Link>
               )}

@@ -271,27 +271,36 @@ export default function ProductVariantTable({
   return (
     <div className="space-y-4 w-full">
       <div className="flex flex-col space-y-4">
-        <div className="flex flex-wrap gap-2 mb-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={addColumn}
-            className="flex items-center"
-            type="button"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Add Attribute Column
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={addVariant}
-            className="flex items-center"
-            type="button"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Add Variant
-          </Button>
+        <div className="flex justify-between w-full">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={addColumn}
+              className="flex items-center"
+              type="button"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Attribute Column
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={addVariant}
+              className="flex items-center"
+              type="button"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Variant
+            </Button>
+          </div>
+          {variants.length > 0 && (
+            <div>
+              <h1 className="text-lg font-medium">
+                Variants: {variants.length}
+              </h1>
+            </div>
+          )}
         </div>
 
         <div className="overflow-x-auto">
@@ -313,16 +322,22 @@ export default function ProductVariantTable({
                           </SelectTrigger>
                           <SelectContent>
                             {attributeList
-                              .filter(attr => {
+                              .filter((attr) => {
                                 // Get all selected attributes except the current one
-                                const otherSelectedAttributes = currentAttributes.filter(
-                                  (_, i) => i !== index
-                                );
+                                const otherSelectedAttributes =
+                                  currentAttributes.filter(
+                                    (_, i) => i !== index
+                                  );
                                 // Only show attributes that aren't selected in other columns
-                                return !otherSelectedAttributes.includes(attr.id);
+                                return !otherSelectedAttributes.includes(
+                                  attr.id
+                                );
                               })
                               .map((attribute) => (
-                                <SelectItem key={attribute.id} value={attribute.id}>
+                                <SelectItem
+                                  key={attribute.id}
+                                  value={attribute.id}
+                                >
                                   {attribute.name}
                                 </SelectItem>
                               ))}

@@ -19,9 +19,8 @@ import {
   DollarSign,
   Info,
   LoaderIcon,
-  Trash,
 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
