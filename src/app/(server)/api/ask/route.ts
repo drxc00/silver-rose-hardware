@@ -15,6 +15,7 @@ const getCachedCategories = cache(
   ["categories"],
   {
     revalidate: 3600, // 1 hour
+    tags: ["categories", "products"],
   }
 );
 
@@ -120,26 +121,6 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
-
-    // Query the database for products from the recommended categories
-    // const products = await prisma.product.findMany({
-    //   where: {
-    //     categoryId: {
-    //       in: recommendedCategories,
-    //     },
-    //   },
-    //   include: {
-    //     variants: {
-    //       include: {
-    //         attributes: {
-    //           include: {
-    //             attribute: true,
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
 
     const products = await getCachedProducts(recommendedCategories);
 

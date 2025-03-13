@@ -382,9 +382,9 @@ export default function ProductVariantTable({
                           value={variant.attributes[columnIndex]?.value || ""}
                           onChange={(e) =>
                             updateVariantValue(
-                              variant.id || "",
-                              columnIndex,
-                              e.target.value
+                              variant.id || "", // Id reference to the variant
+                              columnIndex, // Index of the attribute in the variant
+                              e.target.value // Value of the attribute input
                             )
                           }
                           className="h-8"

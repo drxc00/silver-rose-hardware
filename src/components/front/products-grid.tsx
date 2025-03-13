@@ -16,7 +16,6 @@ import { Button } from "../ui/button";
 import { LayoutGridIcon, StretchHorizontal } from "lucide-react";
 import { ProductCard } from "./product-card";
 import { useEffect, useState } from "react";
-import { ProductCardStack } from "./product-card-stack";
 import { cn } from "@/lib/utils";
 import { getMinMaxPrice } from "@/lib/products-functions";
 import { useUrlFilters } from "@/hooks/use-url-filters";
@@ -118,55 +117,6 @@ export function ProductsGrid({
         return sortedProducts;
     }
   };
-
-  const filterProducts = (
-    productsToFilter:
-      | SerializedProductWithRelatedData[]
-      | ProductWithRelatedData[]
-  ) => {
-    let filteredProducts = [...productsToFilter];
-
-    /*
-     * We apply filtering only when the params are set
-     * Else we return all the products
-     * NOTE: When debugging this it took me along time to realize
-     * that the fetch function does not fetch the parent categories of sub categories
-     * If You experience difficulty when filtering products, it might be because of this.
-     * ALWAYS MAKE SURE THAT THE FETCH FUNCTION IS FETCHING THE PARENT CATEGORIES OF SUB CATEGORIES
-     * THEN COMPARE THE SLUGS OF BOTH PARENT AND CHILD.
-     */
-    if (categories && category) {
-      filteredProducts = filteredProducts.filter((product) => {
-        /* Extract the product category */
-        const productCategory = product.category;
-        /* We then check if the category of the product is the same as the category selected */
-        /* Here we consider both its base slug, and its parent slug */
-        /* We also check here if the category param is "all" which means we want to show all products */
-        return (
-          category === "all" ||
-          productCategory.slug === category ||
-          productCategory.parent?.slug === category
-        );
-      });
-    }
-
-    if (name) {
-      filteredProducts = filteredProducts.filter(matchProductName);
-    }
-
-    if (minPrice || maxPrice) {
-      filteredProducts = filteredProducts.filter((product) => {
-        return matchProductPrice(product as ProductWithRelatedData);
-      });
-    }
-
-    // Apply sorting after filtering
-    return sortProductsOrder(
-      filteredProducts as SerializedProductWithRelatedData[]
-    );
-  };
-
-  const filteredProducts = filterProducts(products);
 
   return (
     <div className="space-y-6 w-full">
@@ -270,7 +220,7 @@ export function ProductsGrid({
       {/* Product Grid / List View */}
       {isLoading ? (
         <ProductsSkeleton />
-      ) : filteredProducts.length > 0 ? (
+      ) : products.length > 0 ? (
         <div
           className={cn(
             "grid gap-6",
@@ -279,7 +229,7 @@ export function ProductsGrid({
               : "grid-cols-1"
           )}
         >
-          {filteredProducts.map((product) => (
+          {products.map((product) => (
             <ProductCard
               key={product.id}
               product={product as unknown as ProductWithRelatedData}

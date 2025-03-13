@@ -60,7 +60,7 @@ export function DeleteProductDialog({ productId }: { productId: string }) {
                   toast({
                     title: "Product deleted successfully",
                   });
-                  router.push("/admin/products");
+                  window.location.href = "/admin/products";
                 }
               } catch (error) {
                 toast({

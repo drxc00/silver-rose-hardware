@@ -40,6 +40,7 @@ export function useUrlFilters() {
   const category = searchParams.get("category");
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
+  const page = searchParams.get("page");
 
   // The set Params function updates the URL search params
   // It takes a key and value as arguments
@@ -72,6 +73,7 @@ export function useUrlFilters() {
     sort,
     view,
     name,
+    page,
     category,
     minPrice,
     maxPrice,

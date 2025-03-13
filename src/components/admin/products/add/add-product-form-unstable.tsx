@@ -78,25 +78,7 @@ export function AddProductFormUnstable({
     },
   });
 
-  const removeVariant = (index: number) => {
-    setVariants(variants.filter((_, i) => i !== index));
-  };
-
-  const updateVariant = (index: number, attributes: any, price: number) => {
-    setVariants((prevVariants) => {
-      const updatedVariants = [...prevVariants];
-      updatedVariants[index] = { ...updatedVariants[index], attributes, price };
-      return updatedVariants;
-    });
-  };
-
-  const addVariant = (attributes: any, price: any) => {
-    setVariants((prevVariants) => [...prevVariants, { attributes, price }]);
-  };
-
   const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
-    console.log(variants);
-    console.log(data);
     try {
       if (!data.image || !data.category) {
         throw new Error("Invalid product details. Please try again.");
@@ -110,8 +92,6 @@ export function AddProductFormUnstable({
       };
       const result = await executeAsync(productPayload);
 
-      console.log(productPayload);
-      console.log(result);
       if (!result?.data?.success) {
         throw new Error(result?.data?.message);
       }

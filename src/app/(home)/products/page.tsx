@@ -11,9 +11,17 @@ export function generateMetadata() {
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ page?: string }>;
+  searchParams?: Promise<{
+    page?: string;
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    name?: string;
+  }>;
 }) {
-  const currentPage = Number((await searchParams)?.page) || 1;
+  const params = await searchParams || {};
+  const { page, category, minPrice, maxPrice, name } = params;
+  const currentPage = Number(page) || 1;
   const itemsPerPage = 20; // Number of products per page
   return (
     <main className="mx-auto flex justify-center items-start py-10 px-20 min-h-screen">
@@ -30,6 +38,10 @@ export default async function ProductsPage({
             <ProductsContent
               currentPage={currentPage}
               itemsPerPage={itemsPerPage}
+              categorySlugFilter={category}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              name={name}
             />
           </Suspense>
         </div>
