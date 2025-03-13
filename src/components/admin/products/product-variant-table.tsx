@@ -475,12 +475,12 @@ export default function ProductVariantTable({
         </DialogContent>
       </Dialog>
 
-      <div className="mt-8 p-4 border rounded-md bg-muted/50">
+      {/* <div className="mt-8 p-4 border rounded-md bg-muted/50">
         <h2 className="text-lg font-medium mb-2">Preview</h2>
         <pre className="text-sm overflow-x-auto p-2 bg-background rounded">
           {JSON.stringify(variants, null, 2)}
         </pre>
-      </div>
+      </div> */}
     </div>
   );
 }
