@@ -186,28 +186,14 @@ export const productsColumns: ColumnDef<ProductWithRelatedData>[] = [
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-
               {id && (
                 <Link href={`/admin/products/edit/${id}`} className="w-full">
                   <DropdownMenuItem className="cursor-pointer">
                     <PencilLine className="mr-2 h-4 w-4" />
-                    <span>Edit (V1)</span>
+                    <span>Edit</span>
                   </DropdownMenuItem>
                 </Link>
               )}
-
-              {id && (
-                <Link
-                  href={`/admin/products/edit-unstable/${id}`}
-                  className="w-full"
-                >
-                  <DropdownMenuItem className="cursor-pointer">
-                    <PencilLine className="mr-2 h-4 w-4" />
-                    <span>Edit (V2)</span>
-                  </DropdownMenuItem>
-                </Link>
-              )}
-
               {typeof updateIsFeatured === "function" && (
                 <DropdownMenuItem
                   onClick={async () => {

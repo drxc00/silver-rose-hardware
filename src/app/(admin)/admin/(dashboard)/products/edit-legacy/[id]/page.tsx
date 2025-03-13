@@ -1,7 +1,7 @@
 import { CategoryTree } from "@/app/types";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { DeleteProductDialog } from "@/components/admin/products/edit/delete-product-dialog";
-import { EditProductFormUnstable } from "@/components/admin/products/edit/edit-product-form-unstable";
+import { EditProductForm } from "@/components/admin/products/edit/edit-product-form-legacy";
 import {
   fetchAllProducts,
   fetchAttributes,
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function EditProductPageUnstable({
+export default async function EditProductPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -39,7 +39,7 @@ export default async function EditProductPageUnstable({
         crumbItems={[{ name: "Products", href: "/admin/products" }]}
       />
       <section className="p-4 mx-auto">
-        <EditProductFormUnstable
+        <EditProductForm
           product={JSON.parse(JSON.stringify(product))}
           categories={categories as CategoryTree[]}
           attributes={attributes}

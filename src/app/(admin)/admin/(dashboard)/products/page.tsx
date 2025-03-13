@@ -30,15 +30,15 @@ export default async function ProductsPage() {
             <Link href="/admin/products/add">
               <Button>
                 <Plus />
-                <span>Add Product (V1)</span>
+                <span>Add Product</span>
               </Button>
             </Link>
-            <Link href="/admin/products/add-unstable">
+            {/* <Link href="/admin/products/add-legacy">
               <Button>
                 <Plus />
-                <span>Add Product (V2)</span>
+                <span>Add Product (Legacy)</span>
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
         <div>

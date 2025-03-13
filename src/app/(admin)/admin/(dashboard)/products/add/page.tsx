@@ -1,4 +1,5 @@
 import { AdminHeader } from "@/components/admin/admin-header";
+
 import { AddProductForm } from "@/components/admin/products/add/add-product-form";
 import { fetchAttributes, fetchCategories } from "@/lib/data-fetch";
 

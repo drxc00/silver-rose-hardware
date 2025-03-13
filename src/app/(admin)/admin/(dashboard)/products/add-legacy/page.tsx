@@ -1,9 +1,8 @@
 import { AdminHeader } from "@/components/admin/admin-header";
-import { AddProductForm } from "@/components/admin/products/add/add-product-form";
-import { AddProductFormUnstable } from "@/components/admin/products/add/add-product-form-unstable";
+import { AddProductForm } from "@/components/admin/products/add/add-product-form-legacy";
 import { fetchAttributes, fetchCategories } from "@/lib/data-fetch";
 
-export default async function AddProductPageUnstable() {
+export default async function AddProductPage() {
   const [categories, attributes] = await Promise.all([
     fetchCategories(),
     fetchAttributes()
@@ -15,7 +14,7 @@ export default async function AddProductPageUnstable() {
         crumbItems={[{ name: "Products", href: "/admin/products" }]}
       />
       <section className="p-4 w-full mx-auto">
-        <AddProductFormUnstable categories={categories} attributes={attributes} />
+        <AddProductForm categories={categories} attributes={attributes} />
       </section>
     </div>
   );
